@@ -1,0 +1,86 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  id: elements-of-fmri-tutorials
+  title: Elements of fMRI Analysis — Interactive Tutorials
+  description: Hands-on tutorials accompanying "Elements of Functional Magnetic Resonance Imaging" by Tor D. Wager and Martin A. Lindquist
+  keywords: [fMRI, neuroimaging, statistics, GLM, connectivity, predictive modeling, MATLAB, Python]
+  authors:
+    - name: Tor D. Wager
+      affiliation: Dartmouth College
+    - name: Martin A. Lindquist
+      affiliation: Johns Hopkins University
+  github: https://github.com/torwager/elements-of-fmri-tutorials
+  license:
+    content: CC-BY-4.0
+    code: MIT
+  # In-browser execution (JupyterLite/Pyodide) — enable after exemplar pages are validated:
+  # jupyter:
+  #   lite: true
+  toc:
+    - file: intro.md
+    - file: how-to-use.md
+    - file: setup.md
+    - file: contents.md
+    - title: "Part 1 · Motivation"
+      children:
+        - file: part1/ch01-benefits-of-fmri-versatility-and.md
+        - file: part1/ch02-mechanisms-and-concepts-brain-and.md
+        - file: part1/ch03-imaging-and-society.md
+        - file: part1/ch04-types-of-neuroimaging.md
+        - file: part1/ch05-working-together-and-multidisciplinary-science.md
+    - title: "Part 2 · Brain Mapping"
+      children:
+        - file: part2/ch06-inferences-about-mind-brain-and.md
+        - file: part2/ch07-forward-and-reverse-inference.md
+        - file: part2/ch08-valid-and-invalid-inferences.md
+        - file: part2/ch09-contrasting-statistical-mapping-with-traditional.md
+        - file: part2/ch10-why-imaging-is-not-phrenology.md
+    - title: "Part 3 · MRI Environment and MRI Signal"
+      children:
+        - file: part3/ch11-mri-and-human-factors.md
+        - file: part3/ch12-fmri-basics-and-terminology.md
+        - file: part3/ch13-fundamental-mri-physics.md
+        - file: part3/ch14-bold-physiology.md
+        - file: part3/ch15-spatial-and-temporal-resolution.md
+    - title: "Part 4 · Signal Processing and Analysis"
+      children:
+        - file: part4/ch16-artifacts-and-noise-in-fmri.md
+        - file: part4/ch17-image-preprocessing.md
+        - file: part4/ch18-the-general-linear-model-and.md
+        - file: part4/ch19-glm-design-specification.md
+        - file: part4/ch20-contrasts-and-inference-with-the.md
+        - file: part4/ch21-group-analysis.md
+        - file: part4/ch22-multiple-comparisons.md
+        - file: part4/ch23-localizing-and-interpreting-results.md
+        - file: part4/ch24-analysis-pipelines-variations-and-variability.md
+        - file: part4/ch25-neuroimaging-meta-analysis.md
+    - title: "Part 5 · Experimental Design"
+      children:
+        - file: part5/ch26-experiments-observation-and-causality.md
+        - file: part5/ch27-experimental-design-and-task-fmri.md
+        - file: part5/ch28-resting-state-and-ecological-designs.md
+        - file: part5/ch29-statistical-power-and-sample-size.md
+    - title: "Part 6 · Brain Connectivity"
+      children:
+        - file: part6/ch30-introduction-to-brain-connectivity.md
+        - file: part6/ch31-multivariate-decomposition-pca-and-ica.md
+        - file: part6/ch32-network-analysis.md
+        - file: part6/ch33-dynamic-connectivity.md
+        - file: part6/ch34-structural-equation-and-path-models.md
+        - file: part6/ch35-dynamic-causal-models.md
+        - file: part6/ch36-granger-causal-models.md
+    - title: "Part 7 · Predictive Modeling"
+      children:
+        - file: part7/ch37-multivariate-brain-analysis-from-maps.md
+        - file: part7/ch38-machine-learning-principles-and-algorithms.md
+        - file: part7/ch39-training-and-testing-predictive-models.md
+        - file: part7/ch40-applying-predictive-models-to-fmri.md
+        - file: part7/ch41-biomarkers-and-translational-neuroscience.md
+        - file: part7/ch42-ai-and-neuroscience.md
+site:
+  template: book-theme
+  options:
+    logo_text: Elements of fMRI
+    style: ./style/custom.css
+    folders: true

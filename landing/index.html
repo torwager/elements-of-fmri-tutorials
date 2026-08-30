@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elements of fMRI Analysis — Interactive Tutorials</title>
+<meta name="description" content="Hands-on, runnable tutorials accompanying Elements of Functional Magnetic Resonance Imaging by Tor D. Wager and Martin A. Lindquist. 42 chapters of concepts, code in MATLAB and Python, thought questions, and self-quizzes.">
+<meta property="og:title" content="Elements of fMRI Analysis — Interactive Tutorials">
+<meta property="og:description" content="Hands-on tutorials for the book Elements of fMRI Analysis: runnable MATLAB and Python code, thought questions, and self-quizzes for all 42 chapters.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..600,0..100&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/landing.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./"><span><b>Elements</b> of fMRI</span></a>
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span></button>
+    <nav class="nav" id="nav">
+      <a href="book/contents">Contents</a>
+      <a href="book/how-to-use">How to use</a>
+      <a href="book/setup">Setup</a>
+      <a class="cta" href="book/">Start the tutorials</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="curtain">
+  <div class="curtain-media" id="hero">
+    <canvas id="brainmesh" aria-hidden="true"></canvas>
+    <div class="hero-copy">
+      <div class="wrap">
+        <div class="hero-pill"><span class="dot"></span> Interactive tutorials · 7 parts · 42 chapters</div>
+        <h1>Elements of fMRI&nbsp;Analysis</h1>
+        <p class="authors">Tor D. Wager &amp; Martin A. Lindquist</p>
+        <p class="lede">Hands-on companions to the book — concepts, runnable code in MATLAB and Python, thought questions, and self-quizzes for every chapter.</p>
+        <div class="hero-actions">
+          <a class="btn btn-amber" href="book/">Start the tutorials <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-ghost" href="book/contents">Table of contents</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-hint"><span class="pulse"></span> Move your cursor over the brain</div>
+    <div class="scroll-cue"><a href="#start">Explore <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a></div>
+  </div>
+  <div class="curtain-body" id="start">
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="rv">
+            <p class="eyebrow">The tutorials</p>
+            <h2>From first principles to predictive models — learn fMRI analysis by doing it.</h2>
+          </div>
+          <p class="lede rv rv-d1">Every chapter of the book has a companion page here: the key concepts distilled, worked examples you can run and modify, discussion questions for classes and journal clubs, and quizzes to check your understanding.</p>
+        </div>
+        <dl class="facts rv rv-d1">
+          <div><dt>Chapters</dt><dd>42, in 7 parts</dd></div>
+          <div><dt>Languages</dt><dd>MATLAB &amp; Python</dd></div>
+          <div><dt>Runs</dt><dd>In your browser</dd></div>
+          <div><dt>Cost</dt><dd>Free &amp; open</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section-tight">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="rv"><p class="eyebrow">Seven parts</p><h2>The arc of the book</h2></div>
+        </div>
+        <div class="tiles">
+          <a class="tile glow rv" href="book/part1/ch01-benefits-of-fmri-versatility-and">
+            <div><span class="num">01</span><h3>Motivation</h3><p>Why fMRI: an open, versatile tool for studying the human brain — and what it means for science and society.</p></div>
+            <span class="go">5 chapters <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="tile glow rv rv-d1" href="book/part2/ch06-inferences-about-mind-brain-and">
+            <div><span class="num">02</span><h3>Brain Mapping</h3><p>Inferences about mind, brain, and behavior — forward and reverse inference, and what we can and cannot conclude.</p></div>
+            <span class="go">5 chapters <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="tile glow rv rv-d2" href="book/part3/ch11-mri-and-human-factors">
+            <div><span class="num">03</span><h3>MRI &amp; the Signal</h3><p>The scanner environment, MRI physics, BOLD physiology, and the resolution limits of what we measure.</p></div>
+            <span class="go">5 chapters <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="tile glow rv" href="book/part4/ch16-artifacts-and-noise-in-fmri">
+            <div><span class="num">04</span><h3>Analysis Fundamentals</h3><p>Preprocessing, the GLM, group analysis, multiple comparisons, interpretation, and meta-analysis — the core toolkit.</p></div>
+            <span class="go">10 chapters <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="tile glow rv rv-d1" href="book/part5/ch26-experiments-observation-and-causality">
+            <div><span class="num">05</span><h3>Experimental Design</h3><p>Causality, task design and optimization, resting-state designs, and the statistical power to find real effects.</p></div>
+            <span class="go">4 chapters <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="tile glow rv rv-d2" href="book/part6/ch30-introduction-to-brain-connectivity">
+            <div><span class="num">06</span><h3>Brain Connectivity</h3><p>Functional connectivity, PCA and ICA, network analysis, and dynamic and causal models of interacting regions.</p></div>
+            <span class="go">7 chapters <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="tile glow rv" href="book/part7/ch37-multivariate-brain-analysis-from-maps">
+            <div><span class="num">07</span><h3>Predictive Modeling</h3><p>From maps to models: machine learning, training and testing, biomarkers, and where AI meets neuroscience.</p></div>
+            <span class="go">6 chapters <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="rv"><p class="eyebrow">Run the code</p><h2>Three ways to run every exercise</h2></div>
+          <p class="lede rv rv-d1">No installation, no accounts, no servers to wait for — unless you want the full experience on your own machine.</p>
+        </div>
+        <div class="ways">
+          <div class="way glow rv"><div class="ic">▶</div><h3>In your browser</h3><p>Python runs right on this site via WebAssembly. Nothing to install, works for everyone, from simulations to GLM fitting.</p></div>
+          <div class="way glow rv rv-d1"><div class="ic">☁️</div><h3>In the cloud</h3><p>Open any notebook in Google Colab, or MATLAB exercises in MATLAB Online with CANlab tools set up automatically.</p></div>
+          <div class="way glow rv rv-d2"><div class="ic">💻</div><h3>On your machine</h3><p>Download notebooks and live scripts to run locally with nilearn or the CANlab MATLAB toolbox — the same tools used in research.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bookstrip">
+      <div class="wrap grid-2">
+        <div class="rv">
+          <p class="eyebrow">The book</p>
+          <h2>Elements of Functional Magnetic Resonance Imaging</h2>
+        </div>
+        <div class="stack rv rv-d1">
+          <p class="muted">A guide for practitioners of fMRI across fields: the principles underlying acquisition and analysis, common errors and pitfalls, and emerging techniques — from two researchers who have taught the "nuts and bolts" of fMRI for over twenty years.</p>
+          <p><a class="btn btn-amber" href="book/">Explore the tutorials <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>Elements of fMRI Analysis — Interactive Tutorials</strong>
+      Hands-on companions to the book by Tor D. Wager and Martin A. Lindquist.<br>
+      Content CC-BY-4.0 · Code MIT.
+    </div>
+    <div>
+      <strong>Tutorials</strong>
+      <ul>
+        <li><a href="book/contents">Table of contents</a></li>
+        <li><a href="book/how-to-use">How to use this site</a></li>
+        <li><a href="book/setup">Software setup</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Resources</strong>
+      <ul>
+        <li><a href="https://canlab.github.io">CANlab tools</a></li>
+        <li><a href="https://nilearn.github.io">nilearn</a></li>
+        <li><a href="https://github.com/torwager/elements-of-fmri-tutorials">Site source on GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/brainmesh.js"></script>
+</body>
+</html>

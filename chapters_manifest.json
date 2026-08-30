@@ -1,0 +1,169 @@
+{
+ "titles": {
+  "1": "Benefits of fMRI: Versatility and an Open Community",
+  "2": "Mechanisms and Concepts: Brain and Cognitive Neuroscience",
+  "3": "Imaging and Society",
+  "4": "Types of Neuroimaging",
+  "5": "Working Together and Multidisciplinary Science",
+  "6": "Inferences About Mind, Brain, and Behavior: The Statistical Brain Mapping Approach",
+  "7": "Forward and Reverse Inference",
+  "8": "Valid and Invalid Inferences",
+  "9": "Contrasting Statistical Mapping with Traditional Neuroradiology",
+  "10": "Why Imaging Is Not Phrenology",
+  "11": "MRI and Human Factors",
+  "12": "fMRI Basics and Terminology",
+  "13": "Fundamental MRI Physics",
+  "14": "BOLD Physiology",
+  "15": "Spatial and Temporal Resolution",
+  "16": "Artifacts and Noise in fMRI",
+  "17": "Image Preprocessing",
+  "18": "The General Linear Model and Foundations of Analysis",
+  "19": "GLM Design Specification",
+  "20": "Contrasts and Inference with the GLM",
+  "21": "Group Analysis",
+  "22": "Multiple Comparisons",
+  "23": "Localizing and Interpreting Results",
+  "24": "Analysis Pipelines: Variations and Variability",
+  "25": "Neuroimaging Meta-Analysis",
+  "26": "Experiments, Observation, and Causality",
+  "27": "Experimental Design and Task fMRI",
+  "28": "Resting-State and Ecological Designs",
+  "29": "Statistical Power and Sample Size",
+  "30": "Introduction to Brain Connectivity",
+  "31": "Multivariate Decomposition: PCA and ICA",
+  "32": "Network Analysis",
+  "33": "Dynamic Connectivity",
+  "34": "Structural Equation and Path Models",
+  "35": "Dynamic Causal Models",
+  "36": "Granger Causal Models",
+  "37": "Multivariate Brain Analysis: From Maps to Models",
+  "38": "Machine Learning Principles and Algorithms",
+  "39": "Training and Testing Predictive Models",
+  "40": "Applying Predictive Models to fMRI Data",
+  "41": "Biomarkers and Translational Neuroscience",
+  "42": "AI and Neuroscience"
+ },
+ "parts": {
+  "1": [
+   "Motivation",
+   [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  ],
+  "2": [
+   "Brain Mapping",
+   [
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  ],
+  "3": [
+   "MRI Environment and Fundamentals of MRI Signal",
+   [
+    11,
+    12,
+    13,
+    14,
+    15
+   ]
+  ],
+  "4": [
+   "Fundamentals of fMRI Signal Processing and Analysis",
+   [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+   ]
+  ],
+  "5": [
+   "Experimental Design",
+   [
+    26,
+    27,
+    28,
+    29
+   ]
+  ],
+  "6": [
+   "Brain Connectivity",
+   [
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36
+   ]
+  ],
+  "7": [
+   "Predictive Modeling",
+   [
+    37,
+    38,
+    39,
+    40,
+    41,
+    42
+   ]
+  ]
+ },
+ "files": {
+  "1": "part1/ch01-benefits-of-fmri-versatility-and.md",
+  "2": "part1/ch02-mechanisms-and-concepts-brain-and.md",
+  "3": "part1/ch03-imaging-and-society.md",
+  "4": "part1/ch04-types-of-neuroimaging.md",
+  "5": "part1/ch05-working-together-and-multidisciplinary-science.md",
+  "6": "part2/ch06-inferences-about-mind-brain-and.md",
+  "7": "part2/ch07-forward-and-reverse-inference.md",
+  "8": "part2/ch08-valid-and-invalid-inferences.md",
+  "9": "part2/ch09-contrasting-statistical-mapping-with-traditional.md",
+  "10": "part2/ch10-why-imaging-is-not-phrenology.md",
+  "11": "part3/ch11-mri-and-human-factors.md",
+  "12": "part3/ch12-fmri-basics-and-terminology.md",
+  "13": "part3/ch13-fundamental-mri-physics.md",
+  "14": "part3/ch14-bold-physiology.md",
+  "15": "part3/ch15-spatial-and-temporal-resolution.md",
+  "16": "part4/ch16-artifacts-and-noise-in-fmri.md",
+  "17": "part4/ch17-image-preprocessing.md",
+  "18": "part4/ch18-the-general-linear-model-and.md",
+  "19": "part4/ch19-glm-design-specification.md",
+  "20": "part4/ch20-contrasts-and-inference-with-the.md",
+  "21": "part4/ch21-group-analysis.md",
+  "22": "part4/ch22-multiple-comparisons.md",
+  "23": "part4/ch23-localizing-and-interpreting-results.md",
+  "24": "part4/ch24-analysis-pipelines-variations-and-variability.md",
+  "25": "part4/ch25-neuroimaging-meta-analysis.md",
+  "26": "part5/ch26-experiments-observation-and-causality.md",
+  "27": "part5/ch27-experimental-design-and-task-fmri.md",
+  "28": "part5/ch28-resting-state-and-ecological-designs.md",
+  "29": "part5/ch29-statistical-power-and-sample-size.md",
+  "30": "part6/ch30-introduction-to-brain-connectivity.md",
+  "31": "part6/ch31-multivariate-decomposition-pca-and-ica.md",
+  "32": "part6/ch32-network-analysis.md",
+  "33": "part6/ch33-dynamic-connectivity.md",
+  "34": "part6/ch34-structural-equation-and-path-models.md",
+  "35": "part6/ch35-dynamic-causal-models.md",
+  "36": "part6/ch36-granger-causal-models.md",
+  "37": "part7/ch37-multivariate-brain-analysis-from-maps.md",
+  "38": "part7/ch38-machine-learning-principles-and-algorithms.md",
+  "39": "part7/ch39-training-and-testing-predictive-models.md",
+  "40": "part7/ch40-applying-predictive-models-to-fmri.md",
+  "41": "part7/ch41-biomarkers-and-translational-neuroscience.md",
+  "42": "part7/ch42-ai-and-neuroscience.md"
+ }
+}

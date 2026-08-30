@@ -1,0 +1,69 @@
+/* Elements of fMRI — book interior theme
+   "Warm paper, neural signal": warm off-white ground, blue-slate ink,
+   Fraunces display serif + Inter body, amber energy accents. */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --efmri-bg: #faf8f4;
+  --efmri-bg-2: #f2efe8;
+  --efmri-ink: #1a2332;
+  --efmri-muted: #646b75;
+  --efmri-line: #e3dfd6;
+  --efmri-amber: #e9b949;
+  --efmri-amber-deep: #c7931a;
+  --efmri-amber-soft: #fbf0d0;
+  --efmri-steel: #6f8fb0;
+}
+
+/* Ground + body type */
+html body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Headings in Fraunces */
+article h1, article h2, article h3,
+main h1, main h2, main h3 {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+article h1, main h1 {
+  font-variation-settings: 'opsz' 144, 'SOFT' 40;
+}
+
+/* Code */
+code, pre, kbd, samp {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+}
+
+/* Light-mode ground: warm paper instead of stark white */
+:root:not([data-theme='dark']) body,
+html:not(.dark) body {
+  background-color: var(--efmri-bg);
+}
+
+/* Amber-accented details */
+article a, main a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition: text-decoration-thickness 0.15s ease;
+}
+article a:hover, main a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Admonitions as paper cards with amber rule */
+aside.admonition, div.admonition {
+  border-radius: 10px;
+  border-left: 3px solid var(--efmri-amber);
+}
+
+/* Dropdown (quiz) affordance */
+details summary {
+  cursor: pointer;
+}
+details summary:hover {
+  color: var(--efmri-amber-deep);
+}
