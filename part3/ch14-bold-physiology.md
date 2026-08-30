@@ -1,6 +1,6 @@
 ---
 title: "14. BOLD Physiology"
-subject: "Part 3: MRI Environment and Fundamentals of MRI Signal"
+subject: "Part 3: MRI Environment and MRI Signal"
 ---
 
 # BOLD Physiology

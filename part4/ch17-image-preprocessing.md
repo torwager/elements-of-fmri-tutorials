@@ -1,6 +1,6 @@
 ---
 title: "17. Image Preprocessing"
-subject: "Part 4: Fundamentals of fMRI Signal Processing and Analysis"
+subject: "Part 4: Signal Processing and Analysis"
 ---
 
 # Image Preprocessing

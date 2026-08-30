@@ -1,6 +1,6 @@
 ---
 title: "21. Group Analysis"
-subject: "Part 4: Fundamentals of fMRI Signal Processing and Analysis"
+subject: "Part 4: Signal Processing and Analysis"
 ---
 
 # Group Analysis

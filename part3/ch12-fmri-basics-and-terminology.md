@@ -1,6 +1,6 @@
 ---
 title: "12. fMRI Basics and Terminology"
-subject: "Part 3: MRI Environment and Fundamentals of MRI Signal"
+subject: "Part 3: MRI Environment and MRI Signal"
 ---
 
 # fMRI Basics and Terminology

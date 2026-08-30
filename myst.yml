@@ -48,10 +48,14 @@ project:
         - file: part4/ch16-artifacts-and-noise-in-fmri.md
         - file: part4/ch17-image-preprocessing.md
         - file: part4/ch18-the-general-linear-model-and.md
+          children:
+            - file: part4/labs/ch18-lab-python.ipynb
         - file: part4/ch19-glm-design-specification.md
         - file: part4/ch20-contrasts-and-inference-with-the.md
         - file: part4/ch21-group-analysis.md
         - file: part4/ch22-multiple-comparisons.md
+          children:
+            - file: part4/labs/ch22-lab-python.ipynb
         - file: part4/ch23-localizing-and-interpreting-results.md
         - file: part4/ch24-analysis-pipelines-variations-and-variability.md
         - file: part4/ch25-neuroimaging-meta-analysis.md

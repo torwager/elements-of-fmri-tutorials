@@ -15,7 +15,7 @@ Labs are added to `myst.yml` as `children` of their chapter page.
 ```markdown
 ---
 title: "NN. Chapter Title"
-subject: "Part N: Part Title"
+subject: "Part N: Part Title"   # MUST be < 40 characters (MyST validation)
 ---
 
 # Chapter Title

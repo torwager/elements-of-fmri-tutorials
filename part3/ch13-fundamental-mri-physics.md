@@ -1,6 +1,6 @@
 ---
 title: "13. Fundamental MRI Physics"
-subject: "Part 3: MRI Environment and Fundamentals of MRI Signal"
+subject: "Part 3: MRI Environment and MRI Signal"
 ---
 
 # Fundamental MRI Physics

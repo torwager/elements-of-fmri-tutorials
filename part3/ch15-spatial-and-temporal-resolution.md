@@ -1,6 +1,6 @@
 ---
 title: "15. Spatial and Temporal Resolution"
-subject: "Part 3: MRI Environment and Fundamentals of MRI Signal"
+subject: "Part 3: MRI Environment and MRI Signal"
 ---
 
 # Spatial and Temporal Resolution

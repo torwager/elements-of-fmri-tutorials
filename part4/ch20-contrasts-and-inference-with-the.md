@@ -1,6 +1,6 @@
 ---
 title: "20. Contrasts and Inference with the GLM"
-subject: "Part 4: Fundamentals of fMRI Signal Processing and Analysis"
+subject: "Part 4: Signal Processing and Analysis"
 ---
 
 # Contrasts and Inference with the GLM
