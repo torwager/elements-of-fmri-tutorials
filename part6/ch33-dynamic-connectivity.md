@@ -224,3 +224,12 @@ Open the full Python lab notebook [→](./labs/ch33-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** What are the main critiques of resting-state dynamic connectivity findings, and what do they imply for practice?
 **Answer:** Laumann and colleagues argued that much apparent dynamics at rest reflects sampling variability, head motion, and fluctuating sleep state, so a static matrix may suffice. Lindquist showed that sliding windows can reintroduce previously removed signals — motion-induced signals produced essentially the same states and transitions as preprocessed data. Practically: test observed variability against an explicit stationary null, denoise carefully, and evaluate arousal and motion before interpreting states as neuronal.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

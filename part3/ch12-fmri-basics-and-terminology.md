@@ -198,3 +198,12 @@ Open the full Python lab notebook [→](./labs/ch12-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** What does "mass-univariate" analysis mean, and how does it differ from multivariate analysis?
 **Answer:** Mass-univariate analysis fits a separate statistical model to each voxel's time series independently and assembles the results into a statistical map. Multivariate analyses instead model many voxels simultaneously — they are multivariate in brain space — for example to decode or predict experimental conditions from distributed activity patterns.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

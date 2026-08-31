@@ -211,3 +211,12 @@ Open the full Python lab notebook [→](./labs/ch40-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Name three criteria (beyond raw accuracy) for a good predictive model.
 **Answer:** Any three of: it makes quantitative, falsifiable predictions; it predicts outcomes outside the brain (behavior, experience, clinical status); it can easily be tested prospectively on new datasets; it is simple to interpret; it is only as complex as it needs to be; and it is not over-interpreted as a complete or uniquely "correct" explanation.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

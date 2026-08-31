@@ -216,3 +216,12 @@ Open the full Python lab notebook [→](./labs/ch42-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Name three outstanding issues that limit the deployment of deep learning models as clinical neuromarkers, and one emerging remedy for each.
 **Answer:** Interpretability — addressed partially by explainable-AI tools (saliency maps, attention visualization, LIME/SHAP); shortcut learning on confounds — mitigated by data augmentation, synthetic data, and adversarial training; and domain shift across scanners or populations — addressed by fine-tuning and augmentation in the new domain. (Cost of training and algorithmic fairness are also acceptable answers.)
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

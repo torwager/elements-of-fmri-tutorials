@@ -139,3 +139,12 @@ flowchart TD
 :::{dropdown} **Q8.** What does the chapter identify as the main challenges of multidisciplinary collaboration, and what helps overcome them?
 **Answer:** Challenges include learning unfamiliar concepts and terminology, the humility of being a novice in a collaborator's field, incentives favoring narrow specialization, publishing in venues outside one's home field, and time spent teaching teammates basics. Remedies include a spirit of collaboration and patience, dedicated funding mechanisms for multidisciplinary teams, and individual scientists developing multiple types of expertise — even a little knowledge of another field's "language" dramatically improves communication.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

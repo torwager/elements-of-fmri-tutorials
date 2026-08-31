@@ -206,3 +206,12 @@ Open the full Python lab notebook [→](./labs/ch08-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** What are two analysis strategies that yield unbiased effect size estimates in neuroimaging?
 **Answer:** (1) Test a single region of interest that was fully defined before seeing the results, and report it regardless of outcome. (2) Predictive modeling: combine voxels into a model that makes one prediction per participant and evaluate it on participants independent of those used to build it. Both avoid post-hoc selection based on the observed data.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

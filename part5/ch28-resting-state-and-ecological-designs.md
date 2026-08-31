@@ -226,3 +226,12 @@ Open the full Python lab notebook [→](./labs/ch28-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Compared with resting-state connectivity, what advantages have been reported for connectivity measured during naturalistic viewing?
 **Answer:** Connectivity during naturalistic fMRI has been found to be more reliable and more predictive of external behaviors and cognitive performance than resting-state connectivity, while also constraining participants' mental states more than rest does.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

@@ -124,3 +124,60 @@ html.dark button[aria-label="start compute environment"]::after {
     border-left-color: var(--efmri-amber);
   }
 }
+
+/* --- Book tile (floating, all pages) ------------------------------------- */
+.book-tile { display: none; }
+@media (min-width: 1280px) {
+  .book-tile {
+    display: block;
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 39;
+    background: #ffffff;
+    border: 1px solid var(--efmri-line);
+    border-left: 3px solid var(--efmri-steel);
+    border-radius: 12px;
+    padding: 10px 14px;
+    box-shadow: 0 12px 32px -12px rgba(26, 35, 50, 0.3);
+    font-size: 0.82rem;
+    max-width: 250px;
+    line-height: 1.45;
+  }
+  html.dark .book-tile { background: #1f2937; border-color: #374151; border-left-color: var(--efmri-steel); }
+  /* run-quick sits above the book tile on code pages */
+  .run-quick { bottom: 108px; }
+}
+
+/* --- Equation where-lines + whole-equation hover tooltip ----------------- */
+.eq-where {
+  font-size: 0.92em;
+  color: var(--efmri-muted);
+  margin: -0.4rem 0 1rem;
+}
+.eq-tip { position: relative; }
+.eq-tip .eq-tip-text {
+  display: none;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(100% + 6px);
+  z-index: 30;
+  background: var(--efmri-ink);
+  color: #f5f2ec;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  width: max-content;
+  max-width: 460px;
+  box-shadow: 0 12px 32px -12px rgba(26, 35, 50, 0.5);
+}
+.eq-tip:hover .eq-tip-text { display: block; }
+
+/* --- Book-figure rights deterrent ---------------------------------------- */
+figure.book-figure img, .book-figure img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}

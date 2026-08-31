@@ -1,6 +1,6 @@
 # Elements of fMRI Analysis — Interactive Tutorials
 
-Hands-on tutorials accompanying **_Elements of Functional Magnetic Resonance Imaging_** by Tor D. Wager and Martin A. Lindquist.
+Hands-on tutorials accompanying **[_Elements of Functional Magnetic Resonance Imaging_](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/)** by Tor D. Wager and Martin A. Lindquist (MIT Press).
 
 - 🌐 **Site:** https://torwager.github.io/elements-of-fmri-tutorials/ *(goes live at launch)*
 - 📖 42 chapters across 7 parts, each with concept summaries, runnable MATLAB + Python code, thought questions, and self-quizzes

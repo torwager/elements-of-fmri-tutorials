@@ -64,3 +64,8 @@ plotting.plot_anat(img)
 ## Data used in the tutorials
 
 Tutorial datasets are small, openly licensed, and downloaded automatically by the exercises themselves (from this site, OpenNeuro, Neurovault, or package data). No manual data setup is needed.
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::

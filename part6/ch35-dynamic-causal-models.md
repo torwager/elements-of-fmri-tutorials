@@ -222,3 +222,12 @@ Open the full Python lab notebook [→](./labs/ch35-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Name two major caveats of DCM and the recommended stance when interpreting its results.
 **Answer:** Conclusions are only as good as the specified model: misspecification — especially omitting regions that influence the modeled ones — can yield false inferences about the direction and strength of connections; and computational demands traditionally restrict DCMs to small networks (roughly 10 regions or fewer). The safest course is to use DCM to identify systems and pathways without making strong causal claims.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

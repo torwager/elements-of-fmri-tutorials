@@ -227,3 +227,12 @@ Open the full Python lab notebook [→](./labs/ch31-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Describe the two stages of dual regression and what each produces.
 **Answer:** Stage 1 (spatial regression): regress each subject's data onto the group spatial maps, yielding a subject-specific time course per component, controlling for the other maps. Stage 2 (temporal regression): regress the same subject's data onto those time courses, yielding subject-specific spatial maps. The time courses and maps then support group-level tests relating components to tasks, behavior, or group status.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

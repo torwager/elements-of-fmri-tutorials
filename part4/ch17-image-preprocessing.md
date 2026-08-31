@@ -250,3 +250,12 @@ Open the full Python lab notebook [→](./labs/ch17-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Your design alternates 40-s task and 40-s rest blocks. What happens if you apply SPM's default 128-s high-pass filter, and why?
 **Answer:** The task's fundamental frequency (1/80 s = 0.0125 Hz) is close to the filter's 0.0078 Hz cutoff, and designs with alternating blocks of roughly 32 s or longer have substantial power at or below the cutoff — so the filter removes much of the true task-related signal, sharply reducing power (potentially to near zero for longer blocks) regardless of the true effect size.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

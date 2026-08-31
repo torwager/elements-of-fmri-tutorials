@@ -138,3 +138,12 @@ flowchart LR
 :::{dropdown} **Q8.** What did the two Neurosynth-based examples and the Neurologic Pain Signature demonstrate about the robustness of fMRI brain–mind mappings?
 **Answer:** A Naive Bayes classifier built from meta-analytic maps classified working memory, emotion, and pain in 281 independent participants with 65–95% sensitivity and 80–98% specificity (chance ~38%). The Neurosynth working-memory pattern — derived from entirely different studies, populations, and scanners — distinguished task from rest in 100% and harder from easier tasks in 95% of individuals (d = 1.97 and 1.09). The NPS responded to painful stimulation in 95% of 603 participants across 20 international cohorts, with effect sizes about 10 times larger than typical trait–brain correlations — showing that fMRI mappings can be robust, reproducible, sensitive, and specific.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

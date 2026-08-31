@@ -39,7 +39,11 @@ Python labs run **directly in your browser** via WebAssembly (JupyterLite/Pyodid
 2. Wait for the kernel to start — the **first start takes ~30–60 seconds** while Python downloads into your browser (it's cached afterward, so later starts are fast).
 3. **Run cells top to bottom, starting with the first code cell.** The first cell sets up imports (and for some labs installs `nilearn` via `%pip`). Later cells depend on earlier ones — if you jump ahead you'll get `NameError`s. If things get confused, use the restart button and run again from the top.
 
-Once the kernel is live, each cell gets its own ▶ run button, you can edit any cell and re-run it, and there's a run-all control in the notebook toolbar.
+Once the kernel is live, each cell gets its own ▶ run button and a **run-all** control appears in the notebook toolbar.
+
+**Cells are fully editable.** Once the kernel is running, click into any code cell, change parameters or code, and re-run it — this is the best way to build intuition (What happens with a smaller sample? A different threshold?). Your edits live only in your browser tab; reloading the page restores the original.
+
+**If a cell hangs or you want to start over:** there is no per-cell stop button, but the **↺ restart control** in the notebook toolbar interrupts everything and gives you a fresh kernel — then run again from the top. Note that the *first* run of a lab can look "hung" for up to a minute while Python and packages download into your browser; the page may even be briefly unresponsive. That's normal — it's cached and fast afterward.
 
 :::{tip}
 Everything in the labs is simulated or tiny data — cells run in seconds, and nothing leaves your machine.
@@ -100,3 +104,8 @@ Quiz questions hide their answers until you click:
 :::
 
 Try it! Click the question above.
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::

@@ -222,3 +222,12 @@ Open the full Python lab notebook [→](./labs/ch13-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** What information do the center and the periphery of k-space carry, and what operation converts fully sampled k-space into an image?
 **Answer:** Each k-space point encodes a 2D sinusoid across the whole image; points near the center encode low spatial frequencies (coarse structure and most of the image's energy), while points far from the center encode high spatial frequencies (fine detail and edges), with orientation given by the polar angle. An inverse Fourier transform (in practice the inverse FFT) reconstructs the image.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

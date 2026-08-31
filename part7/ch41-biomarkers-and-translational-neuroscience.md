@@ -240,3 +240,12 @@ Open the full Python lab notebook [→](./labs/ch41-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Why did the head-motion (ADHD) and eye-blink (autism) classifiers succeed in competitions yet fail as biomarkers?
 **Answer:** They predicted the outcome via confounded, non-neural signals rather than disease-relevant brain information. Without knowing why a model works, we cannot know when it will fail or what construct it measures — so accuracy alone, without interpretability and validation, is insufficient for a biomarker.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

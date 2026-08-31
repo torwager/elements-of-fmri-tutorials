@@ -238,3 +238,12 @@ Open the full Python lab notebook [→](./labs/ch37-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** What distinguishes MVPA from predictive modeling, and where do encoding–decoding models fit in the space of approaches?
 **Answer:** MVPA is a family of multivoxel techniques agnostic to purpose — it can be used for prediction or to characterize local similarity structure — whereas predictive modeling specifically identifies and tests the brain basis of an outcome; predictive models can also be built from network edges, graph metrics, or components, not just voxel patterns. Encoding–decoding models fit a separate univariate model per voxel (encoding) and then aggregate voxel-wise predictions into one decoded outcome, so they sit in the univariate-brain column of the approach space.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

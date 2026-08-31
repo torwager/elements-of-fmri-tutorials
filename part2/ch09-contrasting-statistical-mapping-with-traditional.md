@@ -117,3 +117,12 @@ flowchart TD
 :::{dropdown} **Q8.** In the chest X-ray triage study, what did the predictive model contribute, and what remained the human expert's job?
 **Answer:** The model, trained on 470,388 chest X-rays, flagged potentially critical films (61% positive predictive value, 95% negative predictive value) so they could be prioritized — cutting the average time to expert review of critical findings from 11.2 to 2.7 days. Radiologists still made the diagnoses; the model improved how quickly the right images reached them.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

@@ -218,3 +218,12 @@ Open the full Python lab notebook [→](./labs/ch39-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** How can a classifier's performance be expressed as a continuous effect size, and why would you want to?
 **Answer:** Compute each observation's continuous model score (e.g., distance from the SVM hyperplane) and calculate Cohen's $d$ between classes, or use $d'$/AUC, which are directly related ($AUC = \Phi(d'/\sqrt{2})$). Continuous effect sizes avoid the information loss of binary thresholding, are more stable in small samples, and allow benchmarking against familiar standards across models and studies.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

@@ -157,3 +157,12 @@ Both snippets illustrate the same idea: a brain image is just structured data �
 :::{dropdown} **Q8.** Give two examples of early inferential errors in fMRI research described in the chapter.
 **Answer:** Examples include: assuming observed activity during a task is that task's "neural basis" or mechanism; interpreting amygdala activity as unconscious threat; concluding social rejection "hurts like physical pain" because it activates "pain areas"; treating a brain–behavior correlation as showing the region is the basis of the behavior; and taking very strong observed correlations (e.g., r = 0.9) as practically meaningful without accounting for statistical bias.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

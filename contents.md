@@ -83,3 +83,8 @@ Seven parts, forty-two chapters. Every chapter has a companion tutorial page her
 | 40 | Applying Predictive Models to fMRI Data | [Open →](./part7/ch40-applying-predictive-models-to-fmri.md) |
 | 41 | Biomarkers and Translational Neuroscience | [Open →](./part7/ch41-biomarkers-and-translational-neuroscience.md) |
 | 42 | AI and Neuroscience | [Open →](./part7/ch42-ai-and-neuroscience.md) |
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::

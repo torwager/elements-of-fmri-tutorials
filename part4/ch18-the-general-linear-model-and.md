@@ -236,3 +236,12 @@ Open the full Python lab notebook [→](./labs/ch18-lab-python.ipynb) or downloa
 :::{dropdown} **Q7.** What is the finite impulse response (FIR) basis set, and what is its main advantage and main risk?
 **Answer:** The FIR model includes one free parameter for each time point following stimulus onset, so the estimated betas trace out the average response shape with minimal assumptions. Its advantage is flexibility to capture HRF variation; its risk is overfitting — modeling noise as well as signal — which produces noisier, less generalizable estimates.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

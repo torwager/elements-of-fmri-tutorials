@@ -274,3 +274,12 @@ Open the full Python lab notebook [→](./labs/ch27-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** How does a genetic algorithm search for optimized fMRI designs, and why does it outperform purely random search?
 **Answer:** A GA generates a population of candidate event sequences, scores each on a weighted fitness function (contrast efficiency, HRF estimation, counterbalancing, frequency targets), and recombines pieces of the best designs into "children" across generations, with stochastic variation. Recombination produces nonlinear jumps in the fitness landscape that escape locally good but globally suboptimal solutions, whereas random search cannot cover the astronomically large design space.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

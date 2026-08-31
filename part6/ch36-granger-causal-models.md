@@ -234,3 +234,12 @@ Open the full Python lab notebook [→](./labs/ch36-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Your experiment alternates 30-second rest and task blocks. Why is fitting a single VAR across the whole run problematic, and what should you do instead?
 **Answer:** The series is non-stationary — its mean and covariance differ between states — violating the VAR assumption. You should either partition the data into stationary segments (e.g., analyze task and rest separately) or use a model that explicitly accounts for transitions between stationary periods.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

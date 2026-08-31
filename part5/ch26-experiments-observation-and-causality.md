@@ -226,3 +226,12 @@ Open the full Python lab notebook [→](./labs/ch26-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** In a typical task fMRI study, which causal link is experimentally secured and which is not — and why does this make the brain a "mediator"?
 **Answer:** Randomizing the task secures the task → brain link: activation differences can be attributed to the manipulation. But brain activity and behavior are both merely observed, so the brain → behavior link is correlational. The brain sits between the randomized cause and the behavioral outcome — a mediator (X → M → Y) whose a-path is experimental but whose b-path requires converging evidence (e.g., stimulation, lesions, multi-method triangulation).
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

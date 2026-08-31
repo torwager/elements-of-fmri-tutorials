@@ -239,3 +239,12 @@ Open the full Python lab notebook [→](./labs/ch38-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** How do PLS and CCA extend the basic decoding framework, and how do they differ from each other?
 **Answer:** Both find paired latent components linking a set of brain features $X$ to a set of multiple outcome variables $Y$, allowing several outcomes to be decoded simultaneously without pre-specifying how they combine. PLS maximizes the covariance between component scores, making it more stable and resilient to collinearity; CCA maximizes their correlation, which is more prone to instability with many features.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

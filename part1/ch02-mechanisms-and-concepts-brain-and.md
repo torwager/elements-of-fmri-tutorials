@@ -161,3 +161,12 @@ flowchart LR
 :::{dropdown} **Q8.** How does the chapter resolve the apparent dichotomy between "knowledge for its own sake" and practical application?
 **Answer:** It argues the dichotomy is false: understanding a system enables effective intervention, and attempting to build practical technologies tests our understanding. The two goals represent different points on a continuum of *when* knowledge translates into practical gains. Because translation often outlasts commercial investment horizons, the long game requires public funding given without expectation of short-term return.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

@@ -225,3 +225,12 @@ Open the full Python lab notebook [→](./labs/ch21-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** What does robust (IRLS) regression do, and what is the cost–benefit tradeoff relative to OLS?
 **Answer:** It iteratively reweights observations, down-weighting points that lie far from the fit of the central mass of the data, so outliers cannot dominate the estimate. If no true outliers exist it costs a modest amount of power; when outliers are present it protects against spurious or masked effects and can substantially improve power in group fMRI analyses.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

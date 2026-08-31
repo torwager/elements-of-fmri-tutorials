@@ -231,3 +231,12 @@ Open the full Python lab notebook [→](./labs/ch30-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Why is Granger causality described as "a bit of a misnomer," and how does it differ from SEM and DCM?
 **Answer:** Granger causality quantifies whether past values of one region improve prediction of another — temporal precedence — without specifying a structural model, but temporal precedence does not establish causality in the classical sense. SEM explains the covariance structure of observed signals through pre-specified directed paths, and DCM models latent neuronal dynamics linked to BOLD via neurovascular coupling, comparing candidate models with Bayesian model selection.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

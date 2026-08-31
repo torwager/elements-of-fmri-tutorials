@@ -205,3 +205,12 @@ flowchart LR
 :::{dropdown} **Q8.** Beyond the physics, what community factors helped fMRI become the dominant functional imaging technique?
 **Answer:** The major fMRI analysis packages (SPM, FSL, AFNI) were released as free, open-source software, and the field embraced large-scale data sharing — repositories with 1,000+ participants. Combined with the wide availability of MRI scanners and lower cost (~1/3 of PET), this drew a broad, multidisciplinary community of researchers, including statisticians and computer scientists.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

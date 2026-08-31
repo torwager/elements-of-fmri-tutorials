@@ -231,3 +231,12 @@ Open the full Python lab notebook [→](./labs/ch34-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** What is a PPI analysis, and what three regressors define it at the first level?
 **Answer:** Psychophysiological interaction analysis is a time-series moderation test of whether connectivity with a seed region depends on task context. The first-level GLM includes the seed region's time course (the physiological variable), the task/psychological variable, and their interaction; the interaction term's parameter map is taken to the group level, and a significant interaction indicates task-modulated connectivity.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

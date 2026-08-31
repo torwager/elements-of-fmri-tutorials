@@ -109,3 +109,12 @@ flowchart TD
 :::{dropdown} **Q8.** What is a mock scanner, and why do researchers use one with children and patient populations?
 **Answer:** A mock scanner is a non-magnetic replica of the MR environment, including an enclosed bore and simulated scanner noise. Familiarization sessions in it acclimate participants to the novelty, noise, and confinement — reducing anxiety and claustrophobic reactions — and provide training in lying still, which is especially valuable for children and patients, who tend to move more and are more prone to anxiety in the scanner.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

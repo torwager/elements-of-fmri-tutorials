@@ -131,3 +131,12 @@ flowchart TD
 :::{dropdown} **Q8.** What precedent does DNA evidence set for how neuroimaging biomarkers might become accepted in court?
 **Answer:** DNA testing became a courtroom gold standard only after a rigorous process of establishing detailed norms and regulations, quality-control procedures for validating each sample, and accreditation of testing laboratories. Neuroimaging would need the analogous machinery — standardized acquisition and analysis, per-scan quality validation, and accredited labs — which is daunting given the diversity and complexity of imaging pipelines.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

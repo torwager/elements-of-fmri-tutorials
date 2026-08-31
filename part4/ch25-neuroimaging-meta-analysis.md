@@ -236,3 +236,12 @@ Open the full Python lab notebook [→](./labs/ch25-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** In a funnel plot, what pattern suggests publication bias, and what is the consequence for the pooled effect?
 **Answer:** Publication bias produces asymmetry: small, imprecise studies appear only when their effects are large enough to be significant, so the lower part of the funnel is missing on the null side. The surviving studies overestimate the effect, inflating the pooled estimate.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

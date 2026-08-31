@@ -233,3 +233,12 @@ Open the full Python lab notebook [→](./labs/ch24-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Even with a fixed pipeline specification, what did Bowring and colleagues show about software choice?
 **Answer:** Analyzing the same studies in AFNI, FSL, and SPM produced broadly similar results in strongly activated areas, but clear differences in the thresholded maps, with substantial variation in the non-extreme statistic values — showing that implementation, software package, and even operating system contribute to result variability.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

@@ -217,3 +217,12 @@ Open the full Python lab notebook [→](./labs/ch15-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** What is multiband (simultaneous multi-slice) imaging, and what tradeoff does it involve?
 **Answer:** Multiband/SMS excites and acquires several slices at once, using many receive coils and special encoding to unmix them. It can cut whole-brain TR from ~2 s to a few hundred milliseconds, reducing aliased physiological noise — but each image is of lower quality, with potential costs in CNR and BOLD sensitivity, and combining SMS with in-plane acceleration can compound sensitivity to head motion.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

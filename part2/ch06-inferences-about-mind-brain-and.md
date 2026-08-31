@@ -206,3 +206,12 @@ Open the full Python lab notebook [→](./labs/ch06-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Name the "pure insertion" assumption and give an example of how it can fail.
 **Answer:** Pure insertion assumes that adding a task component changes only the process of interest, so background processes can be subtracted off in a [Task − Control] comparison. It fails whenever adding the new component alters the other computations being performed — for example, if adding a memory demand changes how a region processes the visual stimuli present in both conditions.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

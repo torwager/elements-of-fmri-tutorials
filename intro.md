@@ -44,3 +44,8 @@ Start with [How to use this site](./how-to-use.md) and the [software setup guide
 ---
 
 *These tutorials are free to use for teaching and learning. If you use them in a course, we'd love to hear about it.*
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::

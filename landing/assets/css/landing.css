@@ -216,3 +216,10 @@ h3 { font-size: clamp(1.3rem, 2vw, 1.6rem); }
 .site-footer li { margin: .3rem 0; }
 ::selection { background: var(--amber-soft); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* Book strip with cover */
+.bookstrip-grid { display: grid; gap: 2.5rem; grid-template-columns: 1fr; align-items: center; }
+@media (min-width: 860px) { .bookstrip-grid { grid-template-columns: 220px 1fr; gap: 3.5rem; } }
+.book-cover { display: block; max-width: 220px; margin: 0 auto; }
+.book-cover img { border-radius: 6px; box-shadow: 0 18px 44px -16px rgba(0,0,0,.6); transition: transform .4s var(--ease); }
+.book-cover:hover img { transform: translateY(-5px) rotate(-1deg); }

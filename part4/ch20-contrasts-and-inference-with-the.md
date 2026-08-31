@@ -244,3 +244,12 @@ Open the full Python lab notebook [→](./labs/ch20-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Why is a significant F-test insufficient to claim that a region shows both of two effects, and what is the valid test?
 **Answer:** The F-test is a logical OR: it is significant if *any* combination of the tested effects is nonzero, so one strong effect alone can drive it. A claim that both effects are present (a conjunction, logical AND) is validly tested with the minimum-statistic rule: every component contrast must individually exceed the significance threshold.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

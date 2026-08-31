@@ -233,3 +233,12 @@ Open the full Python lab notebook [→](./labs/ch19-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** What happens to first-level inference if positive error autocorrelation is ignored, and what is the standard fix?
 **Answer:** Standard errors are underestimated, t-statistics are inflated, and false positive rates exceed the nominal level. The fix is to model the error covariance with a time-series model (commonly AR(p) or ARMA(1,1)), prewhiten the data and design with $V^{-1/2}$, estimate by generalized least squares iterating between $\beta$ and $V$, and adjust the error degrees of freedom accordingly.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

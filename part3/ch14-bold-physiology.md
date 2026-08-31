@@ -211,3 +211,12 @@ Open the full Python lab notebook [→](./labs/ch14-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Why are within-person BOLD–behavior relationships generally more robust than between-person correlations?
 **Answer:** Between-person comparisons are contaminated by stable non-neural differences — hematocrit, caffeine and other drug use, hypertension and vascular health, head motion — that alter BOLD amplitude independent of psychology. Within-person designs hold these factors largely constant, comparing conditions in the same brain and vasculature, which yields larger, more reliable effects.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

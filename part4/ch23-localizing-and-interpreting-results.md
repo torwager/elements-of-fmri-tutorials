@@ -198,3 +198,12 @@ Open the full Python lab notebook [→](./labs/ch23-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Why can't fMRI activations be definitively localized to small nuclei like the habenula or locus coeruleus in standard 3T studies, and what three approaches help?
 **Answer:** Physiological noise artifacts, differential distortion between functional and anatomical images, and the intrinsic blurriness of BOLD all exceed the size of such structures. Localization is aided by (a) high-field imaging (7T or above), (b) inter-subject registration targeted to specific structures such as the brainstem or cerebellum, and (c) localizing on high-resolution functional images rather than anatomical ones. Interpret small nuclei cautiously and avoid strong claims at standard field strength.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

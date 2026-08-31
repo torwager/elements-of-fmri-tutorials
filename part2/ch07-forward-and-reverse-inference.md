@@ -190,3 +190,12 @@ Open the full Python lab notebook [→](./labs/ch07-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Name two developments that make open-ended tests of specificity across many mental states feasible.
 **Answer:** Large meta-analytic databases aggregating thousands of studies (e.g., Neurosynth), large multi-task datasets, and naturalistic experiments exposing participants to thousands of images and concepts — any two of these.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

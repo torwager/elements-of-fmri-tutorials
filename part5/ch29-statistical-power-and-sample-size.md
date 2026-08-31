@@ -219,3 +219,12 @@ Open the full Python lab notebook [→](./labs/ch29-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** With a fixed total scanning budget, when should you favor more participants versus more scan time per participant?
 **Answer:** The balance depends on the ratio of between-subject to within-subject variance. When between-subject variance dominates (typical for group analyses of cognitive and affective tasks), add participants — with at least ~30 minutes of functional time each. When within-subject variance dominates, or for predicting individual-level outcomes, longer or repeated scans per person become more valuable. Empirically, one working memory study found ~40 hours best allocated as ~1 hour each for ~38–40 participants.
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)

@@ -210,3 +210,12 @@ Open the full Python lab notebook [→](./labs/ch16-lab-python.ipynb) or downloa
 :::{dropdown} **Q8.** Why does autocorrelated noise inflate false positive rates in a naive OLS analysis?
 **Answer:** OLS standard errors assume independent errors. Positively autocorrelated noise contains fewer independent observations than the number of time points, so the true variability of the estimates is larger than OLS computes. The underestimated standard errors inflate t-statistics, making P values too liberal — the remedy is generalized least squares with prewhitening (Chapters 18–19).
 :::
+
+:::{div}
+:class: book-tile
+📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+:::
+
+---
+
+[⌂ Back to home](https://torwager.github.io/elements-of-fmri-tutorials/) · [Table of contents](../contents.md) · [How to use this site](../how-to-use.md)
