@@ -14,6 +14,18 @@ subject: "Part 7: Predictive Modeling"
 - Basic criteria for a good model: falsifiable predictions, prospective testability, simplicity, and interpretability
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch40-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch40-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch40_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch40-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch40-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch40_lab_matlab.m)
+:::
+
 ## Overview
 
 Previous chapters covered the algorithms used in predictive modeling (Chapter 38) and how to train and test models without fooling yourself (Chapter 39). This chapter steps back to the design choices that shape what a predictive model *is* and what it can be used for. There are many: which outcome to predict and which sources of variation to model, which type of brain data to use, whether to fit one model per person or one model for the population, how much of the brain to include, and how to construct and embed features. Prediction error is usually the first criterion for judging a model, but it is not the only one — sensitivity and specificity, reproducibility, generalizability to new populations and tasks, robustness to noise, and interpretability all matter, especially when models are meant to become reusable measures.
@@ -64,6 +76,10 @@ This generalizes the region-of-interest average: an ROI mask of 1's and 0's yiel
 In this tutorial you will apply a *fixed*, pretrained pattern to new condition images and quantify its performance. The MATLAB tabs use CANlab tools and real signatures; the Python tabs mirror the logic with a simulated signature so everything runs in your browser.
 
 **Step 1 — Compute pattern responses on new images.** The pattern response is a dot product between the signature weights and each image; correlation and cosine similarity are scale-free alternatives.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch40-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

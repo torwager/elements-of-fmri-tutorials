@@ -14,6 +14,18 @@ subject: "Part 7: Predictive Modeling"
 - Why cross-validation must contain *every* data-dependent choice (including feature selection), and how leakage produces optimistic, invalid accuracy estimates
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch38-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch38-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch38_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch38-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch38-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch38_lab_matlab.m)
+:::
+
 ## Overview
 
 Most predictive brain models draw on machine learning, a discipline at the intersection of computer science and statistics. Machine learning is a large umbrella of techniques. *Supervised* learning algorithms optimize prediction of known outcomes from labeled data — regression when the outcome is continuous, classification when it is categorical. *Unsupervised* algorithms instead group unlabeled data into clusters or coherent components (clustering, PCA, ICA; see Chapter 31). In neuroimaging, the observations are often participants or trials, the **features** ($x$) are voxels, connections, or graph metrics, and the **outcome** ($y$) might be patient status, stimulus category, or a continuous symptom score.
@@ -62,6 +74,10 @@ Beyond these workhorses, **decision trees** segment feature space into regions w
 These exercises make the chapter's two central lessons concrete with simulated data: (1) test error is U-shaped in model complexity, and (2) any data-dependent choice made *outside* cross-validation poisons the estimate of accuracy. The full labs extend both, adding lasso vs. ridge coefficient paths and ROC curves.
 
 **Step 1 — Overfitting and the U-shaped test error curve.** We fit polynomials of increasing degree to noisy data from a smooth true function. Training error always falls; test error falls, bottoms out near the true complexity, then rises.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch38-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

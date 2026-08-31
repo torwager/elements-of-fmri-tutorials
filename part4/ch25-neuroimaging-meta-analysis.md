@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - How Monte Carlo randomization provides family-wise error control for meta-analytic maps, and what software (GingerALE, Neurosynth, CANlab MKDA tools) implements these methods
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch25-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch25-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch25_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch25-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch25-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch25_lab_matlab.m)
+:::
+
 ## Overview
 
 Thousands of neuroimaging papers are now published every year, and at the same time there is growing recognition that results from many small-scale studies are unreliable. False positive rates in neuroimaging are likely higher than in many other fields — a compounding of small samples, massive numbers of tests, analytical variability, and (historically) improper corrections for multiple comparisons; earlier work estimated them at somewhere between 10–40%. Meta-analysis is the primary tool for integrating this literature: it identifies findings that are consistent across labs, scanners, and task variants, and it evaluates how much results vary between studies and why. Across the sciences, cumulative reviews of evidence — assessing overall effect size and generalizability — are often a more useful path to reliable knowledge than a focus on replicating individual studies, and in neuroimaging, meta-analysis is the gold standard way to do this.
@@ -55,6 +67,10 @@ User-friendly software makes all of this accessible: **GingerALE** (BrainMap) fo
 Real coordinate-based meta-analysis needs a curated study database, but every core idea can be seen clearly in simulation — where we know the true effect and can watch pooling, heterogeneity, publication bias, and kernel density estimation do their work. Here are two key steps; the full labs build the complete arc, from simulating a literature through an FWER-thresholded MKDA-style map.
 
 **Step 1 — Fixed- vs random-effects pooling.** We simulate a literature of $k = 25$ studies whose true effects vary around $\mu = 0.3$ (between-study SD $\tau = 0.2$), then pool with both models. The DerSimonian–Laird estimate of $\tau^2$ comes straight from Cochran's $Q$.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch25-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

@@ -14,6 +14,18 @@ subject: "Part 3: MRI Environment and MRI Signal"
 - Why radiological versus neurological display conventions matter, and how left–right "flipping errors" arise
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch12-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part3/labs/ch12-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part3/labs/ch12_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch12-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part3/labs/ch12-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part3/labs/ch12_lab_matlab.m)
+:::
+
 ## Overview
 
 This chapter begins our journey into fMRI data analysis by establishing the vocabulary you will use for everything that follows. MR images are acquired within a **field of view (FOV)** — the volume of space in which data are collected, with the brain usually centered inside it. In echo planar imaging (EPI), data are acquired as a stack of two-dimensional **slices**, each sampled on a grid whose number of elements is the **matrix size** (e.g., 64 × 64). The FOV divided by the matrix size gives the **in-plane resolution** (e.g., 192 mm / 64 = 3 mm), and together with the **slice thickness** this determines the size of each **voxel** — a volumetric pixel, the elementary unit of an MR image. Larger voxels collect more signal relative to noise; smaller voxels resolve finer spatial detail. Many modern sequences acquire 3 × 3 × 3 mm *isotropic* voxels (equal size in all dimensions), close to an optimal balance at 3T.
@@ -54,6 +66,10 @@ Finally, images live in files with particular formats and conventions. Scanners 
 In this tutorial you will build (Python) or load (MATLAB) a small 4-D dataset and connect the chapter's vocabulary to real data structures: dimensions, voxel size, the affine voxel-to-world mapping, one voxel's time series, and a slice montage.
 
 **Step 1 — Create or load a 4-D dataset and inspect its geometry.** The header's dimensions, zooms (voxel sizes and TR), and affine matrix encode everything about where the data sit in space and time.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch12-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

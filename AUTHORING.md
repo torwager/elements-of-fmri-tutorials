@@ -103,6 +103,16 @@ Order from easier to harder. Cover the chapter's main points.
   `onsets2fmridesign`, …); assume CanlabCore + SPM on the path.
 - Keep runtime under a few minutes on small data (MATLAB Online free tier).
 
+## Run-affordance elements (added site-wide 2026-08-31; include in any new chapter)
+
+- Code chapter pages get, right before `## Overview`: a `🖥️ Ways to run this chapter's code`
+  seealso-admonition (in-browser lab + power-icon instructions, Colab/MATLAB-Online badges,
+  static-preview disclaimer) AND a `:::{div}` with `:class: run-quick` one-liner
+  (floating bottom-right card via custom.css).
+- A `{note}` goes immediately before the first tab-set: tabs are static previews; link to the lab.
+- Lab notebooks: a markdown banner cell before the first code cell — interactive, ⏻ power icon,
+  ~30–60 s first start, run top-to-bottom starting with the setup cell.
+
 ## Voice and attribution
 
 - Figures from the book: caption ends with "*(Figure N.M from the book.)*"

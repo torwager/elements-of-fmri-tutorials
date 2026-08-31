@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - How permutation tests use the distribution of the maximum statistic to control FWER with minimal assumptions
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch22-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch22-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch22_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch22-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch22-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch22_lab_matlab.m)
+:::
+
 ## Overview
 
 A standard fMRI analysis produces a statistical map: a t (or z, or F) value at every voxel, testing an effect of interest at that location. A standard 2 × 2 × 2 mm brain mask contains roughly 240,000 voxels — which means roughly 240,000 simultaneous hypothesis tests. If we simply declared every voxel with $p < 0.05$ "active," we would expect about 5% of truly null voxels to cross that threshold by chance: on the order of 12,000 false positive voxels in a single map. The choice of threshold therefore has an enormous impact on which voxels are deemed active, as Figure 22.1 shows, and correcting for multiplicity is essential for meaningful inference.
@@ -63,6 +75,10 @@ The multiple comparisons problem is easy to experience for yourself with simulat
 ### 1. Manufacture false positives: 10,000 null tests
 
 Simulate a "brain" of 10,000 voxels in which *nothing is truly active* — 30 subjects of pure noise — and run a one-sample t-test at every voxel.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch22-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

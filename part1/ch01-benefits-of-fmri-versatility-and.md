@@ -64,6 +64,10 @@ The field earned its maturity the hard way. In fMRI's heady early years, observi
 
 This book's tutorials come in two flavors: MATLAB, using the CANlab object-oriented tools (built on SPM), and Python, using the nilearn/numpy scientific stack. Before diving into later chapters' full labs, here is the "hello, world" of each ecosystem — loading a brain image and displaying it. Installation instructions are on the [setup page](../setup.md); you can also simply read the code for now and run it later.
 
+:::{note}
+The tabs below are **static previews** with copy buttons — paste the code into your own MATLAB or Python session to run it. See the [software setup guide](../setup.md).
+:::
+
 ::::{tab-set}
 :::{tab-item} MATLAB
 :sync: matlab

@@ -14,6 +14,18 @@ subject: "Part 7: Predictive Modeling"
 - How base rates govern positive predictive value, and why even a highly accurate test can be misleading for rare conditions
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch41-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch41-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch41_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch41-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch41-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch41_lab_matlab.m)
+:::
+
 ## Overview
 
 Translational neuroimaging aims to map health-related signs, symptoms, and behaviors onto measures of brain structure and function — to understand the neurophysiological basis of clinical phenomena, to track or predict clinical outcomes, and to identify mechanistic brain targets for treatment. Biomarkers have transformed fields like oncology and cardiology, where they serve as intermediate endpoints and stratification tools in clinical trials. But most brain-related disorders — depression, anxiety, PTSD, chronic pain, substance use disorders — are still assessed mainly by self-report and clinical impression. Subjective reports are indispensable, yet they are poor indicators of underlying biological causes, limited by self-awareness and the ability to communicate, and hardest to obtain from the most vulnerable patients. The lack of objective biomarkers is widely recognized across NIH institutes as a critical gap, and clinical trials targeting self-reported outcomes have failed at increasing rates.
@@ -71,6 +83,10 @@ can be startlingly low for rare conditions — a test with 98% sensitivity and 9
 In this tutorial you will build the quantitative bridges between effect sizes and clinical performance metrics, then confront a realistic biomarker with base rates. The full labs add simulations that verify each formula empirically and demonstrate the winner's curse.
 
 **Step 1 — Effect size to accuracy, AUC, and NNT.** Under a normal, equal-variance model, all of these metrics are functions of $d$ alone (plus the control event rate, for NNT). We define the converters and plot accuracy as a function of $d$.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch41-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

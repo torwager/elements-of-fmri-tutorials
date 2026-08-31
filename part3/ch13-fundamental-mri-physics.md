@@ -14,6 +14,18 @@ subject: "Part 3: MRI Environment and MRI Signal"
 - How to simulate relaxation curves, tissue contrast, and k-space filtering in a few lines of code
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch13-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part3/labs/ch13-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part3/labs/ch13_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch13-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part3/labs/ch13-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part3/labs/ch13_lab_matlab.m)
+:::
+
 ## Overview
 
 MR scanners are remarkably versatile: the same machine can produce images of gross anatomy, white-matter pathways, blood flow, and moment-to-moment brain function. All of these rest on the same physical principles, and knowing a little of the physics goes a long way toward understanding what different image types actually measure. The story starts with the hydrogen nucleus — a single proton, chosen because of its favorable magnetic properties and its abundance in water, which makes up about 70% of the brain's mass. Each proton behaves like a spinning charged sphere, generating a small magnetic moment along its axis; in MR physics these are called *spins*. A scanner never measures one spin — it measures the **net magnetization** of an enormous ensemble (roughly $3 \times 10^{22}$ per gram of water), a vector with a *longitudinal* component parallel to the scanner's main field $B_0$ and a *transverse* component perpendicular to it.
@@ -59,6 +71,10 @@ Finally, **measuring brain function** means acquiring T2*-weighted volumes repea
 The physics above reduces to a handful of equations you can explore directly. In this tutorial you will plot T1 recovery and T2 decay for different tissues, and then take an image apart in k-space. The full labs also build a digital head phantom and use the signal equation $S = \rho \left(1 - e^{-TR/T_1}\right) e^{-TE/T_2}$ to generate PD-, T1-, and T2-weighted images from the same "brain."
 
 **Step 1 — Plot T1 recovery curves for gray matter, white matter, and CSF.** Each tissue recovers at its own rate; at $t = T_1$, each curve crosses 63% of full recovery.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch13-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

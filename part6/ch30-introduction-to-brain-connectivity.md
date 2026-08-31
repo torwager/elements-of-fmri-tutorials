@@ -14,6 +14,18 @@ subject: "Part 6: Brain Connectivity"
 - Why effective connectivity buys stronger (causal) claims at the price of strong, often untestable assumptions
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch30-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch30-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch30_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch30-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch30-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch30_lab_matlab.m)
+:::
+
 ## Overview
 
 Most of the methods in earlier parts of this book produce univariate brain maps: at each voxel, we ask whether activity differs across task conditions or people. Those maps speak to *functional specialization* — what local neuronal populations encode. Brain connectivity addresses a complementary question about *functional integration*: how regions are organized into pathways and networks, and how they work together. This shift became dominant with the rise of resting-state fMRI (rs-fMRI), where there is no task and thus no predictors for a GLM — the relationships among regions themselves become the object of study. The units of analysis multiply accordingly: individual connections between nodes (voxels, surface vertices, or ROIs/"parcels"), pathways, components or "modes" with common sources, whole networks, and higher-order network characteristics can all be related to stimuli, behavior, and clinical status. This power comes with a cost: the number of possible connections grows with $p^2$ for $p$ nodes, so connectivity analyses can dramatically increase the number of tests performed, and handling this multiplicity is a central concern.
@@ -73,6 +85,10 @@ Partial correlations become unstable as the number of controlled variables grows
 In this tutorial you will build the core objects of functional connectivity analysis from simulated data, where the ground truth is known: a set of ROI time series with community (network) structure, a parcellated correlation matrix, and a demonstration that a shared nuisance signal inflates connectivity — and that regressing it out repairs the damage.
 
 **Step 1 — Simulate networked ROI time series and compute the FC matrix.** Twelve ROIs belong to three networks of four; ROIs within a network share a slow latent signal.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch30-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

@@ -14,6 +14,18 @@ subject: "Part 5: Experimental Design"
 - How motion and vigilance confounds can masquerade as connectivity differences, and why careful denoising and wakefulness monitoring matter
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch28-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part5/labs/ch28-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part5/labs/ch28_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch28-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part5/labs/ch28-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part5/labs/ch28_lab_matlab.m)
+:::
+
 ## Overview
 
 For its first decade, fMRI research consisted almost entirely of task experiments: present stimuli, collect responses, and model evoked activation. Two alternative paradigms have since become central to the field. In **resting-state fMRI**, participants simply lie in the scanner — usually fixating a cross — while spontaneous fluctuations in the BOLD signal are recorded. In **naturalistic designs**, participants watch movies, listen to stories, or play games, and the analysis leverages the rich, temporally extended structure of the stimulus. Both give up tight experimental control in exchange for something valuable: rest offers scalability and a window on the brain's intrinsic organization; naturalistic viewing offers ecological validity and engagement of processes that isolated trials cannot elicit.
@@ -53,6 +65,10 @@ Naturalistic designs occupy a middle ground. A movie or story is not experimenta
 In this tutorial you will simulate the two paradigms and analyze them the way the field does: compute a functional connectivity matrix from resting multi-ROI time series, then use a shared "movie" stimulus to compute inter-subject correlation. The full labs add the cautionary tale: how motion spikes and vigilance drift inflate connectivity.
 
 **Step 1 — Simulate resting ROI time series and compute functional connectivity.** We build eight ROIs organized into two networks: each ROI's signal mixes a slow network-level fluctuation with ROI-specific noise. The correlation matrix recovers the block structure — the essence of every resting-state connectivity analysis.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch28-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

@@ -14,6 +14,18 @@ subject: "Part 2: Brain Mapping"
 - How meta-analytic databases (e.g., Neurosynth) and multivariate predictive models make valid reverse inference possible
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch07-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part2/labs/ch07-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part2/labs/ch07_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch07-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part2/labs/ch07-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part2/labs/ch07_lab_matlab.m)
+:::
+
 ## Overview
 
 Brain mapping is well suited to one kind of question and poorly suited to another. When we induce a psychological state — pain, fear, punishment motivation — and ask which regions respond, we are making a **forward inference**: we learn about the probability of brain activity given a psychological state, written $P(\text{Brain} \mid \text{Psy})$. In the language of diagnostic testing, this is the **sensitivity** (or hit rate) of the brain measure. Standard brain maps are precisely this: maps of forward inference. The stronger the statistical effect, the more likely a region "lights up" when the state is present.
@@ -50,6 +62,10 @@ Valid reverse inference is possible — it just requires evaluating specificity 
 In this tutorial you will implement Bayes' rule as a reverse-inference calculator, reproduce the chapter's caudate example, and see quantitatively how selective a region must be — and how common a mental state must be — before its activation supports a confident reverse inference. The full labs extend this to a simulated likelihood-ratio "reverse inference map" in the spirit of Neurosynth.
 
 **Step 1 — Compute PPV from sensitivity, specificity, and base rate.** We implement the PPV equation and evaluate the chapter's toy example: 90% sensitivity, 80% specificity, 10% base rate.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch07-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

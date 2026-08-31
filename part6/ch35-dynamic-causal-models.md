@@ -14,6 +14,18 @@ subject: "Part 6: Brain Connectivity"
 - The key caveats — model misspecification, omitted regions, and small networks — and current extensions (regression, stochastic, and spectral DCM)
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch35-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch35-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch35_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch35-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch35-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch35_lab_matlab.m)
+:::
+
 ## Overview
 
 Most effective connectivity methods, including the structural equation and path models of Chapter 34, operate directly on the observed BOLD time series. But BOLD observations are several layers removed from the neuronal activity we actually care about, which limits how far results can be interpreted at the neuronal level. Dynamic causal modeling takes a different approach: it treats the observed data as *outputs* of latent (unobserved) neuronal activity. A DCM for fMRI combines a **neurodynamic model** of interacting brain regions with a **hemodynamic model** describing how neuronal activity is transformed into blood flow and, ultimately, the measured BOLD signal. Together these form a *generative* (forward) model: given neuronal signals and parameters, it predicts what data we should observe.
@@ -70,6 +82,10 @@ DCM is powerful and accessible — it unifies intrinsic effective connectivity w
 DCM software performs full Bayesian inversion of the neuronal-plus-hemodynamic model (in SPM), but the *logic* fits in a few dozen lines. In this tutorial you will build the generative model yourself: simulate a two-region bilinear system in which a modulatory input strengthens the $z_1 \to z_2$ connection, pass the latent neuronal states through a hemodynamic (HRF) observation model, and then compare a "modulation" model against a "no-modulation" model with BIC as a simple stand-in for model evidence. No SPM or DCM toolbox is needed.
 
 **Step 1 — Simulate the latent neuronal dynamics.** We integrate $\dot{z} = (A + u_2 B^{(2)})z + Cu_1$ with the Euler method: input $u_1$ delivers brief driving pulses to region 1, and input $u_2$ (a block "context", like attention) modulates the $z_1 \to z_2$ connection.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch35-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

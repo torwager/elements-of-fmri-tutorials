@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - Practical limits on localization: underlay–overlay mismatch, registration precision, and why claims about small nuclei require special care
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch23-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch23-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch23_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch23-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch23-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch23_lab_matlab.m)
+:::
+
 ## Overview
 
 Group analyses (and sometimes single-subject analyses) yield thresholded maps of brain areas significantly related to a stimulus type, task, or behavior. Interpreting those maps — turning colored blobs into claims about the brain — is one of the most important and challenging parts of functional neuroimaging. Deriving meaning is a cumulative enterprise across many studies: what it means to activate a particular patch of dorsolateral prefrontal cortex (dlPFC) during emotion regulation depends on which other tasks engage that patch, which networks it participates in, and what lesions and stimulation there do. Localizing findings against established **brain atlases** is the key step that makes this integration possible.
@@ -42,6 +54,10 @@ Even with a good atlas, localization has limits. The anatomical underlay may not
 In this tutorial you will work with atlases and standard spaces from both ends: visualizing results in MNI template space, and extracting per-region averages for an ROI analysis. The full labs then demonstrate the circularity problem by simulation.
 
 **Step 1 — Load a standard template or atlas and visualize results in it.** In Python we load the bundled MNI152 template and overlay a simulated statistic map placed at a known MNI coordinate; in MATLAB we load the CANlab combined 2018 atlas (Glasser cortex + Pauli basal ganglia + Morel thalamus + Diedrichsen cerebellum and more) and display its parcels.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch23-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

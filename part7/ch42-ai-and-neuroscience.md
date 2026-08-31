@@ -14,6 +14,18 @@ subject: "Part 7: Predictive Modeling"
 - How representational similarity analysis (RSA) and encoding models test whether a network layer and a brain region represent stimuli with the same geometry — and where the brain–AI analogy breaks down
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch42-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch42-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch42_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch42-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch42-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch42_lab_matlab.m)
+:::
+
 ## Overview
 
 Artificial intelligence is a broad family of techniques for systems that perform complex, human-like tasks. It encompasses the machine learning of Chapters 37–40, but modern AI increasingly means something more specific: *deep learning* in multi-layer neural networks. Where classical ML models learn a single mapping from hand-designed features to an outcome, deep networks learn nonlinear, hierarchical *re-representations* of the raw data itself. Several properties follow. They can learn **end-to-end**, mapping raw input directly to output. They support **transfer learning** — representations learned on one task can be fine-tuned for another, which matters in neuroimaging where labeled data are scarce. And because they learn a representation of the joint distribution of features in a latent space, they can be **generative**, producing novel images or text. These ingredients combine in **foundation models**: very large networks trained by self-supervised learning on massive datasets (large language models like GPT are trained simply to predict the next word), which can then be adapted to many downstream tasks.
@@ -54,6 +66,10 @@ The analogy has limits, and the field's outstanding problems are instructive. Ba
 In this tutorial you will build, from scratch, the two computational ideas at the heart of this chapter: a **prediction-error signal** that behaves like phasic dopamine, and a **representational similarity analysis** comparing a small network's layers to simulated brain regions. Everything runs with base numpy / base MATLAB — no deep learning toolboxes required.
 
 **Step 1 — Rescorla–Wagner prediction errors as a dopamine-like signal.** We simulate conditioning: a cue predicts reward on 80% of trials, then reward stops (extinction). The prediction error $\delta_t = R_t - V_t$ drives learning — and traces out the classic dopamine pattern: large early bursts that shrink as learning proceeds, and negative dips when expected reward is omitted.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch42-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

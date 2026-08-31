@@ -14,6 +14,18 @@ subject: "Part 7: Predictive Modeling"
 - How to assess classifiers (confusion matrix, ROC/AUC, balanced accuracy) and regression models (RMSE, out-of-sample $R^2$), express performance as effect sizes, and compare models
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch39-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch39-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch39_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch39-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch39-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch39_lab_matlab.m)
+:::
+
 ## Overview
 
 What makes machine learning distinctive is not the algorithms — it is the question being asked: does the model **generalize** to new, out-of-sample observations? Generalization depends on simultaneously minimizing two sources of error. *Bias* is systematic mis-fit: a model too simple to capture the real structure. *Variance* is imprecision: a model so flexible that it chases noise and gives different answers on every new sample. Feature selection and regularization reduce complexity to keep variance down while keeping bias low. The gold standard for evaluating a model is prospective testing on a brand-new dataset with the model and all its parameters frozen — this yields unbiased estimates of accuracy and probes generalizability across populations, settings, and task designs. But since new datasets are expensive, standard practice is **data splitting**: learn parameters on *training* data, evaluate on *test* data with everything held constant. With no flexibility left at test time, von Neumann's four-parameter elephant cannot wiggle its trunk.
@@ -61,6 +73,10 @@ Finally, many performance measures are, or convert to, **effect sizes** — $d'$
 The full labs run three experiments: the optimism of non-nested hyperparameter selection, subject-level leakage from random splits, and effect-size shrinkage from training to independent test cohorts. Here are the two key moves.
 
 **Step 1 — Grouped vs. random cross-validation.** We simulate 30 subjects with 8 images each. Each subject has a stable "fingerprint" pattern in the features, but the subject-level label is pure noise — the honest accuracy is 50%. A random split leaks fingerprints across the boundary; a grouped split holds out whole subjects.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch39-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

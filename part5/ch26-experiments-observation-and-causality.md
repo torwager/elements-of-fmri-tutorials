@@ -14,6 +14,18 @@ subject: "Part 5: Experimental Design"
 - The major bias families identified in clinical trials (selection, attrition, performance, detection, reporting) and practical strategies for avoiding them in fMRI studies
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch26-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part5/labs/ch26-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part5/labs/ch26_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch26-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part5/labs/ch26-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part5/labs/ch26_lab_matlab.m)
+:::
+
 ## Overview
 
 Variables in neuroimaging studies come in two flavors: those we **manipulate** and those we **observe**. In task fMRI, the stimuli and instructions we present — faces vs. houses, high vs. low reward, painful vs. non-painful heat — are independent variables (IVs) under experimental control, usually manipulated within-person so that each participant experiences every level. Brain activity at each voxel, behavior, and physiology are dependent variables (DVs) that we observe but do not control. This distinction maps onto two goals that every study shares. **Internal validity** is the ability to make correct causal inferences — to be confident that the activation we see is caused by the manipulated task attribute and not something else. **External validity** is the ability of results to generalize to new contexts, measures, and populations. Frustratingly, the two trade off: tightly controlled laboratory experiments maximize internal validity but test a narrow slice of behavior in a selected sample, while large observational studies (resting-state correlations with clinical traits, naturalistic movie-watching) sample richer contexts and populations but mix together multiple causal influences. The strongest research programs combine both: experiments to establish that an effect is causal, and observational or large-scale studies to establish its size and reach in the real world.
@@ -85,6 +97,10 @@ flowchart LR
 Causal structure is one of the few things in statistics you can *see* directly in simulation, because you know the ground truth. Below we build the two central demonstrations in a few lines each; the full labs extend them with replications, selection effects, and a mediation preview.
 
 **Step 1 — A confounder: adjusting fixes the bias.** We recreate the HRT story in miniature: $C$ (think "general health") drives both the exposure $X$ and the outcome $Y$. The true causal effect of $X$ on $Y$ is $+0.4$, but the naive regression gets the sign wrong — and adjusting for $C$ recovers the truth.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch26-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

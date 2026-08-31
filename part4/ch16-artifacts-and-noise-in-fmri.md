@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - How to detect transient outliers with RMSSD/DVARS and Mahalanobis distance, and why autocorrelated noise invalidates naive OLS inference
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch16-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch16-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch16_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch16-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch16-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch16_lab_matlab.m)
+:::
+
 ## Overview
 
 Everything we do in fMRI analysis rests on separating a small signal of interest from a much larger sea of noise. *Artifacts* are deviations of an image's spatial pattern or intensity from its true underlying values, along with spurious results produced by confounding processes. They can be introduced — or mitigated — at virtually every stage of acquisition and analysis. Because it is impossible to remove every noise source, what remains is *autocorrelated*: noise that propagates across time and space, driven by MR physics and BOLD biophysics, hardware instability, head movement, and cardiac and respiratory physiology. This chapter surveys the main artifact types and noise sources; later chapters (17 and 19) cover the preprocessing and modeling steps that address them.
@@ -62,6 +74,10 @@ The residue of all these processes is noise that is correlated across time. Auto
 In this tutorial you will build an fMRI-like time series from its noise ingredients — slow drift, AR(1) autocorrelated noise, transient spikes, and an aliased heartbeat — then detect the outliers and measure what autocorrelation does to naive inference.
 
 **Step 1 — Simulate a noisy voxel and flag transient outliers.** We assemble a time series from known components, then use successive differences (the single-voxel analog of RMSSD/DVARS) to find the spikes.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch16-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

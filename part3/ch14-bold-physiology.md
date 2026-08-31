@@ -14,6 +14,18 @@ subject: "Part 3: MRI Environment and MRI Signal"
 - How BOLD signals are validated against invasive neural measures and behavior, including dose–response relationships
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch14-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part3/labs/ch14-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part3/labs/ch14_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch14-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part3/labs/ch14-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part3/labs/ch14_lab_matlab.m)
+:::
+
 ## Overview
 
 The Blood Oxygenation Level Dependent (BOLD) contrast is the workhorse signal of functional MRI. It rests on a fortunate accident of biochemistry: oxygenated and deoxygenated hemoglobin have different magnetic properties. When neural activity increases in a patch of cortex, metabolic demand for oxygen and nutrients rises, triggering a cascade — oxygen extraction from hemoglobin plus vasodilation that increases blood flow in local capillaries and arterioles. This linkage between neural activity and the vascular response is called **neurovascular coupling**. As oxygen is extracted, hemoglobin becomes paramagnetic: exposed iron atoms create small magnetic field distortions that shorten T2*, speeding signal decay and *decreasing* the local signal. The vascular system then overcompensates, delivering more oxygenated blood than is consumed. The balance tips toward oxyhemoglobin, dephasing decreases, T2* lengthens, and the signal *rises*. That longer T2* of oxygenated relative to deoxygenated blood is the basis of BOLD imaging — and because it uses the body's own hemoglobin as a natural contrast agent, no injections are needed, and scans can be repeated safely many times in the same person.
@@ -53,6 +65,10 @@ Finally, how do we relate BOLD to the mind? A powerful strategy is the **dose–
 In this tutorial you will build the canonical HRF from gamma functions, use convolution to predict responses to brief events and sustained epochs, and then break the linear model on purpose — simulating vascular saturation to see how closely spaced stimuli under-add and bias GLM estimates.
 
 **Step 1 — Build a canonical HRF and convolve brief vs. sustained events.** The double-gamma HRF is the impulse response of our assumed linear system; convolving it with a stimulus function predicts the BOLD response to any event sequence. Compare a 0.5-second event with a 20-second epoch.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch14-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

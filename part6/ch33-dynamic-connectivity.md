@@ -14,6 +14,18 @@ subject: "Part 6: Brain Connectivity"
 - How to test apparent "dynamics" against a stationary null, and why motion, arousal, and lost degrees of freedom can masquerade as connectivity change
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch33-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch33-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch33_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch33-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch33-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch33_lab_matlab.m)
+:::
+
 ## Overview
 
 For most of its history, functional connectivity analysis summarized an entire scanning session with a single correlation matrix — *static* functional connectivity. Over the past decade the field has increasingly asked a different question: does connectivity *change* over the course of a scan, on time scales of seconds to minutes? In dynamic functional connectivity (DFC) analyses, a central goal is to identify **brain states** — connectivity patterns that recur across time — among which individuals transition during the scan. States have been observed reliably across groups and individuals, and state-based measures such as the average time spent in each state (**dwell time**) and the **number of transitions** between states vary with individual differences such as age and disease status. Findings like these suggest that a single static correlation matrix may be too simplistic to fully capture the interplay between brain regions — though, as we will see, this conclusion has not gone unchallenged.
@@ -56,6 +68,10 @@ Finally, the pitfalls. Time-varying connectivity estimates rest on very few effe
 In this tutorial you will generate convincing-looking "dynamics" from data whose correlation never changes, then test them properly against a stationary null. This is the single most important exercise in dynamic connectivity: learning what pure sampling variability looks like before you interpret anything.
 
 **Step 1 — Sliding-window correlation on a static-correlation null.** We simulate two time series with a *constant* true correlation of 0.4 and watch the windowed correlation swing anyway.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch33-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

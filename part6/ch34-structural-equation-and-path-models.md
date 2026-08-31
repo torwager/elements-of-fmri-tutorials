@@ -14,6 +14,18 @@ subject: "Part 6: Brain Connectivity"
 - Why unmodeled confounding — especially of the mediator–outcome relationship — limits causal claims, and how moderation (PPI) analysis differs from mediation
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch34-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch34-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch34_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch34-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch34-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch34_lab_matlab.m)
+:::
+
 ## Overview
 
 Structural equation modeling is a family of techniques for modeling relationships — more formally, the variance–covariance structure — among a set of variables. Where the GLM predicts one outcome from a set of predictors, an SEM specifies a *system* of equations: multiple predictors, multiple outcomes, and possibly latent factors that are not observed directly but are expressed in the measured variables. The emphasis is on comparing models with different structures and finding one that gives a parsimonious, low-error account of the observed correlations. When all variables are observed (no latent factors), the SEM is called **path analysis**, and the two most widely used inferences in this framework are tests of **mediation** — whether the relationship between two variables is transmitted through a third — and **moderation** — whether one variable changes the strength of the relationship between two others.
@@ -84,6 +96,10 @@ Finally, **moderation** asks a different question: does the $X$–$Y$ relationsh
 In this tutorial you will simulate a brain-as-mediator dataset ($X \to M \to Y$ with a direct path), estimate all four paths, and bootstrap the indirect effect — the core mediation workflow. The MATLAB code uses `mediation.m` from the CANlab Mediation Toolbox; the Python code builds the same analysis from regressions so you can see every moving part.
 
 **Step 1 — Simulate mediation data and estimate the paths.** We generate $n = 200$ observations with true paths $a = 0.6$, $b = 0.5$, $c' = 0.2$, then recover them: path $a$ from the regression of $M$ on $X$, paths $b$ and $c'$ from the regression of $Y$ on $X$ and $M$, and the total effect $c$ from the reduced model.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch34-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

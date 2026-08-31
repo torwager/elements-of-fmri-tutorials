@@ -14,6 +14,18 @@ subject: "Part 5: Experimental Design"
 - Why contrast **detection** efficiency and HRF shape **estimation** efficiency trade off, and how genetic algorithms and m-sequences push designs toward the theoretical limit
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch27-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part5/labs/ch27-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part5/labs/ch27_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch27-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part5/labs/ch27-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part5/labs/ch27_lab_matlab.m)
+:::
+
 ## Overview
 
 Not all fMRI designs with the same trials are equal: the spacing and ordering of events is critical. A good task fMRI design seeks to do three things: (1) manipulate the specific psychological processes to be mapped onto brain activity; (2) detect brain responses to those events with maximal sensitivity and specificity; and (3) maximize the internal and external validity of the resulting inferences. The experimenter's levers are which stimuli to present and *when* to present them — and those timing choices have both psychological and statistical consequences.
@@ -82,6 +94,10 @@ Efficiency calculations are powerful precisely because they require no data — 
 In this tutorial you will score competing designs *before collecting any data*: build a blocked, a dense fixed-ISI event-related, and a sparse jittered event-related design for two conditions, compute the efficiency of the A − B contrast for each, and diagnose collinearity with VIFs. The full labs extend this to the detection-versus-estimation tradeoff.
 
 **Step 1 — Build three competing designs and score the A − B contrast.** Each design has two event types, A and B, in runs of equal length; only the arrangement in time differs.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch27-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

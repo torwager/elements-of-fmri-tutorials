@@ -14,6 +14,18 @@ subject: "Part 6: Brain Connectivity"
 - Why threshold choice changes every graph metric, and how density-matched comparisons keep group analyses fair
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch32-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch32-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch32_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch32-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch32-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch32_lab_matlab.m)
+:::
+
 ## Overview
 
 Network analysis represents the brain as a set of interconnected **nodes** (brain regions or voxels) and **edges** (anatomical or functional connections), letting us study brain organization, network properties, and dynamics with the mathematical machinery of graph theory — a field whose roots reach back to Euler in the mid-1700s. In network neuroscience, functional connectomes are used to estimate network topology and higher-order graph-theoretic properties: global properties like efficiency and small-worldness, sub-network structure ("communities" or "modules"), and "hub" nodes that connect many regions or link different communities. All of these properties can vary over time and can be analyzed in relation to cognition, behavior, and disease — for example, comparing network topology between patient and control groups to reveal connectivity abnormalities.
@@ -64,6 +76,10 @@ Finally, networks can be **compared** — patients versus controls, or network p
 In this tutorial you will build a graph from a simulated modular functional connectome, compute the core metrics from the chapter, and see first-hand why threshold choice matters. We simulate 30 nodes organized into three modules (plus a shared global signal that weakly links them), correlate their time series, threshold, and analyze the result.
 
 **Step 1 — From connectivity matrix to graph and metrics.** We compute the correlation matrix, binarize it at $r > 0.3$, and compute density, degree, clustering, and characteristic path length.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch32-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

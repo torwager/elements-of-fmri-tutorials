@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - Best practices for protecting your own results: preregistration, multiverse-style reporting, and complete pipeline description (COBIDAS)
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch24-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch24-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch24_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch24-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch24-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch24_lab_matlab.m)
+:::
+
 ## Overview
 
 Researchers rarely analyze fMRI data with a single tool. Instead, they chain many operations — from many software packages, each with its own defaults and parameters — into a **pipeline**: a reproducible sequence that turns raw images into statistical results. Preprocessing pipelines combine *spatial* operations (distortion correction, segmentation, normalization) with *temporal* ones (high-pass filtering, nuisance regression), and are usually run in an automated way, separate from statistical analysis, to prepare images and derived elements such as nuisance regressors. A typical study processes both image types: a **structural (T1) sequence** — spatial inhomogeneity correction, segmentation into brain and tissue compartments, normalization to a population template, and extraction of measures such as cortical thickness and volume — and a **functional sequence** — distortion correction, denoising steps such as despiking and physiological noise correction, slice-timing correction, rigid-body realignment, nuisance regression or ICA-based denoising, and normalization. The two streams are interdependent: the higher-resolution T1 is coregistered to the functional images, and the normalization parameters estimated from it are then applied to the functional data. Some steps even happen on the scanner itself (prescan normalization, reconstruction) before researchers ever see the images.
@@ -40,6 +52,10 @@ These challenges have driven the field toward **standardization**. Tools like ni
 In this tutorial you will run a **mini-multiverse analysis**: one simulated study — 24 subjects with a *real* task effect, plus drift, autocorrelated noise, and motion-like spikes — analyzed through a factorial grid of defensible pipeline choices (high-pass cutoff × smoothing × outlier handling × autocorrelation correction, 3 × 3 × 2 × 2 = 36 variants). The full labs build every pipeline component from scratch; here are the two key steps.
 
 **Step 1 — Run the same data through every pipeline variant.** Each variant fits a first-level GLM per subject and carries the task beta at an a priori voxel to a group one-sample t-test. (The helper that applies one pipeline variant to one subject — filtering, smoothing, spike regressors, AR(1) prewhitening — is built step by step in the full labs.)
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch24-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

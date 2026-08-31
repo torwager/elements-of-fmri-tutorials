@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - Why "A and B" (conjunction) questions require different logic than "A or B" (F-test) questions
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch20-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch20-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch20_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch20-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch20-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch20_lab_matlab.m)
+:::
+
 ## Overview
 
 Once the GLM parameters $\hat{\beta}$ have been estimated (Chapter 18), the scientific work begins: testing whether the response to a single task differs from zero, whether two conditions differ in activation magnitude, whether a set of nuisance covariates explains significant variance, or whether the main effects and interaction of a factorial design are present. All of these questions are answered with statistical tests of **contrasts** — linear combinations of the $\beta$ values.
@@ -67,6 +79,10 @@ One final logical distinction rounds out the toolkit. An F-test asks whether *an
 In this tutorial you will fit a three-condition GLM (A = famous faces, B = non-famous faces, C = houses) to a simulated voxel and ask it questions with contrasts. Because the simulation has known true betas ($\beta_A = 1.0$, $\beta_B = 0.6$, $\beta_C = 0.3$, intercept 100), every contrast has a known true value. Task regressors are scaled to peak at 1, so a beta of $1.0$ is about a 1% signal change.
 
 **Step 1 — Fit a three-condition GLM.** Build the design matrix by convolving each condition's onsets with the canonical HRF (as in Chapter 18), simulate the voxel, and fit by OLS — saving the pieces every contrast test reuses: $\hat{\sigma}^2$, $df_e$, and $(X^TX)^{-1}$.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch20-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

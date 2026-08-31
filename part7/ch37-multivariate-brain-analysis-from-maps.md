@@ -14,6 +14,18 @@ subject: "Part 7: Predictive Modeling"
 - How multivariate models fit into the wider space of techniques (MVPA, encoding–decoding models, CCA/PLS) and where machine learning comes in
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch37-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch37-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch37_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch37-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part7/labs/ch37-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part7/labs/ch37_lab_matlab.m)
+:::
+
 ## Overview
 
 For most of this book, analysis has meant *brain mapping*: fit a separate model at every voxel, with psychological conditions as predictors and that voxel's activity as the outcome, and aggregate the voxel-wise tests into a statistical map. Maps built this way answer a specific question — is there a non-zero effect of the task in this voxel? — and they answer it stably, because each voxel's verdict does not depend on what the rest of the brain is doing. But over the past two decades the field has shifted toward a fundamentally different kind of product: integrated, multivariate **brain models** that specify how to *combine* measurements across many voxels, regions, or connections to predict the identity or intensity of a mental process. Maps describe the local encoding of information; models attempt to specify the parts of a neural system and how their joint activity predicts mind and behavior.
@@ -68,6 +80,10 @@ Finally, turning 100,000+ voxels into a stable, interpretable model is precisely
 In this tutorial you will simulate multivoxel patterns in which the *pattern* carries information that no single voxel does — a toy population code. The trick is correlated noise: each voxel's condition difference is buried in fluctuations that are *shared* across voxels, so a decoder that contrasts voxels against each other can cancel the noise and recover the signal. You will then compare a univariate map with a cross-validated decoder, and see why the decoder's weights are not a localization map.
 
 **Step 1 — Simulate patterns and map them univariately.** Two conditions (A and B) differ by a small amount at 60 "signal" voxels; another 60 voxels carry no signal at all. A large *global* noise source is shared by every voxel, swamping each voxel's individual effect.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch37-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

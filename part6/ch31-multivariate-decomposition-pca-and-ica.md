@@ -14,6 +14,18 @@ subject: "Part 6: Brain Connectivity"
 - How group ICA with temporal concatenation and dual regression yields subject-specific time courses and spatial maps for group inference
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch31-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch31-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch31_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch31-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch31-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch31_lab_matlab.m)
+:::
+
 ## Overview
 
 Everything up to this point in the book has been largely *univariate*: a model is fit to one voxel at a time, and the results are stitched into maps. Multivariate decomposition methods flip this around. They operate on many variables at once — typically the full $T \times V$ matrix $X$ of one subject's fMRI data, with $T$ time points as rows and $V$ voxels as columns — and factor it into a small number of components, each pairing a **spatial map** (a pattern over voxels) with a **time course**. The components are *latent variables*: not directly measured, but expressed across many measured voxels. Decomposition methods are workhorses of functional connectivity analysis, and ICA in particular is the most widely used method for identifying resting-state networks. The broader family includes factor analysis, multidimensional scaling, and non-negative matrix factorization — the members differ mainly in the constraints they impose (orthogonality vs. independence), whether they model noise explicitly, and how they normalize the data — but PCA and ICA are the bedrock, and the focus here.
@@ -59,6 +71,10 @@ In practice ICA is usually run on a **group** of subjects. The most common appro
 The best way to understand what PCA and ICA each can and cannot do is to build data where the truth is known. We simulate two source "networks" — each a spatial map paired with a time course — mix them into a time $\times$ voxels matrix with noise, and then ask each method to recover them. The key manipulation: the two spatial maps *overlap*, so the true sources are **not orthogonal** — though, being sparse blocks, they remain close to statistically independent. The labs then push further: scree plots for dimensionality, and a miniature dual regression on a simulated "group."
 
 **Step 1 — Simulate mixed sources.** Two spatial maps (overlapping blocks of voxels) and two event-driven time courses combine as $X = AS + E$.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch31-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

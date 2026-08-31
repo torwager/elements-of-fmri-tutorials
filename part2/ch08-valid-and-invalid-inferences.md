@@ -14,6 +14,18 @@ subject: "Part 2: Brain Mapping"
 - How to demonstrate each of these pitfalls yourself with simple simulations — and what valid alternatives look like
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch08-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part2/labs/ch08-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part2/labs/ch08_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch08-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part2/labs/ch08-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part2/labs/ch08_lab_matlab.m)
+:::
+
 ## Overview
 
 The basic brain mapping procedure behind most published neuroimaging findings performs a significance test at every voxel and marks the survivors as "activated." As Chapter 7 explained, this supports forward inferences about the presence of some non-zero effect under an experimental manipulation. But the alternative hypothesis is vague — merely "not zero" — and it is surprising how many natural-seeming conclusions a thresholded map does *not* license. Forward inference maps are not very informative about (a) the spatial location of activity, (b) how large or meaningful effects are, (c) the overall pattern of active and inactive voxels, or (d) the overlap in neural processes across tasks. This chapter is about why — and the best way to internalize the lessons is to watch each failure happen in data you simulated yourself, which is exactly what the labs below do.
@@ -51,6 +63,10 @@ Sensitivity (power, hit rate) is the probability of detecting a true effect; the
 These exercises reproduce several of the "statistical lies" simulations from the book's companion code: you will generate data where you *know* the ground truth, run standard mapping analyses on it, and watch them mislead you. Two key demonstrations appear below in compact form; the full labs add null brain–behavior correlations, artifact "activations," the independent-selection fix, and a PPV calculator.
 
 **Step 1 — The winner's curse.** Every voxel below has the *same* true effect, $d = 0.5$. We threshold at p < .001 and compare the average estimated effect size among significant voxels with the truth.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch08-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

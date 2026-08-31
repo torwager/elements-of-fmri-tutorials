@@ -14,6 +14,18 @@ subject: "Part 6: Brain Connectivity"
 - When Granger causality is, and is not, an informative tool for fMRI connectivity analysis
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch36-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch36-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch36_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch36-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part6/labs/ch36-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part6/labs/ch36_lab_matlab.m)
+:::
+
 ## Overview
 
 Granger causality mapping uses multivariate time series to infer *directed* connectivity from **temporal precedence**: if knowing the past of region $X$ improves prediction of the present of region $Y$ — beyond what $Y$'s own past already provides — we say that $X$ *Granger causes* $Y$. The idea originated in economics, where Clive Granger proposed it as a pragmatic, testable stand-in for causality. Unlike structural equation models (Chapter 34) and dynamic causal models (Chapter 35), Granger causality does not require you to specify a structural model of which regions connect to which in advance. It simply asks, for any pair (or set) of regions, whether one series' history carries predictive information about the other. That makes it more exploratory than confirmatory — potentially most useful in the earlier stages of scientific inquiry, when you do not yet have strong hypotheses about network structure.
@@ -64,6 +76,10 @@ The approach has been genuinely controversial for fMRI, and the central critique
 In this tutorial you will build the entire Granger story from scratch on simulated data: first a bivariate VAR(1) system with a genuine directed influence, which Granger tests recover correctly — then a system with perfectly *symmetric* neural coupling whose two regions have different hemodynamic latencies, which produces a confidently wrong directional inference at the BOLD level.
 
 **Step 1 — Simulate a VAR(1) with a true directed influence and test both directions.** Region $X$ drives region $Y$ at lag 1 ($Y_t$ receives $0.4\,X_{t-1}$), with no influence in the reverse direction.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch36-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

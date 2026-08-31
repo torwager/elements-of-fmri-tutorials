@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - How to choose smoothing kernels and high-pass filter cutoffs so that you remove artifacts without removing your task signal
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch17-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch17-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch17_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch17-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch17-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch17_lab_matlab.m)
+:::
+
 ## Overview
 
 Before any statistical analysis, fMRI data pass through a sequence of preprocessing steps with three aims: (1) minimize the influence of artifacts from data acquisition and head movement; (2) transform the data so it better meets statistical assumptions; and (3) for group analysis, standardize the locations of brain regions across individuals. The typical pipeline — reconstruction, distortion correction, slice-timing correction, motion correction (realignment), coregistration of structural and functional images, spatial normalization, smoothing, temporal filtering, and physiological noise correction — is summarized below. A recurring theme runs through every step: each correction removes a mixture of artifact *and* real signal, so each involves a tradeoff that is worth understanding rather than accepting on faith.
@@ -68,6 +80,10 @@ Templates normalized to MNI space are broadly similar but differ in resolution, 
 Real preprocessing runs inside packages like SPM, FSL, and fMRIPrep — but every step is easier to reason about once you have simulated it yourself. Here we look at two steps you can fully understand in a few lines of code: using realignment parameters as nuisance regressors, and designing a high-pass filter that removes drift without removing your task. The full labs add slice-timing and smoothing-kernel simulations.
 
 **Step 1 — Motion parameters as nuisance regressors.** We simulate a voxel time series contaminated by head motion, then quantify how much variance the six realignment parameters explain.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch17-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

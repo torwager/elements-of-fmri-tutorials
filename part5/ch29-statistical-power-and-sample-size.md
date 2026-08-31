@@ -14,6 +14,18 @@ subject: "Part 5: Experimental Design"
 - What the BWAS debate implies for individual-differences research, and how to balance the number of participants against scan time per participant
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch29-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part5/labs/ch29-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part5/labs/ch29_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch29-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part5/labs/ch29-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part5/labs/ch29_lab_matlab.m)
+:::
+
 ## Overview
 
 Power analysis is a study planning tool: it is performed *before* data collection, to choose a sample size and design that give a good chance of detecting the effects you care about. In fMRI this is complicated because power depends on many factors — the psychological manipulation, task design, acquisition hardware, preprocessing, and analysis choices — and it differs across brain regions. Fortunately, all of these influences converge on a "final common pathway": the **effect size** in the group analysis. If you can specify the effect size you expect, or the minimum effect you would like to be able to detect, then power and sample size calculations become straightforward and can be done with standard tools (or a few lines of code, as in the labs below).
@@ -60,6 +72,10 @@ Balancing scan time and number of subjects. (A) Contrast map for an N-back worki
 In this tutorial you will build a power calculator from scratch and use it to answer the planning questions above: How many participants do I need? What is the smallest effect I can detect? And how badly will the winner's curse inflate my post hoc effect sizes? The calculations mirror the simulation code behind the book's power figures (github.com/canlab).
 
 **Step 1 — Analytic power curves.** Power for a one-sample t-test comes from the noncentral t distribution: with true effect $d$ and sample size $N$, the t-statistic is distributed with noncentrality $\delta = d\sqrt{N}$, and power is the probability that it exceeds the critical value $t_{crit}$. One convention to fix up front: a *planned* test is two-tailed, while thresholds applied to statistic maps ("$p < .001$") are conventionally directional, so we carry a `tails` argument.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch29-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

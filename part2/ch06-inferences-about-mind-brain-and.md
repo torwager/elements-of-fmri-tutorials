@@ -14,6 +14,18 @@ subject: "Part 2: Brain Mapping"
 - The key assumptions of statistical parametric mapping (IID errors, correct model specification, localizability, pure insertion) and what happens when they fail
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch06-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part2/labs/ch06-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part2/labs/ch06_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch06-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part2/labs/ch06-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part2/labs/ch06_lab_matlab.m)
+:::
+
 ## Overview
 
 Nearly every colorful brain image you have seen — in a journal, a news story, or a courtroom — is a *statistical construction*. The colored blobs do not show brain activity directly. They show the results of hypothesis tests performed across brain voxels, color-coded by the strength of the evidence that some effect — a response to a task, a correlation with behavior — is different from zero. This practice, called **statistical parametric mapping** (or mass-univariate analysis, or simply brain mapping), underlies the vast majority of images in scientific publications and popular media. Understanding what such maps can and cannot tell us is essential for scientists and non-scientists alike.
@@ -60,6 +72,10 @@ Finally, the validity of any statistical map rests on assumptions. Standard stat
 The best way to understand what a brain map is — and is not — is to build one from data where you know the ground truth. Here we run the complete brain-mapping loop in miniature: simulate a two-condition experiment at many "voxels" on a 2-D grid, compute each subject's [A − B] difference image, test the group effect at every voxel, threshold, and visualize the map. Because we planted the true signal ourselves, we can see exactly which surviving blobs are real and which are noise.
 
 **Step 1 — Simulate the experiment and test every voxel.** True signal lives in two circular "regions"; every subject's difference image is that signal plus noise. A one-sample t-test across subjects at each voxel gives the statistical map.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch06-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

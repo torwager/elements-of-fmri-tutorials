@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - Why autocorrelated errors require generalized least squares, and how basis sets add flexibility when the canonical HRF does not fit
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch18-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch18-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch18_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch18-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch18-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch18_lab_matlab.m)
+:::
+
 ## Overview
 
 The General Linear Model is arguably the most widely used statistical method for relating task manipulations to brain activity. Applied to fMRI, it identifies regions that respond to an event type, compares responses across conditions, and links brain activity to behavioral or clinical variables. In a typical analysis the outcome variable is the time series from a single voxel (or region of interest), and the analysis is *massively univariate*: a separate GLM is fit at every voxel, and the resulting parameter estimates are assembled into statistical maps.
@@ -82,6 +94,10 @@ Creating a design matrix with four conditions. Indicator functions for the timin
 :::
 
 **Step 1 — Build a design matrix from event onsets.** We specify onset times (in seconds) for two event types, A and B, and convolve them with a canonical HRF.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch18-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

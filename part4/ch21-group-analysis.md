@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - Practical considerations that change group results: analysis masks, coding and centering of second-level covariates, and **robust regression** for outlier subjects
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch21-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch21-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch21_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch21-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch21-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch21_lab_matlab.m)
+:::
+
 ## Overview
 
 The previous chapters fit GLMs to one person's time series. But science is ultimately about generalizable knowledge: most studies aim to draw conclusions about a *population* of unobserved individuals, not about the particular people who happened to be scanned. That requires group analysis — combining results across multiple subjects performing the same type of experiment. Like single-subject analysis, group analysis is typically mass univariate: each voxel (after normalization to a common template space, Chapter 17) is regressed on task or behavioral variables, and the same inferential test is repeated across the brain.
@@ -68,6 +80,10 @@ Outliers and robust regression. (A) In null-hypothesis data ($N = 50$, left), ad
 In this tutorial you will simulate hierarchical (multi-subject) data with known ground truth, then see for yourself why the analysis choices above matter: a fixed-effects analysis produces wildly inflated false positive rates when subjects truly vary, while the summary statistics (random effects) approach stays honest — and a robust group fit shrugs off an outlier subject that fools OLS.
 
 **Step 1 — Fixed vs. random effects inference.** We simulate 20 subjects × 40 trials with *zero* true group effect but real between-subject variability, then test the group effect two ways: pooling all trials as if they came from one super subject (FFX), and a one-sample t-test on subject means (RFX / summary statistics). Run it repeatedly and count false positives.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch21-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

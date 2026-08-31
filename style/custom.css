@@ -67,3 +67,60 @@ details summary {
 details summary:hover {
   color: var(--efmri-amber-deep);
 }
+
+/* --- Run-affordance additions ------------------------------------------- */
+
+/* Label next to the thebe "start compute environment" power icon */
+button[aria-label="start compute environment"] {
+  position: relative;
+  overflow: visible;
+}
+button[aria-label="start compute environment"]::after {
+  content: '▶ Click for interactive code';
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--efmri-amber-soft);
+  color: #8a6410;
+  border: 1px solid var(--efmri-amber);
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+}
+html.dark button[aria-label="start compute environment"]::after {
+  background: #3b3110;
+  color: #f3d98a;
+  border-color: #8a6410;
+}
+@media (max-width: 900px) {
+  button[aria-label="start compute environment"]::after { display: none; }
+}
+
+/* Floating quick-run card (bottom right, wide screens only) */
+.run-quick { display: none; }
+@media (min-width: 1280px) {
+  .run-quick {
+    display: block;
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 40;
+    background: #ffffff;
+    border: 1px solid var(--efmri-line);
+    border-left: 3px solid var(--efmri-amber);
+    border-radius: 12px;
+    padding: 10px 14px;
+    box-shadow: 0 12px 32px -12px rgba(26, 35, 50, 0.3);
+    font-size: 0.85rem;
+    max-width: 280px;
+  }
+  html.dark .run-quick {
+    background: #1f2937;
+    border-color: #374151;
+    border-left-color: var(--efmri-amber);
+  }
+}

@@ -14,6 +14,18 @@ subject: "Part 4: Signal Processing and Analysis"
 - Why autocorrelated errors invalidate ordinary least squares P values, and how autoregressive models and prewhitening fix this
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch19-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch19-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch19_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch19-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part4/labs/ch19-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part4/labs/ch19_lab_matlab.m)
+:::
+
 ## Overview
 
 Chapter 18 gave us the machinery of the GLM: convolve stimulus functions with an HRF, assemble a design matrix $X$, and estimate $\hat{\beta}$ by least squares. This chapter is about the *craft* of specifying that model. The same experiment can be modeled many ways — brief events or sustained epochs, fixed or variable durations, with or without trial-by-trial modulators, with more or fewer nuisance covariates — and these choices determine what your betas *mean*, how much power you have, and whether artifacts masquerade as brain activity. The same GLM framework also serves resting-state fMRI, where it is used as a preprocessing step to remove drift and nuisance signals before connectivity analysis.
@@ -70,6 +82,10 @@ so correlation decays exponentially with lag $h$. Estimated AR parameters define
 In this tutorial you will make the modeling choices above concrete: build a design with a parametric modulator, measure its collinearity with the average-response regressor, see exactly what orthogonalization does to the betas, and then add a cosine drift set and motion covariates and check their impact on task VIFs.
 
 **Step 1 — Parametric modulation and orthogonalization.** We model one event type plus a trial-by-trial modulator (e.g., pain ratings), quantify the collinearity between the average and modulated regressors, and compare fits with the raw vs. orthogonalized modulator.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch19-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB

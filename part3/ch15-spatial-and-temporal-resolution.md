@@ -14,6 +14,18 @@ subject: "Part 3: MRI Environment and MRI Signal"
 - The four-way tradeoff among coverage, spatial resolution, temporal resolution, and artifacts, and how accelerated (multiband/SMS) imaging shifts the balance
 :::
 
+:::{admonition} 🖥️ Ways to run this chapter's code
+:class: seealso
+- **In your browser, no setup:** open the [interactive Python lab](./labs/ch15-lab-python.ipynb) and click the **⏻ power icon** at the top right of the notebook. Run cells top-to-bottom, starting with the first (setup/import) cell.
+- **In the cloud:** [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part3/labs/ch15-lab-python.ipynb) · [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part3/labs/ch15_lab_matlab.m)
+- The code tabs on **this page** are static previews with copy buttons — the labs are where code runs.
+:::
+
+:::{div}
+:class: run-quick
+**Run this code:** [⚡ In-browser lab](./labs/ch15-lab-python.ipynb) · [Colab](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/part3/labs/ch15-lab-python.ipynb) · [MATLAB Online](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=part3/labs/ch15_lab_matlab.m)
+:::
+
 ## Overview
 
 Much of what can — and cannot — be inferred from an fMRI study traces back to its spatial and temporal resolution. **Spatial resolution** refers to the size of the voxels used to construct an image, and describes the ability to distinguish signal changes across anatomical locations. **Temporal resolution** describes the ability to distinguish signal changes across time points. Because data collection speed is limited, the two trade off against each other, and both are further constrained by the biophysics of the BOLD response itself.
@@ -60,6 +72,10 @@ fMRI acquisition involves tradeoffs among brain coverage, spatial resolution, te
 The labs make these tradeoffs concrete with simulations. Here are two key steps: aliasing a "heartbeat" by sampling it at a typical TR, and smoothing small versus large activations.
 
 **Step 1 — Alias a heartbeat by sampling at the TR.** We simulate a cardiac signal at 66 beats per minute (1.1 Hz) and sample it once per TR. At TR = 0.4 s the Nyquist limit ($1/(2 \cdot 0.4) = 1.25$ Hz) is above the cardiac frequency and the peak stays at 1.1 Hz; at TR = 2 s ($f_{\mathrm{Nyquist}} = 0.25$ Hz) it is aliased to 0.1 Hz — right into the task band.
+
+:::{note}
+The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch15-lab-python.ipynb) or the Colab / MATLAB Online links above.
+:::
 
 ::::{tab-set}
 :::{tab-item} MATLAB
