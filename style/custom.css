@@ -145,8 +145,9 @@ html.dark button[aria-label="start compute environment"]::after {
     line-height: 1.45;
   }
   html.dark .book-tile { background: #1f2937; border-color: #374151; border-left-color: var(--efmri-steel); }
-  /* run-quick sits above the book tile on code pages */
-  .run-quick { bottom: 108px; }
+  /* run-quick sits well above the book tile on code pages (book tile can be ~5 lines tall) */
+  .run-quick { bottom: 170px; }
+  .book-tile { font-size: 0.78rem; max-width: 250px; max-height: 138px; overflow: hidden; }
 }
 
 /* --- Equation where-lines + whole-equation hover tooltip ----------------- */
