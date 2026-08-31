@@ -52,6 +52,10 @@ Brief setup sentence, then synced tabs for every exercise block:
 End the section with a card linking to the full labs:
 "**Go deeper:** open the full Python lab notebook [→](./labs/chNN-lab-python.ipynb)
 or download the MATLAB live script."
+Below it, two badges on one line:
+`[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/torwager/elements-of-fmri-tutorials/blob/main/partN/labs/chNN-lab-python.ipynb)`
+`[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=torwager/elements-of-fmri-tutorials&file=partN/labs/chNN_lab_matlab.m)`
+(These resolve once the repo is public at launch.)
 
 For conceptual chapters (2, 3, 4, 5, 9, 10, 11) replace this section with
 `## Key ideas in pictures` — 2–4 book figures with rich captions, or a

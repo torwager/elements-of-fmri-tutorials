@@ -32,17 +32,31 @@ project:
     - title: "Part 2 · Brain Mapping"
       children:
         - file: part2/ch06-inferences-about-mind-brain-and.md
+          children:
+            - file: part2/labs/ch06-lab-python.ipynb
         - file: part2/ch07-forward-and-reverse-inference.md
+          children:
+            - file: part2/labs/ch07-lab-python.ipynb
         - file: part2/ch08-valid-and-invalid-inferences.md
+          children:
+            - file: part2/labs/ch08-lab-python.ipynb
         - file: part2/ch09-contrasting-statistical-mapping-with-traditional.md
         - file: part2/ch10-why-imaging-is-not-phrenology.md
     - title: "Part 3 · MRI Environment and MRI Signal"
       children:
         - file: part3/ch11-mri-and-human-factors.md
         - file: part3/ch12-fmri-basics-and-terminology.md
+          children:
+            - file: part3/labs/ch12-lab-python.ipynb
         - file: part3/ch13-fundamental-mri-physics.md
+          children:
+            - file: part3/labs/ch13-lab-python.ipynb
         - file: part3/ch14-bold-physiology.md
+          children:
+            - file: part3/labs/ch14-lab-python.ipynb
         - file: part3/ch15-spatial-and-temporal-resolution.md
+          children:
+            - file: part3/labs/ch15-lab-python.ipynb
     - title: "Part 4 · Signal Processing and Analysis"
       children:
         - file: part4/ch16-artifacts-and-noise-in-fmri.md
