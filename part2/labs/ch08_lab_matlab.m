@@ -1,4 +1,5 @@
 %% Chapter 8 Lab - Valid and Invalid Inferences (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part2/ch08-valid-and-invalid-inferences
 %[text] # Chapter 8 Lab - Valid and Invalid Inferences
 %[text] This lab reproduces several of the "statistical lies" simulations that accompany
 %[text] the book: cases where standard brain-mapping analyses mislead. You generate the
@@ -16,15 +17,15 @@
 %[text] participants. Thresholding keeps only voxels whose *estimated* d cleared a bar,
 %[text] so the survivors are the ones where noise pushed the estimate up.
 
-rng(1);
-N = 30; n_vox = 20000; d_true = 0.5;
+rng(1);                                      % fixed seed for reproducibility
+N = 30; n_vox = 20000; d_true = 0.5;         % N = participants; n_vox = voxels tested; d_true = true effect (Cohen's d) at every voxel
 
 data  = randn(N, n_vox) + d_true;            % every voxel truly active at d = 0.5
 d_hat = mean(data) ./ std(data);             % estimated effect size per voxel
 t     = d_hat .* sqrt(N);                    % one-sample t-statistic
-p     = 2 * tcdf(-abs(t), N - 1);
+p     = 2 * tcdf(-abs(t), N - 1);            % two-tailed p value, N - 1 df
 
-for alpha = [.001 .0001]
+for alpha = [.001 .0001]                     % alpha = significance threshold; stricter -> worse inflation
     sig = p < alpha;
     fprintf('p < %.4f -> %5d of %d voxels significant | mean estimated d among them: %.3f (truth: %.1f)\n', ...
         alpha, sum(sig), n_vox, mean(d_hat(sig)), d_true);
@@ -49,8 +50,8 @@ legend({'All voxels (true d = 0.5)', 'Significant, p < .001', 'True d', 'Selecti
 %[text] correlation is exactly zero everywhere. We search the "brain" for the voxel
 %[text] most correlated with behavior - the "voodoo correlations" scenario.
 
-rng(7);
-N = 20; n_vox = 10000;
+rng(7);                                      % fixed seed for reproducibility
+N = 20; n_vox = 10000;                       % N = participants; n_vox = voxels searched for a correlation
 
 behavior = randn(N, 1);
 brain    = randn(N, n_vox);                  % NULL data: no true correlation anywhere
@@ -72,7 +73,8 @@ title('A completely null brain, after searching 10,000 voxels');
 
 %[text] How bad is it? Repeat at several sample sizes and track the maximum null |r|.
 
-N_vals = [10 20 40 100]; n_iter = 20;
+N_vals = [10 20 40 100];                     % sample sizes to compare
+n_iter = 20;                                 % simulated 'studies' per sample size
 rmax = zeros(n_iter, numel(N_vals));
 for j = 1:numel(N_vals)
     for i = 1:n_iter
@@ -96,8 +98,8 @@ title('Maximum null correlation across 10,000 voxels');
 %[text] contains a genuine neural region (d = 0.5) and a stronger artifact rim around
 %[text] the "ventricles" (d = 1.2), like pulsation, inflow, or motion effects.
 
-rng(3);
-sz = 64; N = 20;
+rng(3);                                      % fixed seed for reproducibility
+sz = 64; N = 20;                             % sz = slice is sz x sz voxels; N = participants
 [xx, yy] = meshgrid(1:sz, 1:sz);
 
 neural   = double((xx - 20).^2 + (yy - 18).^2 < 36) * 0.5;          % circle in "cortex"
@@ -132,8 +134,8 @@ colormap hot; colorbar
 %[text] region's response to BOTH tasks - the classic circular analysis.
 %[text] (Adapted from lie9\_false\_double\_dissociation.m.)
 
-rng(11);
-N = 20; n_vox = 5000; n_active = 500; d_true = 0.4;
+rng(11);                                     % fixed seed for reproducibility
+N = 20; n_vox = 5000; n_active = 500; d_true = 0.4;   % N = participants; n_active of n_vox voxels truly active at d_true - in BOTH tasks
 
 truth = zeros(1, n_vox); truth(1:n_active) = d_true;   % same true map for BOTH tasks
 taskA = randn(N, n_vox) + truth;
@@ -159,7 +161,7 @@ title('A "double dissociation" - from identical true effects');
 %[text] effects. The antidote is INDEPENDENCE: select ROIs in half the participants,
 %[text] test the dissociation in the other half.
 
-half = N / 2;
+half = N / 2;                                % split-half: subjects 1-10 select ROIs, 11-20 test them
 roiA1 = pfun(taskA(1:half, :)) < .01;                  % select on subjects 1-10 only
 roiB1 = pfun(taskB(1:half, :)) < .01;
 
@@ -183,14 +185,14 @@ fprintf('(True effect for both tasks in active voxels: %.1f)\n', d_true);
 
 calc_ppv = @(sens, spec, prev) sens .* prev ./ (sens .* prev + (1 - spec) .* (1 - prev));
 
-examples = [.98 .98 .10; .98 .98 .01; .98 .999 .001; .90 .90 .20; .90 .80 .20];
+examples = [.98 .98 .10; .98 .98 .01; .98 .999 .001; .90 .90 .20; .90 .80 .20];   % each row: [sensitivity specificity prevalence]
 for i = 1:size(examples, 1)
     fprintf('sens=%.3f spec=%.3f prevalence=%5.1f%%  ->  PPV = %.2f\n', ...
         examples(i, 1), examples(i, 2), 100 * examples(i, 3), ...
         calc_ppv(examples(i, 1), examples(i, 2), examples(i, 3)));
 end
 
-prev = linspace(.001, .5, 300);
+prev = linspace(.001, .5, 300);              % prevalence range: 0.1% to 50%
 figure('Color', 'w'); hold on
 plot(prev, calc_ppv(.98, .98, prev), 'LineWidth', 2);
 plot(prev, calc_ppv(.90, .90, prev), 'LineWidth', 2);
@@ -212,7 +214,7 @@ title('PPV depends heavily on the base rate');
 if exist('fmri_data', 'file') == 2
 
     % --- Lie 1, whole-brain: true signal vs. what survives a stringent threshold
-    N = 20;
+    N = 20;                                  % N = simulated participants
     [obj, true_obj, noise_obj] = sim_data(fmri_data, 'n', N);   % simulated 4-D dataset
     mt = mean(true_obj);                                        % true signal image
     t  = ttest(obj, .05, 'unc');                                % observed t map

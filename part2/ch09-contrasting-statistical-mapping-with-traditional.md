@@ -35,8 +35,9 @@ Over the past decade, a **Cognitive Neuroscience 2.0** has emerged to fill these
 :::{figure} images/ch09-t1-77yo-man.png
 :alt: A 3D cortical surface rendering and eight sagittal T1-weighted MRI slices from a 77-year-old man, showing enlarged ventricles and cortical atrophy
 :width: 95%
+:class: book-figure
 
-Two ways of seeing one brain. A T1 MRI image from a 77-year-old man: a rendered cortical surface and sagittal slices. A neuroradiologist would interpret these pictures by eye — and two experts reading this very case reached different conclusions, neither with a quantitative estimate of disease likelihood. A statistical brain-mapping approach would instead compare the image against databases of healthy age-matched controls and patients with various dementias, returning probability scores for each diagnosis. The two approaches could be merged, potentially to great clinical benefit. *(Figure 9.1 from the book.)*
+Two ways of seeing one brain. A T1 MRI image from a 77-year-old man: a rendered cortical surface and sagittal slices. A neuroradiologist would interpret these pictures by eye — and two experts reading this very case reached different conclusions, neither with a quantitative estimate of disease likelihood. A statistical brain-mapping approach would instead compare the image against databases of healthy age-matched controls and patients with various dementias, returning probability scores for each diagnosis. The two approaches could be merged, potentially to great clinical benefit. *(Figure 9.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 **Two paradigms, side by side.** The traditional and statistical approaches differ in what they take as input, who or what does the inference, and what kind of output they produce.
@@ -58,19 +59,21 @@ Two ways of seeing one brain. A T1 MRI image from a 77-year-old man: a rendered 
 ```{mermaid}
 flowchart TD
     subgraph CN1["Cognitive Neuroscience 1.0"]
-        A["Task vs. control contrast,<br/>tested one voxel at a time"] --> B["Group-level activation map:<br/>which areas respond to which tasks"]
-        B --> C["Interpretation via reverse inference:<br/>'face areas', 'pain areas'"]
+        A["Task vs. control,<br/>one voxel at a time"] --> B["Group activation map:<br/>which areas,<br/>which tasks"]
+        B --> C["Reverse inference:<br/>'face areas',<br/>'pain areas'"]
     end
     subgraph CN2["Cognitive Neuroscience 2.0"]
-        D["Pattern recognition across<br/>many brain variables<br/>(activity + connectivity + structure)"] --> E["Predictive model for<br/>individual people:<br/>brain age, AD risk, performance"]
-        E --> F["Validation in new samples:<br/>sensitivity, specificity,<br/>generalizability across cohorts"]
+        D["Pattern recognition:<br/>activity + connectivity<br/>+ structure"] --> E["Predictions for<br/>individual people:<br/>brain age, AD risk"]
+        E --> F["Validation in<br/>new samples:<br/>sensitivity, specificity"]
     end
-    CN1 -->|"foundation: systems-level<br/>brain organization"| CN2
-    F --> G["Decision support for experts:<br/>models summarize, humans decide<br/>(e.g., X-ray triage: critical films<br/>reviewed in 2.7 days instead of 11.2)"]
+    CN1 -->|"foundation:<br/>brain systems"| CN2
+    F --> G["Decision support:<br/>models summarize,<br/>humans decide"]
     style CN1 fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style CN2 fill:#fef3c7,stroke:#f59e0b,color:#713f12
     style G fill:#dcfce7,stroke:#22c55e,color:#14532d
 ```
+
+The chest X-ray triage system described above is one working instance of the final node: the model flags likely-critical films so that expert review of them happens in 2.7 days on average instead of 11.2 — the radiologists, not the model, still make every diagnosis.
 
 ## Thought questions
 

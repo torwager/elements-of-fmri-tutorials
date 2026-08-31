@@ -1,4 +1,5 @@
 %% Lab 15: Sampling, Aliasing, and Smoothing
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part3/ch15-spatial-and-temporal-resolution
 %[text] This lab builds hands-on intuition for the temporal and spatial resolution
 %[text] limits discussed in Chapter 15 of *Elements of fMRI Analysis*. You will
 %[text] construct sine waves and examine them with the fast Fourier transform (FFT),
@@ -53,12 +54,13 @@ fprintf('Nyquist limit = Fs/2 = %d Hz\n', nyquist);
 %[text] Here a 10 Hz wave is re-sampled at 40, 15, and 12 Hz. Predicted apparent
 %[text] frequency: |F - round(F/Fs_new)*Fs_new|.
 
-Fs = 1000;  dur = 2;
-t = 0:1/Fs:dur - 1/Fs;
-F = 10;
+Fs = 1000;              % Fs = dense "ground truth" sampling rate (Hz)
+dur = 2;                % dur = signal duration (s)
+t = 0:1/Fs:dur - 1/Fs;  % time vector (s)
+F = 10;                 % F = true signal frequency (Hz)
 y = sin(2 * pi * F * t);
 
-new_rates = [40 15 12];
+new_rates = [40 15 12]; % slower sampling rates to test (Hz)
 figure;
 for i = 1:3
     fs_new = new_rates(i);
@@ -78,7 +80,8 @@ xlabel('Time (sec)')
 %[text] 2 Hz — a slow, entirely artifactual oscillation. Confirm in the frequency
 %[text] domain:
 
-fs_new = 12;  step = round(Fs / fs_new);
+fs_new = 12;                 % Nyquist = 6 Hz, below the 10 Hz signal
+step = round(Fs / fs_new);   % keep every step-th sample of the dense signal
 ysub = y(1:step:end);  n = numel(ysub);
 fsub = (0:floor(n/2)) / (n / fs_new);
 msub = abs(fft(ysub)) / n;  msub = msub(1:floor(n/2) + 1);
@@ -97,11 +100,12 @@ fprintf('Spectral peak at %3.2f Hz (true frequency: %d Hz)\n', fsub(imax), F);
 %[text] heartbeat stays separable from the task depends on the TR. We simulate a
 %[text] spiky heartbeat with beat-to-beat variability, then sample it once per TR.
 
-rng(2026);
-fs = 100;  dur = 300;               % 100 Hz simulation, 5 minutes
+rng(2026);                          % seed for reproducible simulations
+fs = 100;                           % fs = simulation rate (Hz) — plenty for a ~1 Hz signal
+dur = 300;                          % dur = duration (s): 5 minutes, a short fMRI run
 t = 0:1/fs:dur - 1/fs;
 
-intervals = 1 + 0.06 * randn(round(dur * 1.2), 1);   % mean 1 s between beats
+intervals = 1 + 0.06 * randn(round(dur * 1.2), 1);   % mean 1 s between beats (60 bpm), sd = 0.06 s jitter
 intervals = min(max(intervals, 0.7), 1.4);
 beat_times = cumsum(intervals);
 beat_times = beat_times(beat_times < dur - 1);
@@ -117,7 +121,7 @@ xlabel('Time (sec)'), title('Simulated heartbeat (~60 bpm, variable intervals)')
 %[text] Sample at three TRs and inspect time and frequency domains. The task band
 %[text] (~0.005–0.1 Hz) is where block and event-related designs live.
 
-TRs = [0.5 1.0 2.0];
+TRs = [0.5 1.0 2.0];    % TR = time between volumes (s)
 figure;
 for i = 1:3
     TR = TRs(i);
@@ -144,7 +148,7 @@ end
 %[text] Quantify how much cardiac power lands in the task band at each TR:
 
 fprintf('\nFraction of sampled cardiac power in the task band (0.005-0.1 Hz):\n');
-for TR = [0.4 0.5 1.0 2.0 3.0]
+for TR = [0.4 0.5 1.0 2.0 3.0]      % TRs from fast multiband to slow standard sampling
     samp = heart(1:round(TR * fs):end);
     n = numel(samp);
     fsamp = (0:floor(n/2)) / (n * TR);
@@ -166,9 +170,9 @@ end
 %[text] (~19 mm FWHM) — plus noise, then smooth with an 8 mm FWHM Gaussian.
 %[text] Inspired by is_smoothing_lossy.m in github.com/canlab/FMRI_simulations.
 
-rng(1);
-n_vox = 200;
-x = (1:n_vox)';                                % 1 voxel = 1 mm
+rng(1);                                        % seed for reproducible noise
+n_vox = 200;                                   % n_vox = number of voxels in the 1-D strip
+x = (1:n_vox)';                                % position along the strip: 1 voxel = 1 mm
 fwhm2sig = 1 / (2 * sqrt(2 * log(2)));         % FWHM -> Gaussian sigma
 
 small = 2 * exp(-(x - 60).^2 / (2 * 1.5^2));   % ~3.5 mm FWHM activation
@@ -176,8 +180,9 @@ large = 2 * exp(-(x - 140).^2 / (2 * 8^2));    % ~19 mm FWHM activation
 truth = small + large;
 y = truth + randn(n_vox, 1);                   % noise sd = 1
 
-kernel_fwhm = 8;  sig = kernel_fwhm * fwhm2sig;
-kx = (-20:20)';
+kernel_fwhm = 8;                   % kernel_fwhm = smoothing kernel FWHM (mm), a typical choice
+sig = kernel_fwhm * fwhm2sig;      % convert FWHM -> Gaussian sigma
+kx = (-20:20)';                    % kernel support: +/- 20 mm
 kern = exp(-kx.^2 / (2 * sig^2));  kern = kern / sum(kern);
 ysmooth = conv(y, kern, 'same');
 
@@ -197,8 +202,9 @@ fprintf('Smoothed peak, broad blob (~19 mm):   %3.2f\n', max(ysmooth(130:150)));
 %[text] amplitude — is flattened and could fall below a statistical threshold.
 %[text] Sweep the activation width to see attenuation vs. detection sensitivity:
 
-blob_fwhms = [2 3.5 5 8 12 19 30];
-n_sims = 200;  center = n_vox / 2;
+blob_fwhms = [2 3.5 5 8 12 19 30];   % activation FWHMs to sweep (mm)
+n_sims = 200;                        % n_sims = noise realizations per width; more -> stabler estimates
+center = n_vox / 2;                  % place each activation mid-strip
 
 fprintf('\nBlob FWHM (mm) | smoothed peak amp | peak z (raw) | peak z (smoothed)\n');
 for bf = blob_fwhms

@@ -1,4 +1,6 @@
 %% Chapter 19 Lab: GLM Design Specification (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch19-glm-design-specification
+%
 % This lab accompanies Chapter 19, "GLM Design Specification". You will
 % build design matrices with variable-duration events and parametric
 % modulators, measure collinearity with variance inflation factors (VIFs),
@@ -20,7 +22,7 @@
 % cell per condition; adding a second column of durations (in sec) to each
 % cell produces duration-modulated regressors.
 
-TR = 2;
+TR = 2;                                      % repetition time (s)
 runlen = 360;                                % run length in seconds
 
 onsets = {(10:24:340)'};                     % one event type, 14 events
@@ -97,12 +99,12 @@ disp(table(vif_raw', vif_centered', 'VariableNames', ...
 % orthogonalized -- using both the RAW and the mean-centered modulator.
 % Watch which beta changes and which does not.
 
-rng(42);
+rng(42);                                     % seed for reproducibility
 beta_true = [1.0 0.5];                        % avg amplitude, modulator slope
 y = 100 + beta_true(1) * x1 + beta_true(2) * xmod_centered ...
     + 2 * randn(size(x1));
 
-int = ones(size(x1));
+int = ones(size(x1));                        % intercept column
 b = zeros(4, 2);                              % rows: avg/mod x as-is/orth
 
 for i = 1:2
@@ -184,7 +186,7 @@ end
 % individual regressors. Here we build a randomized two-condition design
 % and measure how much variance an 80-s filter removes from each.
 
-rng(3);
+rng(3);                                      % seed for this random design
 allons = sort(8 + (runlen - 28) * rand(28, 1));   % 28 jittered events
 isA = false(28, 1); isA(randperm(28, 14)) = true; % random A/B labels
 Xab = onsets2fmridesign({allons(isA) allons(~isA)}, TR, runlen, 'hrf');

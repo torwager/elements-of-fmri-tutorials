@@ -12,6 +12,8 @@
 % CANlab_help_examples: linear_filtering_a_timeseries.m.
 %
 % Runtime: under a minute. All data are simulated.
+%
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch17-image-preprocessing
 
 %% 1. Head motion: realignment parameters as nuisance regressors
 % Realignment estimates six rigid-body parameters per volume: translations
@@ -20,8 +22,8 @@
 % voxel whose signal mixes "neural" fluctuations, motion-coupled artifact,
 % and noise.
 
-rng(17);
-n = 200; TR = 1;
+rng(17);                              % seed for reproducibility
+n = 200; TR = 1;                      % n = volumes (frames); TR = repetition time (s)
 
 mp = cumsum(0.02 * randn(n, 6));      % 6 motion parameters (random walk)
 mp(:, 4:6) = mp(:, 4:6) * 0.005;      % rotations are small (radians)
@@ -54,7 +56,7 @@ fprintf('Variance explained by 6 motion parameters: R^2 = %.2f\n', R2);
 
 fwd = sum(abs(diff(mp(:, 1:3))), 2) + 50 * sum(abs(diff(mp(:, 4:6))), 2);
 fwd = [0; fwd];                       % first frame has no predecessor
-thresh = 0.5;
+thresh = 0.5;                         % censoring threshold (mm); 0.2-0.5 typical
 bad = find(fwd > thresh);
 fprintf('Mean FWD = %.3f mm; %d frames exceed %.1f mm\n', ...
     mean(fwd), length(bad), thresh);
@@ -85,11 +87,12 @@ xlabel('Frame'); ylabel('FWD (mm)'); title('Framewise displacement');
 % slice's acquisition times, then correct by interpolating to a reference
 % slice (the one acquired mid-TR).
 
-TR = 2; n_vol = 100; n_slices = 20; dt = 0.05;
+TR = 2; n_vol = 100; n_slices = 20;   % TR (s); volumes; slices per volume
+dt = 0.05;                            % high-resolution time step (s)
 t_hi = (0:dt:(n_vol * TR - dt))';
 
 hrf = spm_hrf(dt);                    % canonical HRF sampled at dt
-onsets = 6:24:(n_vol * TR - 20);      % events every 24 s
+onsets = 6:24:(n_vol * TR - 20);      % one event onset every 24 s
 stim = zeros(size(t_hi));
 stim(round(onsets / dt) + 1) = 1;
 bold = conv(stim, hrf); bold = bold(1:length(t_hi));
@@ -108,7 +111,8 @@ for i = 1:3
         labels{i}, slice_offset(picks(i)));
 end
 
-ref = 11; ref_offset = slice_offset(ref);
+ref = 11;                             % reference slice (acquired mid-TR)
+ref_offset = slice_offset(ref);
 corrected = zeros(n_vol, 3);
 for i = 1:3
     corrected(:, i) = interp1(vol_times + slice_offset(picks(i)), ...
@@ -137,12 +141,13 @@ title('After slice-timing correction to the middle slice');
 % (2-mm voxels) with a small (~7 mm) and a large (~28 mm) activation blob
 % plus noise, and measure peak z at each blob center vs. kernel FWHM.
 
-vox_mm = 2; sz = 100;
+vox_mm = 2; sz = 100;                 % voxel size (mm); grid size (voxels)
 [xx, yy] = meshgrid(1:sz, 1:sz);
 gauss_blob = @(cx, cy, sig) exp(-((xx - cx).^2 + (yy - cy).^2) / (2 * sig^2));
 truth = gauss_blob(28, 50, 1.5) + gauss_blob(70, 50, 6);   % sigma in voxels
 
-fwhms_mm = 0:2:16; n_sims = 30;
+fwhms_mm = 0:2:16;                    % smoothing kernels to test (mm)
+n_sims = 30;                          % noise realizations per kernel
 z_small = zeros(size(fwhms_mm)); z_large = zeros(size(fwhms_mm));
 for k = 1:length(fwhms_mm)
     sig_vox = fwhms_mm(k) / 2.355 / vox_mm;
@@ -191,7 +196,7 @@ fprintf('Best FWHM: small blob %d mm, large blob %d mm\n', ...
 % single step, applying the same operation to the task regressors.
 % Adapted from CANlab_help_examples: linear_filtering_a_timeseries.m
 
-TR = 2; n = 300; hpf = 128;           % cutoff in seconds
+TR = 2; n = 300; hpf = 128;           % TR (s); n = volumes; hpf = high-pass cutoff (s)
 
 [S, KL, KH] = use_spm_filter(TR, n, 'none', 'specify', hpf);
 fprintf('%d DCT regressors span frequencies below 1/%d = %.4f Hz\n', ...

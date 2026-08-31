@@ -82,7 +82,7 @@ The scalp electromagnetic techniques invert the trade-off: exquisite timing, unc
   - Emerging; few human applications yet
 :::
 
-Because PET and fMRI are the two leading options for whole-brain functional imaging, the chapter compares them directly in five domains. **Acquisition and fidelity:** MRI can be repeated on the same person indefinitely, enabling longitudinal designs, large multisite studies, and "deep phenotyping," and a single MRI session can collect structural, diffusion, vascular, functional, and spectroscopic images; PET's radioactivity precludes frequent repetition, but its images are free of the susceptibility artifacts — signal loss and distortion near the amygdala, inferior temporal lobes, and orbitofrontal cortex — that are intrinsic to BOLD. **Signal interpretability:** PET provides purer, more interpretable measures of blood flow and glucose metabolism, whereas BOLD is a complex mixture; but fMRI can link activity to events unfolding over seconds, powering event-related and connectivity analyses, while PET needs 20–30 seconds minimum (often 10–40 minutes) per image. **Resolution:** fMRI wins on both axes — sub-millimeter spatial resolution at the high end, and event-related averaging that can resolve timing differences of roughly 100–200 msec despite the sluggish hemodynamic response. **Accessibility:** fMRI costs about one-third as much as PET, faces less regulatory burden, and rides on an installed base of MRI scanners in hospitals and psychology departments; critically, its major analysis packages (SPM, FSL, AFNI) are open source, and its culture of data sharing has opened the field to statisticians and computer scientists. **Multimodal potential:** both combine with other techniques, and simultaneous EEG–fMRI is powerful, but PET is technically simpler to pair with other devices because it lacks a strong magnetic field. Where PET remains unmatched is molecular imaging — a capability that has proven critical for drug development and early Alzheimer's diagnosis.
+Because PET and fMRI are the two leading options for whole-brain functional imaging, the chapter compares them directly in five domains. **Acquisition and fidelity:** MRI can be repeated on the same person indefinitely, enabling longitudinal designs, large multisite studies, and "deep phenotyping," and a single MRI session can collect structural, diffusion, vascular, functional, and spectroscopic images; PET's radioactivity precludes frequent repetition, but its images are free of the susceptibility artifacts — signal loss and distortion near the amygdala, inferior temporal lobes, and orbitofrontal cortex — that are intrinsic to BOLD. **Signal interpretability:** PET provides purer, more interpretable measures of blood flow and glucose metabolism, whereas BOLD is a complex mixture; but fMRI can link activity to events unfolding over seconds, powering event-related and connectivity analyses, while PET needs 20–30 seconds minimum (often 10–40 minutes) per image. **Resolution:** fMRI wins on both axes — sub-millimeter spatial resolution at the high end, and event-related averaging that can resolve timing differences of roughly 100–200 msec despite the sluggish hemodynamic response. **Accessibility:** fMRI costs about one-third as much as PET, faces less regulatory burden, and rides on an installed base of MRI scanners in hospitals and psychology departments; critically, its major analysis packages ([SPM](https://www.fil.ion.ucl.ac.uk/spm/), FSL, AFNI) are open source, and its culture of data sharing has opened the field to statisticians and computer scientists. **Multimodal potential:** both combine with other techniques, and simultaneous EEG–fMRI is powerful, but PET is technically simpler to pair with other devices because it lacks a strong magnetic field. Where PET remains unmatched is molecular imaging — a capability that has proven critical for drug development and early Alzheimer's diagnosis.
 
 Although this book focuses on fMRI analysis, the choice of technique should always follow the scientific question: millisecond dynamics call for EEG or MEG, receptor systems call for PET, stable baseline states favor ASL, and field studies favor EEG or fNIRS. And happily, most of the analysis principles developed in the chapters ahead — modeling, inference, prediction — transfer to every one of these data types.
 
@@ -91,27 +91,43 @@ Although this book focuses on fMRI analysis, the choice of technique should alwa
 :::{figure} images/ch04_fig1_modality_overview.png
 :alt: Donut chart of publication frequencies for BOLD fMRI, ASL, MRS, PET, SPECT, EEG, MEG, and NIRS since 2010, surrounded by photos of MRI, PET, MEG, and EEG setups
 :width: 90%
+:class: book-figure
 
-Major functional neuroimaging techniques and their relative popularity in the scientific literature since 2010. MRI-based techniques (blues) include BOLD fMRI, ASL, and MRS; radiotracer techniques (greens) include PET and SPECT; scalp recording techniques (purples/pinks) include EEG, MEG, and NIRS. BOLD fMRI and EEG have grown in popularity, while SPECT and MRS have declined. *(Figure 4.1 from the book.)*
+Major functional neuroimaging techniques and their relative popularity in the scientific literature since 2010. MRI-based techniques (blues) include BOLD fMRI, ASL, and MRS; radiotracer techniques (greens) include PET and SPECT; scalp recording techniques (purples/pinks) include EEG, MEG, and NIRS. BOLD fMRI and EEG have grown in popularity, while SPECT and MRS have declined. *(Figure 4.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 **Three signal families.** Every noninvasive technique reads out one of three physical traces of brain activity — electromagnetic fields, hemodynamics/metabolism, or molecular binding — and the trace it reads determines its characteristic strengths.
 
 ```{mermaid}
-flowchart TD
-    N["Neural activity<br/>(synaptic transmission, spiking, metabolism)"]
-    N --> E["Electromagnetic fields<br/>from synchronized pyramidal neurons"]
-    N --> H["Hemodynamic & metabolic changes<br/>blood flow, oxygenation, glucose use"]
-    N --> M["Molecular events<br/>receptor binding, transmitter release"]
-    E --> EEG["EEG<br/>scalp potentials; ms timing;<br/>gyri; hard inverse problem"]
-    E --> MEG["MEG<br/>magnetic fields; ms timing;<br/>sulci; better localization"]
-    H --> BOLD["BOLD fMRI<br/>relative oxygenation + flow;<br/>whole brain, mm scale"]
-    H --> ASL["ASL fMRI<br/>quantitative CBF;<br/>stable across months"]
-    H --> NIRS["fNIRS<br/>oxy/deoxy-Hb; outer 1.5 cm;<br/>cheap & portable"]
-    H --> FUS["fUS<br/>Doppler blood volume;<br/>200 μm, ~2 cm depth"]
-    H --> PETf["[15-O] / FDG PET<br/>quantitative flow & metabolism"]
-    M --> PETm["Receptor PET & SPECT<br/>hundreds of tracers;<br/>dopamine, opioid, amyloid, TSPO…"]
-    M --> MRS["MRS<br/>NAA, Glx, GABA<br/>in one large voxel"]
+flowchart LR
+    N["Neural<br/>activity"]
+    subgraph E["Electromagnetic fields"]
+        direction TB
+        EEG["EEG<br/>ms timing · gyri<br/>hard inverse problem"]
+        MEG["MEG<br/>ms timing · sulci<br/>better localization"]
+        EEG ~~~ MEG
+    end
+    subgraph H["Hemodynamics & metabolism"]
+        direction TB
+        BOLD["BOLD fMRI<br/>relative signal · whole brain"]
+        ASL["ASL fMRI<br/>quantitative CBF · stable"]
+        NIRS["fNIRS<br/>outer 1.5 cm · portable"]
+        FUS["fUS<br/>200 μm · ~2 cm depth"]
+        PETf["[15-O] / FDG PET<br/>flow & metabolism"]
+        BOLD ~~~ ASL
+        ASL ~~~ NIRS
+        NIRS ~~~ FUS
+        FUS ~~~ PETf
+    end
+    subgraph M["Molecular binding"]
+        direction TB
+        PETm["Receptor PET & SPECT<br/>hundreds of tracers"]
+        MRS["MRS<br/>NAA, Glx, GABA<br/>one large voxel"]
+        PETm ~~~ MRS
+    end
+    N --> E
+    N --> H
+    N --> M
     style N fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style E fill:#fce7f3,stroke:#db2777,color:#831843
     style H fill:#dcfce7,stroke:#22c55e,color:#14532d
@@ -138,22 +154,33 @@ flowchart TD
 **The fMRI-vs-PET scorecard.** Neither technique dominates; the balance of advantages depends on the question.
 
 ```{mermaid}
-flowchart LR
+flowchart TD
+    Q["Which technique?"]
     subgraph F["fMRI advantages"]
-        F1["Safely repeatable:<br/>longitudinal, multisite,<br/>deep-phenotyping designs"]
+        direction TB
+        F1["Safely repeatable<br/>longitudinal · multisite"]
         F2["Many image types<br/>in one session"]
-        F3["Superior spatial resolution<br/>(sub-mm at best)"]
-        F4["Event-related timing<br/>(~100–200 msec differences)<br/>and connectivity analyses"]
-        F5["~1/3 the cost; open-source<br/>software; shared data"]
+        F3["Sub-mm spatial<br/>resolution"]
+        F4["Event timing<br/>~100–200 ms · connectivity"]
+        F5["~1/3 the cost<br/>open-source · shared data"]
+        F1 ~~~ F2
+        F2 ~~~ F3
+        F3 ~~~ F4
+        F4 ~~~ F5
     end
     subgraph P["PET advantages"]
-        P1["No susceptibility dropout:<br/>clean signal in amygdala,<br/>OFC, inferior temporal lobes"]
-        P2["Pure, quantitative flow<br/>and metabolism signals"]
-        P3["Molecular imaging:<br/>hundreds of receptor<br/>and inflammation tracers"]
-        P4["Stable across long periods"]
-        P5["Simpler multimodal pairing<br/>(no strong magnetic field)"]
+        direction TB
+        P1["No susceptibility dropout<br/>amygdala · OFC · temporal"]
+        P2["Pure, quantitative<br/>flow & metabolism"]
+        P3["Molecular imaging<br/>hundreds of tracers"]
+        P4["Stable across<br/>long periods"]
+        P5["Simpler multimodal<br/>pairing (no magnet)"]
+        P1 ~~~ P2
+        P2 ~~~ P3
+        P3 ~~~ P4
+        P4 ~~~ P5
     end
-    Q["Which technique?"] --> F
+    Q --> F
     Q --> P
     style Q fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style F fill:#dcfce7,stroke:#22c55e,color:#14532d

@@ -35,15 +35,27 @@ The basic brain mapping procedure behind most published neuroimaging findings pe
 :::{figure} images/ch08_fig1_spatial_variability.png
 :alt: Meta-analysis of task-shifting studies showing consistent group results, scattered individual-study peaks for three types of shifting, and 3-D 95 percent confidence ellipsoids on peak locations
 :width: 95%
+:class: book-figure
 
-Variability in activation location across studies. Left: regions consistently activated across task-switching studies. Center: peak coordinates from individual studies for three types of attention shifting — the scatter is striking. Right: 3-D 95% spatial confidence ellipsoids for each shifting type; only where ellipsoids are separable can one infer that the types activate reliably different locations. *(Figure 8.1 from the book.)*
+Variability in activation location across studies. Left: regions consistently activated across task-switching studies. Center: peak coordinates from individual studies for three types of attention shifting — the scatter is striking. Right: 3-D 95% spatial confidence ellipsoids for each shifting type; only where ellipsoids are separable can one infer that the types activate reliably different locations. *(Figure 8.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
-**Effect size.** A finding's practical and clinical significance depends on how large the effect is, not on how small its P value is. Effect sizes describe effect strength in sample-size-free statistical units: Cohen's $d$ is a mean difference divided by its standard deviation, and Pearson's $r$ (or $r^2$) is the proportion of variance explained. The two families interconvert, and both link directly to test statistics — for a one-sample comparison across $N$ participants,
+**Effect size.** A finding's practical and clinical significance depends on how large the effect is, not on how small its P value is. Effect sizes describe effect strength in sample-size-free statistical units: Cohen's $d$ is a mean difference divided by its standard deviation, and Pearson's $r$ (or $r^2$) is the proportion of variance explained. The two families interconvert, and both link directly to test statistics — for a one-sample comparison across $N$ participants (where $N$ is the number of participants contributing one observation each),
 
+::::{div}
+:class: eq-tip
 $$
-t = d\sqrt{N}, \qquad d = \frac{2r}{\sqrt{1 - r^2}}.
+t = d\sqrt{N}, \qquad d = \frac{2r}{\sqrt{1 - r^2}}
 $$
+:::{div}
+:class: eq-tip-text
+t — one-sample t-statistic · d — Cohen's d (mean difference ÷ its SD) · N — number of participants · r — Pearson correlation
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $t$ *is the one-sample t-statistic,* $d$ *is Cohen's d (the mean difference divided by its standard deviation),* $N$ *is the number of participants, and* $r$ *is the Pearson correlation being converted to an equivalent* $d$*.*
+:::
 
 A tiny effect ($d = 0.019$) can carry an astronomically small P value in a study of 100,000 people; sample size sharpens the *precision* of an effect size estimate but does not change its expected value. Interpretability matters too: a "moderate" effect of $d = 0.5$ corresponds to only about 60% accuracy in classifying which condition an individual observation came from, and even a "large" $d = 0.8$ yields only about 66% — a sobering calibration for anyone hoping to make inferences about individuals from group maps.
 
@@ -53,10 +65,25 @@ A tiny effect ($d = 0.019$) can carry an astronomically small P value in a study
 
 **Overlap and dissociation across tasks.** Double dissociations — damage 1 impairs Task A more than B, damage 2 impairs B more than A — have been a gold standard for separating mental processes, and imaging adopted the same logic by comparing activation maps. But with low power, *any* two thresholded maps will differ, even if the underlying process is identical, because which voxels survive is largely determined by noise. Interpretation then becomes a Rorschach test: theorists who expect overlap gaze at the shared voxels; theorists who expect separation point to the non-overlapping ones. Circularity compounds the damage — select a "Task A region" from the A map, extract responses to both tasks, and you will manufacture an impressive double dissociation from identical true effects. And even genuine voxel-level overlap is ambiguous: each voxel averages over ~5.5 million neurons, so two tasks can activate the same voxel via entirely different neural populations. A voxel that responds to pain is not a "pain voxel." Valid dissociation inference requires independence — select regions in one sample, test the dissociation in another — and stronger claims require the predictive-modeling and pattern-based approaches covered later in the book.
 
-:::{admonition} Box 8.1 in brief: the language of diagnostic testing
+:::::{admonition} Box 8.1 in brief: the language of diagnostic testing
 :class: note
-Sensitivity (power, hit rate) is the probability of detecting a true effect; the false positive rate ($\alpha$) is the probability of flagging a null one; specificity is $1-\alpha$; the miss rate is $\beta$, and power is $1-\beta$. Raising the threshold trades sensitivity for specificity — the ROC curve traces this tradeoff. Diagnostic applications add a crucial ingredient hypothesis tests ignore: the base rate. The positive predictive value, $PPV = \frac{\text{sens} \times \text{prev}}{\text{sens} \times \text{prev} + (1-\text{spec})(1-\text{prev})}$, can be startlingly low for rare conditions even with excellent tests — a theme the lab explores.
+Sensitivity (power, hit rate) is the probability of detecting a true effect; the false positive rate ($\alpha$, the Type I error rate) is the probability of flagging a null one; specificity is $1-\alpha$; the miss rate ($\beta$, the Type II error rate) is the probability of missing a true effect, and power is $1-\beta$. Raising the threshold trades sensitivity for specificity — the ROC curve traces this tradeoff. Diagnostic applications add a crucial ingredient hypothesis tests ignore: the base rate (prevalence). The positive predictive value can be startlingly low for rare conditions even with excellent tests — a theme the lab explores:
+
+::::{div}
+:class: eq-tip
+$$
+PPV = \frac{\text{sens} \times \text{prev}}{\text{sens} \times \text{prev} + (1-\text{spec})(1-\text{prev})}
+$$
+:::{div}
+:class: eq-tip-text
+PPV — probability the condition is present given a positive test · sens — sensitivity (power) · spec — specificity · prev — prevalence (base rate)
 :::
+::::
+:::{div}
+:class: eq-where
+*where* $PPV$ *is the probability that the condition is truly present given a positive test,* $\text{sens}$ *is the test's sensitivity,* $\text{spec}$ *its specificity, and* $\text{prev}$ *the prevalence (base rate) of the condition in the tested population.*
+:::
+:::::
 
 ## Hands-on tutorial
 
@@ -74,15 +101,15 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 
 ```matlab
 % Adapted from CANlab FMRI_simulations (github.com/canlab), statistical lies demos
-rng(1);
-N = 30; n_vox = 20000; d_true = 0.5;
+rng(1);                                   % fixed seed for reproducibility
+N = 30; n_vox = 20000; d_true = 0.5;      % N = participants; n_vox = voxels tested; d_true = true effect (Cohen's d) at EVERY voxel
 data = randn(N, n_vox) + d_true;          % every voxel truly active, d = 0.5
 
 d_hat = mean(data) ./ std(data);          % estimated effect size per voxel
 t     = d_hat .* sqrt(N);                 % one-sample t-statistic
-p     = 2 * tcdf(-abs(t), N - 1);
+p     = 2 * tcdf(-abs(t), N - 1);         % two-tailed p value, N - 1 df
 
-sig = p < .001;                           % "significant" voxels only
+sig = p < .001;                           % "significant" voxels only (typical mapping threshold)
 fprintf('True d = %.2f | mean estimated d: all voxels %.2f, significant voxels %.2f\n', ...
     d_true, mean(d_hat), mean(d_hat(sig)))
 ```
@@ -94,20 +121,26 @@ fprintf('True d = %.2f | mean estimated d: all voxels %.2f, significant voxels %
 import numpy as np
 from scipy import stats
 
-rng = np.random.default_rng(1)
-N, n_vox, d_true = 30, 20_000, 0.5
+rng = np.random.default_rng(1)                    # fixed seed for reproducibility
+N, n_vox, d_true = 30, 20_000, 0.5                # N = participants; n_vox = voxels tested; d_true = true effect (Cohen's d) at EVERY voxel
 data = rng.standard_normal((N, n_vox)) + d_true   # every voxel truly active
 
 d_hat = data.mean(0) / data.std(0, ddof=1)        # estimated effect size per voxel
 t = d_hat * np.sqrt(N)                            # one-sample t-statistic
-p = 2 * stats.t.sf(np.abs(t), N - 1)
+p = 2 * stats.t.sf(np.abs(t), N - 1)              # two-tailed p value, N - 1 df
 
-sig = p < .001                                    # "significant" voxels only
+sig = p < .001                                    # "significant" voxels only (typical mapping threshold)
 print(f"True d = {d_true} | mean estimated d: all voxels {d_hat.mean():.2f}, "
       f"significant voxels {d_hat[sig].mean():.2f}")
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+True d = 0.5 | mean estimated d: all voxels 0.51, significant voxels 0.80
+```
 
 The significant voxels report $d \approx 0.8$ — a 60% overstatement of a truth you built in yourself. No individual test did anything wrong; the bias lives entirely in the selection.
 
@@ -119,14 +152,14 @@ The significant voxels report $d \approx 0.8$ — a 60% overstatement of a truth
 
 ```matlab
 % Adapted from lie9_false_double_dissociation.m (github.com/canlab FMRI_simulations)
-rng(2);
-N = 20; n_vox = 5000; d_true = 0.3;       % identical weak signal everywhere
+rng(2);                                   % fixed seed for reproducibility
+N = 20; n_vox = 5000; d_true = 0.3;       % N = participants; d_true = identical weak true effect for BOTH tasks, everywhere
 taskA = randn(N, n_vox) + d_true;
 taskB = randn(N, n_vox) + d_true;
 
 pval = @(x) 2 * tcdf(-abs(mean(x) ./ (std(x) ./ sqrt(N))), N - 1);
-roiA = pval(taskA) < .001;                % circular ROI selection
-roiB = pval(taskB) < .001;
+roiA = pval(taskA) < .001;                % circular ROI selection: voxels chosen by each task's own map
+roiB = pval(taskB) < .001;                % (.001 = same threshold used for the "map")
 
 means = [mean(mean(taskA(:, roiA))), mean(mean(taskB(:, roiA))); ...
          mean(mean(taskA(:, roiB))), mean(mean(taskB(:, roiB)))];
@@ -138,8 +171,8 @@ disp(array2table(means, 'VariableNames', {'TaskA', 'TaskB'}, ...
 :sync: python
 
 ```python
-rng = np.random.default_rng(2)
-N, n_vox, d_true = 20, 5000, 0.3          # identical weak signal everywhere
+rng = np.random.default_rng(2)            # fixed seed for reproducibility
+N, n_vox, d_true = 20, 5000, 0.3          # N = participants; d_true = identical weak true effect for BOTH tasks, everywhere
 taskA = rng.standard_normal((N, n_vox)) + d_true
 taskB = rng.standard_normal((N, n_vox)) + d_true
 
@@ -147,8 +180,8 @@ def pval(x):
     t = x.mean(0) / (x.std(0, ddof=1) / np.sqrt(N))
     return 2 * stats.t.sf(np.abs(t), N - 1)
 
-roiA = pval(taskA) < .001                 # circular ROI selection
-roiB = pval(taskB) < .001
+roiA = pval(taskA) < .001                 # circular ROI selection: voxels chosen by each task's own map
+roiB = pval(taskB) < .001                 # (.001 = same threshold used for the "map")
 
 print("            Task A   Task B")
 print(f"ROI from A:  {taskA[:, roiA].mean():.2f}     {taskB[:, roiA].mean():.2f}")
@@ -156,6 +189,14 @@ print(f"ROI from B:  {taskA[:, roiB].mean():.2f}     {taskB[:, roiB].mean():.2f}
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+            Task A   Task B
+ROI from A:  0.77     0.28
+ROI from B:  0.29     0.78
+```
 
 Each ROI "prefers" the task used to select it — a textbook crossover interaction, manufactured from pure noise around identical effects. The full labs show the antidote: select regions in one half of the participants and test in the other, and the dissociation evaporates.
 

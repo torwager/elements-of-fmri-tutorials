@@ -4,6 +4,8 @@
 % to a simulated voxel time series with ordinary least squares (OLS),
 % examine residuals and model fit, and test a simple contrast.
 %
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch18-the-general-linear-model-and
+%
 % Requirements: CanlabCore and SPM12 on your MATLAB path.
 %   https://github.com/canlab/CanlabCore
 % Code adapted from CANlab tutorials (github.com/canlab and
@@ -50,9 +52,9 @@ title('Design matrix X');
 % answer: beta_A = 0.8, beta_B = 0.4, intercept = 100 (arbitrary units).
 % Noise is IID Gaussian for now -- Chapter 19 adds autocorrelation.
 
-rng(42);                              % reproducible noise
-beta_true = [0.8 0.4 100]';           % [A; B; intercept]
-sigma_noise = 2;
+rng(9);                               % seed for reproducible noise
+beta_true = [0.8 0.4 100]';           % true effects: [A; B; intercept]
+sigma_noise = 0.5;                    % noise SD; modest so this 7-event demo recovers betas clearly
 
 y = X * beta_true + sigma_noise .* randn(n_scans, 1);
 
@@ -122,7 +124,7 @@ disp(table(beta_hat, se, t_vals, p_vals, ...
 % Its t-value uses the same machinery:
 %   t = c'*beta_hat / sqrt(sigma2 * c' * (X'X)^{-1} * c)
 
-c = [1 -1 0]';
+c = [1 -1 0]';                        % contrast weights: +1 for A, -1 for B, 0 for intercept
 
 con_val = c' * beta_hat;                        % contrast value (0.8 - 0.4 = 0.4 expected)
 se_con  = sqrt(sigma2 * c' * XtX_inv * c);      % contrast standard error

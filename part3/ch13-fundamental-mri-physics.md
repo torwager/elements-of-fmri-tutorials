@@ -34,15 +34,37 @@ With no external field, the spins point in random directions and the net magneti
 
 When the RF pulse ends, the system relaxes back to equilibrium along two separable dimensions, and the emitted energy induces the current in the head coil that constitutes the MR signal. **Transverse relaxation** is the loss of the transverse magnetization $M_{xy}$ as spins dephase relative to one another, an exponential decay with time constant T2:
 
+::::{div}
+:class: eq-tip
 $$
 M_{xy}(t) = M_0\, e^{-t/T_2}
 $$
+:::{div}
+:class: eq-tip-text
+M_xy(t) — transverse magnetization remaining at time t · M₀ — equilibrium net magnetization · T₂ — transverse relaxation time constant (tissue-specific)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $M_{xy}(t)$ *is the transverse magnetization at time* $t$ *after the RF pulse ends,* $M_0$ *the equilibrium net magnetization, and* $T_2$ *the tissue-specific time constant of transverse decay.*
+:::
 
 **Longitudinal relaxation** is the recovery of magnetization along $B_0$ as spins re-align with the field, an exponential recovery with time constant T1:
 
+::::{div}
+:class: eq-tip
 $$
 M_z(t) = M_0\left(1 - e^{-t/T_1}\right)
 $$
+:::{div}
+:class: eq-tip-text
+M_z(t) — longitudinal magnetization recovered at time t · M₀ — equilibrium net magnetization · T₁ — longitudinal relaxation time constant (tissue-specific)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $M_z(t)$ *is the longitudinal magnetization at time* $t$ *after excitation,* $M_0$ *the equilibrium net magnetization, and* $T_1$ *the tissue-specific time constant of longitudinal recovery.*
+:::
 
 Both constants have a "63% interpretation" that falls straight out of the math: at $t = T_1$ the longitudinal signal has recovered $1 - 1/e \approx 63\%$ of its equilibrium value, and at $t = T_2$ the transverse signal has decayed to $1/e \approx 37\%$ of its starting value. Crucially, T1 and T2 differ across tissue types — gray matter, white matter, and cerebrospinal fluid (CSF) each have characteristic values — and that difference is what makes anatomical contrast possible. A third constant, **T2\***, describes transverse decay that also includes dephasing from local field inhomogeneities. Deoxygenated hemoglobin is paramagnetic and distorts the local field, so T2* is sensitive to blood oxygenation and flow — the physical basis of functional imaging (Chapter 14).
 
@@ -51,8 +73,9 @@ Different image types are produced by **pulse sequences** — programmed pattern
 :::{figure} images/ch13_pd_t1_t2_weighted.png
 :alt: Proton density, T1-weighted, and T2-weighted axial brain images showing different tissue contrasts
 :width: 90%
+:class: book-figure
 
-The same brain, three contrasts. Proton density (left) reflects water content and shows relatively uniform brain tissue. In the T1-weighted image (middle), white matter is bright and CSF-filled ventricles are dark. In the T2-weighted image (right), the pattern reverses: CSF is bright and white matter is dark. *(From the book's companion slides.)*
+The same brain, three contrasts. Proton density (left) reflects water content and shows relatively uniform brain tissue. In the T1-weighted image (middle), white matter is bright and CSF-filled ventricles are dark. In the T2-weighted image (right), the pattern reverses: CSF is bright and white matter is dark. *(From the book's companion slides for Chapter 13. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Turning excited spins into a picture is the problem of **image formation**. Most MRIs are acquired as a stack of 2D slices (sequentially or interleaved), and exciting a slice tells us only its *total* magnetization. To recover each voxel's contribution, three gradient coils impose controlled linear variations on the magnetic field: one gradient selects the slice, and the other two perform *frequency* and *phase* encoding. Each measurement then corresponds to the Fourier transform of the slice's signal at one spatial frequency — one coordinate $(k_x, k_y)$ in **k-space**. Standard sequences such as echo-planar imaging (EPI) sample k-space line by line; once enough of k-space is covered, an inverse fast Fourier transform reconstructs the image. Because the Fourier transform is reversible, image space and k-space are two complete representations of the same data. Each k-space point encodes a 2D sinusoid spread across the *entire* image: its distance from the k-space center sets the sinusoid's spatial frequency (center = coarse, smooth structure; periphery = fine detail and edges), and its polar angle sets the orientation. The raw k-space data are complex-valued; reconstruction yields magnitude and phase images, and nearly all fMRI analyses use only the magnitude.
@@ -60,15 +83,31 @@ Turning excited spins into a picture is the problem of **image formation**. Most
 :::{figure} images/ch13_kspace_image_space.png
 :alt: k-space data connected to image space by the Fourier transform and its inverse
 :width: 80%
+:class: book-figure
 
-k-space and image space are linked by the Fourier transform (FT) and its inverse (IFT). The scanner measures spatial frequencies — typically one line of k-space at a time (arrows) — and the inverse transform reconstructs the voxel-by-voxel image. *(From the book's companion slides.)*
+k-space and image space are linked by the Fourier transform (FT) and its inverse (IFT). The scanner measures spatial frequencies — typically one line of k-space at a time (arrows) — and the inverse transform reconstructs the voxel-by-voxel image. *(From the book's companion slides for Chapter 13. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Finally, **measuring brain function** means acquiring T2*-weighted volumes repeatedly — one every TR, traditionally about 2 s (with modern multiband/simultaneous multi-slice sequences pushing much faster) — while the participant performs a task or rests. Structural (T1- or T2-weighted) scans give exquisite anatomical detail but are a single snapshot in time; functional (T2*-weighted) scans trade spatial detail for a time series, letting us test how the signal changes with experimental conditions. That link between T2* changes and neuronal activity is the subject of the next chapter.
 
 ## Hands-on tutorial
 
-The physics above reduces to a handful of equations you can explore directly. In this tutorial you will plot T1 recovery and T2 decay for different tissues, and then take an image apart in k-space. The full labs also build a digital head phantom and use the signal equation $S = \rho \left(1 - e^{-TR/T_1}\right) e^{-TE/T_2}$ to generate PD-, T1-, and T2-weighted images from the same "brain."
+The physics above reduces to a handful of equations you can explore directly. In this tutorial you will plot T1 recovery and T2 decay for different tissues, and then take an image apart in k-space. The full labs also build a digital head phantom and use the MR signal equation to generate PD-, T1-, and T2-weighted images from the same "brain":
+
+::::{div}
+:class: eq-tip
+$$
+S = \rho \left(1 - e^{-TR/T_1}\right) e^{-TE/T_2}
+$$
+:::{div}
+:class: eq-tip-text
+S — measured signal · ρ — proton density (number of contributing hydrogen nuclei) · TR — repetition time · TE — echo time · T₁, T₂ — tissue relaxation time constants
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $S$ *is the measured signal from a tissue,* $\rho$ *its proton density (the number of contributing hydrogen nuclei),* $TR$ *the repetition time,* $TE$ *the echo time, and* $T_1$*,* $T_2$ *its relaxation time constants.*
+:::
 
 **Step 1 — Plot T1 recovery curves for gray matter, white matter, and CSF.** Each tissue recovers at its own rate; at $t = T_1$, each curve crosses 63% of full recovery.
 
@@ -105,8 +144,8 @@ import matplotlib.pyplot as plt
 t = np.arange(0, 4000)                        # time after excitation (ms)
 t1relax = lambda t, T1: 1 - np.exp(-t / T1)   # T1 recovery function
 
-fig, ax = plt.subplots(figsize=(6, 4))
-for T1, name in [(1000, "Gray"), (600, "White"), (3000, "CSF")]:
+fig, ax = plt.subplots(figsize=(6, 4))        # figure size in inches
+for T1, name in [(1000, "Gray"), (600, "White"), (3000, "CSF")]:  # T1 per tissue (ms)
     ax.plot(t, t1relax(t, T1), lw=3, label=f"{name} (T1={T1} ms)")
 ax.axhline(1 - 1 / np.e, color="k", ls="--", label="63% recovery")
 ax.set(xlabel="Time (ms)", ylabel="$M_z / M_0$",
@@ -115,6 +154,15 @@ ax.legend(loc="lower right")
 ```
 :::
 ::::
+
+**Example output:**
+
+:::{figure} images/ch13_step1_output.png
+:alt: T1 recovery curves for gray matter, white matter, and CSF, each crossing the dashed 63 percent line at its own T1
+:width: 75%
+
+Output of Step 1: each tissue's longitudinal magnetization recovers exponentially and crosses the dashed 63% line at its own $T_1$ — white matter first (600 ms), then gray matter (1000 ms), then CSF (3000 ms).
+:::
 
 At any single readout time, the three tissues sit at different heights on their curves — that vertical separation *is* the T1 contrast, and TR controls where on the curves you sample. (T2 decay works the same way, with $e^{-t/T_2}$ and TE.)
 
@@ -126,7 +174,8 @@ At any single readout time, the three tissues sit at different heights on their 
 
 ```matlab
 % Simple head phantom: gray shell, white interior, CSF ventricles
-n = 128; [x, y] = meshgrid(linspace(-1, 1, n));
+n = 128;                                      % image matrix size (n-by-n voxels)
+[x, y] = meshgrid(linspace(-1, 1, n));        % voxel coordinate grids on [-1, 1]
 img = zeros(n);
 img((x/0.72).^2 + (y/0.92).^2 < 1) = 0.30;    % gray-matter shell
 img((x/0.52).^2 + (y/0.72).^2 < 1) = 0.35;    % white-matter interior
@@ -134,8 +183,8 @@ img(((x+0.13)/0.09).^2 + ((y+0.05)/0.33).^2 < 1) = 0.15;  % ventricles
 img(((x-0.13)/0.09).^2 + ((y+0.05)/0.33).^2 < 1) = 0.15;
 
 F = fftshift(fft2(img));                      % image -> k-space
-[kx, ky] = meshgrid((1:n) - n/2 - 1);
-center = sqrt(kx.^2 + ky.^2) < 10;            % low spatial frequencies
+[kx, ky] = meshgrid((1:n) - n/2 - 1);         % k-space coordinate grids
+center = sqrt(kx.^2 + ky.^2) < 10;            % keep radius < 10 (of 64): low spatial frequencies
 
 subplot(1, 4, 1); imagesc(img); axis image off; title('Image');
 subplot(1, 4, 2); imagesc(log(1 + abs(F))); axis image off; title('k-space');
@@ -151,8 +200,8 @@ colormap gray;
 
 ```python
 # Simple head phantom: gray shell, white interior, CSF ventricles
-n = 128
-y, x = np.mgrid[-1:1:n*1j, -1:1:n*1j]
+n = 128                                       # image matrix size (n x n voxels)
+y, x = np.mgrid[-1:1:n*1j, -1:1:n*1j]         # voxel coordinate grids on [-1, 1]
 img = np.zeros((n, n))
 img[(x/0.72)**2 + (y/0.92)**2 < 1] = 0.30     # gray-matter shell
 img[(x/0.52)**2 + (y/0.72)**2 < 1] = 0.35     # white-matter interior
@@ -160,10 +209,10 @@ img[((x+0.13)/0.09)**2 + ((y+0.05)/0.33)**2 < 1] = 0.15  # ventricles
 img[((x-0.13)/0.09)**2 + ((y+0.05)/0.33)**2 < 1] = 0.15
 
 F = np.fft.fftshift(np.fft.fft2(img))         # image -> k-space
-ky, kx = np.mgrid[-n//2:n//2, -n//2:n//2]
-center = np.sqrt(kx**2 + ky**2) < 10          # low spatial frequencies
+ky, kx = np.mgrid[-n//2:n//2, -n//2:n//2]     # k-space coordinate grids
+center = np.sqrt(kx**2 + ky**2) < 10          # keep radius < 10 (of 64): low spatial frequencies
 
-fig, axes = plt.subplots(1, 4, figsize=(12, 3.2))
+fig, axes = plt.subplots(1, 4, figsize=(12, 3.2))   # 4 panels side by side
 panels = [(img, "Image"), (np.log1p(np.abs(F)), "k-space"),
           (np.abs(np.fft.ifft2(np.fft.ifftshift(F * center))), "Center only"),
           (np.abs(np.fft.ifft2(np.fft.ifftshift(F * ~center))), "Edges only")]
@@ -172,6 +221,15 @@ for ax, (im, name) in zip(axes, panels):
 ```
 :::
 ::::
+
+**Example output:**
+
+:::{figure} images/ch13_step2_output.png
+:alt: Head phantom, its k-space magnitude, a blurry reconstruction from the k-space center, and an edge-only reconstruction from the k-space periphery
+:width: 100%
+
+Output of Step 2: the phantom (left), its log-magnitude k-space (bright at the center), the smooth low-frequency reconstruction from the center of k-space, and the edge-only reconstruction from the periphery.
+:::
 
 Notice the bright blob at the middle of k-space: most of the image's energy lives in a few low spatial frequencies. The "center only" reconstruction is a blurry but recognizable brain, while the "edges only" reconstruction contains just outlines — exactly the division of labor described in the overview. The full labs go on to build T1- and T2-weighted versions of this phantom from the signal equation and to show how a single k-space point maps to stripes across the whole image.
 

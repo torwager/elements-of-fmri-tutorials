@@ -12,6 +12,8 @@
 % and bias demos are adapted from the CANlab nonlinear_saturation_bias_fmri
 % simulation and hrf_saturation.m (CanlabCore/Model_building_tools).
 %
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part3/ch14-bold-physiology
+%
 % Runtime: under a minute. All data are simulated.
 
 %% 1. The canonical HRF
@@ -73,7 +75,8 @@ title('HRF amplitude and latency vary across people');
 % canonical HRF, and samples at the TR. A second column in each onset
 % entry specifies event duration in seconds.
 
-TR = 1; len = 60;
+TR = 1;                                  % repetition time / sampling interval (s)
+len = 60;                                % simulated run length (s)
 
 ons = {};
 ons{1} = [10 0.5];                        % brief event: onset 10 s, 0.5 s
@@ -128,7 +131,7 @@ fprintf('Scaling holds: %d;  superposition holds: %d\n', scaling_ok, superpos_ok
 % via onsets2fmridesign(..., 'nonlinsaturation').
 
 unit = max(truncate(bold_linear(mkstim(10, 0.5))));   % calibrate units
-cap = 2;                                              % ceiling (units)
+cap = 2;                                 % ceiling, in single-event peak units
 sat = @(x) cap .* tanh(x ./ cap);
 bold_sat = @(s) sat(truncate(bold_linear(s)) ./ unit);
 
@@ -157,7 +160,7 @@ mkstim = @(onsets, dur) double(any( ...
 truncate = @(x) x(1:length(frame));
 bold_sat = @(s) sat(truncate(bold_linear(s)) ./ unit);
 
-isis = [1 2 3 4 5 6 8 10 12];
+isis = [1 2 3 4 5 6 8 10 12];         % inter-stimulus intervals to test (s)
 ratios = zeros(size(isis));
 r_one = bold_sat(mkstim(20, 0.5));
 
@@ -184,7 +187,7 @@ disp(table(isis', ratios', 'VariableNames', {'ISI_s' 'RelativeResponse'}))
 % the standard LINEAR GLM. The dense regressor over-predicts during its
 % trains, so OLS shrinks its beta: a systematic bias, not noise.
 
-len2 = 280;
+len2 = 280;                              % run length for the bias demo (s)
 frame = (0:dt:len2 - dt)';
 mkstim = @(onsets, dur) double(any( ...
     frame >= onsets(:)' & frame < onsets(:)' + dur, 2));
@@ -209,10 +212,10 @@ x_dense  = truncate(bold_linear(s_dense))  ./ unit;
 y_true = bold_sat(s_sparse + s_dense);
 
 % Sample at the TR and add measurement noise
-rng(14);
+rng(14);                                 % reproducible noise
 idx = 1:round(TR / dt):length(frame);
 Xd = [x_sparse(idx) x_dense(idx) ones(length(idx), 1)];
-y = y_true(idx) + 0.1 .* randn(length(idx), 1);
+y = y_true(idx) + 0.1 .* randn(length(idx), 1);  % noise SD = 0.1 units
 
 b = Xd \ y;                                           % OLS fit
 

@@ -38,11 +38,11 @@ Chapter 3 has no figures in the book; the diagrams below summarize its central a
 
 ```{mermaid}
 flowchart TD
-    A["Group-level finding<br/>e.g., lower dlPFC activity is associated with<br/>poorer delay of gratification, on average"] --> B["Reproducibility<br/>Does the association replicate<br/>across studies and individuals?"]
-    B --> C["Generalizability<br/>Does it hold across scanners, contexts,<br/>and populations — including this person's?"]
-    C --> D["Effect size<br/>Is the relationship strong enough<br/>(~10x group-level requirements)<br/>to classify a single person?"]
-    D --> E["Individual mapping<br/>Is the same region, with the same function,<br/>implicated in this particular brain?"]
-    E --> F["Defensible individual inference<br/>e.g., a dlPFC abnormality plausibly<br/>contributed to this defendant's behavior"]
+    A["Group-level finding<br/>lower dlPFC activity ↔<br/>poorer self-control,<br/>on average"] --> B["Reproducible?<br/>replicates across<br/>studies & people"]
+    B --> C["Generalizable?<br/>holds across scanners,<br/>contexts, populations"]
+    C --> D["Effect large enough?<br/>~10× the group-level<br/>requirement"]
+    D --> E["Maps to this brain?<br/>same region, same role,<br/>in this person"]
+    E --> F["Defensible claim<br/>about one individual"]
     style A fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style F fill:#dcfce7,stroke:#22c55e,color:#14532d
 ```
@@ -50,21 +50,21 @@ flowchart TD
 **The adoption decision is bigger than the science.** Scientific validation is necessary but not sufficient; deploying a neuromarker in the real world raises questions science alone cannot answer.
 
 ```{mermaid}
-flowchart LR
+flowchart TD
     subgraph S["Scientific validation"]
-        S1["Reliable measurement"]
-        S2["Reproducible brain-outcome links"]
-        S3["Standardized acquisition & analysis"]
-        S4["Accredited laboratories<br/>(the DNA-evidence precedent)"]
+        S1["Reliable<br/>measurement"]
+        S2["Reproducible<br/>brain–outcome links"]
+        S3["Standardized<br/>pipelines"]
+        S4["Accredited labs<br/>(DNA precedent)"]
     end
     subgraph D["Societal adoption"]
-        D1["Cost-effectiveness & who pays"]
-        D2["Fair and equal access"]
-        D3["Base rates & predictive value"]
-        D4["Potential misuse<br/>('pain lie detector', neuromarketing)"]
-        D5["Does it change decisions<br/>or treatment at all?"]
+        D1["Cost, who pays,<br/>fair access"]
+        D2["Base rates &<br/>predictive value"]
+        D3["Misuse risk"]
+        D4["Does it change<br/>decisions?"]
     end
-    S --> D --> U["Use in clinic, courtroom,<br/>school, or marketplace"]
+    S --> D
+    D --> U["Use in clinic, court,<br/>school, marketplace"]
     style S fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style D fill:#fef3c7,stroke:#f59e0b,color:#713f12
     style U fill:#dcfce7,stroke:#22c55e,color:#14532d
@@ -74,12 +74,13 @@ flowchart LR
 
 ```{mermaid}
 flowchart TD
-    Q["Does the new brain measure help us make<br/>better decisions than we would otherwise?"]
-    Q --> O["Overreach<br/>Commercial claims that outstrip evidence:<br/>fMRI lie detection, EEG diagnosis of<br/>ADHD/autism/depression, neuromarketing"]
-    Q --> I["Inaction (status quo bias)<br/>Unreliable symptom-based diagnoses,<br/>unscientific forensic testimony,<br/>under-treated pain, failed back surgeries,<br/>$600B/yr cost of chronic pain"]
-    O --> H1["Harm: bad decisions, eroded trust,<br/>obscured understanding of valid measures"]
-    I --> H2["Harm: preventable suffering from<br/>decisions made with poor evidence"]
-    Q --> M["The middle way<br/>Cautious, cumulative, principled progress —<br/>open sharing, rigorous validation, urgency"]
+    Q["The comparative question:<br/>does it improve decisions<br/>over the status quo?"]
+    Q --> O["Overreach<br/>claims outstrip evidence:<br/>fMRI lie detection,<br/>EEG diagnosis-for-sale"]
+    Q --> I["Inaction<br/>flawed status quo persists:<br/>unreliable diagnoses,<br/>under-treated pain"]
+    O --> H1["Harm: bad decisions,<br/>eroded trust"]
+    I --> H2["Harm: preventable<br/>suffering"]
+    H1 --> M["The middle way<br/>cautious, open, rigorous —<br/>and urgent"]
+    H2 --> M
     style Q fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style O fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
     style I fill:#fee2e2,stroke:#ef4444,color:#7f1d1d

@@ -1,4 +1,5 @@
 %[text] %% Chapter 7 Lab — Forward and Reverse Inference (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part2/ch07-forward-and-reverse-inference
 %[text] Standard brain maps tell us the probability of activation given a psychological
 %[text] state — *forward inference*, or sensitivity. What we usually want is the
 %[text] probability of the state given activation — *reverse inference*, or positive
@@ -10,7 +11,8 @@
 %[text] CANlab's Neurosynth similarity tools.
 %[text]
 %[text] Core sections use base MATLAB only. The optional last section requires
-%[text] CanlabCore + SPM12 on your path. Companion reading: the Chapter 7 tutorial page.
+%[text] CanlabCore + SPM12 on your path. Companion reading: the
+%[text] [Chapter 7 tutorial page](https://torwager.github.io/elements-of-fmri-tutorials/book/part2/ch07-forward-and-reverse-inference).
 
 %% 1. Bayes' rule as a reverse-inference calculator
 %[text] Forward inference is P(Brain | Psy) — the **sensitivity** of a brain measure to
@@ -27,9 +29,9 @@ ppv = @(sens, spec, br) (sens .* br) ./ (sens .* br + (1 - spec) .* (1 - br));
 
 scenario = ["Chapter example"; "Perfect sensitivity"; "Rare state (1% base rate)"; ...
             "Highly specific region"; "Specific AND common state"];
-sens = [0.90; 1.00; 0.90; 0.90; 0.90];
-spec = [0.80; 0.80; 0.80; 0.99; 0.99];
-base_rate = [0.10; 0.10; 0.01; 0.10; 0.50];
+sens = [0.90; 1.00; 0.90; 0.90; 0.90];         % sensitivity P(Brain | Psy) per scenario
+spec = [0.80; 0.80; 0.80; 0.99; 0.99];         % specificity P(~Brain | ~Psy) per scenario
+base_rate = [0.10; 0.10; 0.01; 0.10; 0.50];    % base rate P(Psy) per scenario
 
 PPV = ppv(sens, spec, base_rate);
 T = table(scenario, sens, spec, base_rate, round(PPV, 3), ...
@@ -48,9 +50,9 @@ disp(T)
 %[text] (state present) or 1 - specificity (state absent). Then count: among moments
 %[text] with activation, how often was the state actually present?
 
-rng(7);
-n = 200000;
-s = 0.90; sp = 0.80; br = 0.10;
+rng(7);                                     % seed = 7 -> reproducible simulated data
+n = 200000;                                 % number of simulated "moments of mental life"
+s = 0.90; sp = 0.80; br = 0.10;             % sensitivity, specificity, base rate (chapter example)
 
 psy = rand(n, 1) < br;                      % is the state present?
 p_act = s .* psy + (1 - sp) .* ~psy;        % P(activation) this moment
@@ -72,8 +74,8 @@ fprintf('Analytic  PPV            = %.3f\n', ppv(s, sp, br));
 %[text] Insist on a confident reverse inference — PPV >= 0.9. How specific must
 %[text] activation be? Sweep specificity at several base rates (sensitivity = 0.9).
 
-spec_grid = linspace(0.5, 0.999, 300);
-base_rates = [0.5 0.25 0.10 0.01];
+spec_grid = linspace(0.5, 0.999, 300);      % specificity grid, chance (0.5) to near-perfect
+base_rates = [0.5 0.25 0.10 0.01];          % base rates P(Psy), common to rare
 
 figure('Color', 'w'); hold on;
 for b = base_rates
@@ -88,7 +90,7 @@ legend('Location', 'west'); hold off;
 % Required specificity to reach a target PPV, solving the PPV equation:
 required_spec = @(sens, br, p) 1 - sens .* br .* (1 - p) ./ (p .* (1 - br));
 
-br_grid = [0.50 0.25 0.10 0.05 0.01 0.001]';
+br_grid = [0.50 0.25 0.10 0.05 0.01 0.001]';   % base rates, common (50%) to very rare (0.1%)
 Req = table(br_grid, required_spec(0.9, br_grid, 0.80), ...
     required_spec(0.9, br_grid, 0.90), required_spec(0.9, br_grid, 0.95), ...
     'VariableNames', {'BaseRate', 'SpecFor_PPV80', 'SpecFor_PPV90', 'SpecFor_PPV95'});
@@ -105,8 +107,8 @@ disp(Req)
 %[text] and 80–99% specificity, yet with a ~1.5% ten-year base rate (age 40–50) the
 %[text] PPV of a positive screen is only ~6% at 80% specificity, ~40% at 98%.
 
-br_grid = logspace(-3, 0, 400);              % base rates from 0.1% to 100%
-br_mammo = 0.0147;
+br_grid = logspace(-3, 0, 400);   % base rates from 0.1% to 100% (log-spaced)
+br_mammo = 0.0147;                % 10-year breast cancer base rate, women age 40-50 (ACS 2017-2018)
 
 figure('Color', 'w');
 semilogx(br_grid, ppv(0.90, 0.80, br_grid), 'LineWidth', 2); hold on;
@@ -146,7 +148,7 @@ sens_map = min(max(sens_map, 0), 0.95);
 fa_map = 0.05 + 0.65 * gauss2d(30, 46, 6);
 fa_map = min(max(fa_map, 0), 0.90);
 
-br = 0.10;
+br = 0.10;                                           % prior probability P(Psy) of the state
 lr_map = sens_map ./ fa_map;                         % likelihood ratio
 posterior_map = ppv(sens_map, 1 - fa_map, br);       % P(Psy | act)
 

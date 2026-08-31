@@ -38,13 +38,13 @@ Chapter 5 has no figures in the book; the diagrams below summarize its central i
 
 ```{mermaid}
 flowchart TD
-    N["Neuroscientist<br/>molecular basis of learning"] --> B
-    P["Pharmacologist<br/>antipsychotic drug action"] --> B
+    N["Neuroscientist<br/>learning"] --> B
+    P["Pharmacologist<br/>antipsychotics"] --> B
     Y["Psychiatrist<br/>depression"] --> B
-    S["Social psychologist<br/>altruistic behavior"] --> B
-    M["Marketing professor<br/>purchasing decisions"] --> B
-    B["Mesolimbic dopamine system<br/>one system, measured in common<br/>via neuroimaging"]
-    B --> U["Concepts grounded in measurable processes<br/>that can be compared across fields —<br/>a cumulative, unified science"]
+    S["Social psychologist<br/>altruism"] --> B
+    M["Marketing professor<br/>purchasing"] --> B
+    B["One system:<br/>mesolimbic dopamine,<br/>measured in common"]
+    B --> U["Concepts grounded in<br/>measurable processes —<br/>a cumulative science"]
     style B fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style U fill:#dcfce7,stroke:#22c55e,color:#14532d
 ```
@@ -52,23 +52,26 @@ flowchart TD
 **Who does what in an fMRI study.** The hypothetical antidepressant study's "dream team," mapped onto the stages of a study. Most contributions span stages, and several kinds of expertise overlap — which is exactly why bridge scientists are so valuable.
 
 ```{mermaid}
-flowchart LR
-    subgraph D["Design"]
-        D1["Psychiatrist & psychologist<br/>clinical phenomena, sampling,<br/>outcomes, task design"]
-        D2["Statistician<br/>efficiency, power,<br/>valid causal inference"]
-        D3["Pharmacologist<br/>drug mechanisms & kinetics;<br/>vascular/blood-gas artifacts"]
-        D4["Neuroscientist<br/>hypotheses: which regions<br/>and systems to expect"]
+flowchart TD
+    subgraph D["1 · Design"]
+        direction LR
+        D1["Psychiatrist &<br/>psychologist<br/>phenomena · task"]
+        D2["Statistician<br/>power · causal<br/>inference"]
+        D3["Pharmacologist<br/>mechanisms ·<br/>kinetics"]
+        D4["Neuroscientist<br/>regional<br/>hypotheses"]
     end
-    subgraph A["Acquisition"]
-        A1["MRI physicist / engineer<br/>high-quality images; protocol<br/>minimizing artifacts in key regions;<br/>non-neural drug effects on signal"]
+    subgraph A["2 · Acquisition"]
+        A1["MRI physicist / engineer<br/>protocol · artifact control ·<br/>non-neural signal effects"]
     end
-    subgraph C["Processing & analysis"]
-        C1["Computer scientist<br/>data management, pipelines,<br/>quality control"]
-        C2["Statistician<br/>tests and their assumptions"]
+    subgraph C["3 · Processing & analysis"]
+        direction LR
+        C1["Computer scientist<br/>pipelines · QC"]
+        C2["Statistician<br/>tests &<br/>assumptions"]
     end
-    subgraph I["Interpretation"]
-        I1["Neuroanatomist<br/>localizing effects"]
-        I2["Psychiatrist, neuroscientist,<br/>psychologist<br/>meaning for patients, treatment,<br/>and brain science"]
+    subgraph I["4 · Interpretation"]
+        direction LR
+        I1["Neuroanatomist<br/>localization"]
+        I2["Psychiatrist · neuroscientist<br/>· psychologist<br/>meaning & literature"]
     end
     D --> A --> C --> I
     style D fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
@@ -81,14 +84,14 @@ flowchart LR
 
 ```{mermaid}
 flowchart TD
-    O["Obstacles<br/>unfamiliar concepts & vocabulary ·<br/>easier to stay in one's specialty ·<br/>publishing outside home-field venues ·<br/>time spent teaching 'basics'"]
-    O --> R1["Communication & humility<br/>each expert willing to be<br/>a novice in another's field"]
-    O --> R2["Funding mechanisms<br/>agency programs built to support<br/>multidisciplinary teams"]
-    O --> R3["Bridge scientists<br/>individuals with expertise across fields —<br/>the glue holding larger teams together"]
-    R1 --> F["Confluence<br/>rivers of ideas and techniques<br/>running together"]
+    O["Obstacles<br/>unfamiliar vocabulary ·<br/>incentives favor specialty ·<br/>time cost of teaching"]
+    O --> R1["Communication<br/>& humility<br/>being a novice again"]
+    O --> R2["Funding built for<br/>cross-field teams"]
+    O --> R3["Bridge scientists<br/>the glue of teams"]
+    R1 --> F["Confluence<br/>rivers of ideas<br/>running together"]
     R2 --> F
     R3 --> F
-    F --> G["New ideas, new techniques, and broad<br/>multidisciplinary scientific literacy —<br/>benefits far beyond fMRI"]
+    F --> G["New ideas & techniques ·<br/>broad scientific literacy"]
     style O fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
     style F fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style G fill:#dcfce7,stroke:#22c55e,color:#14532d

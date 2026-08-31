@@ -6,6 +6,8 @@
 % but not inference, run F-contrasts for joint tests, and test a
 % conjunction ("A AND B") hypothesis.
 %
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch20-contrasts-and-inference-with-the
+%
 % Requirements: CanlabCore and SPM12 on your MATLAB path.
 %   https://github.com/canlab/CanlabCore
 % Code adapted from CANlab tutorials (github.com/canlab and
@@ -34,7 +36,7 @@ ons{1} = sort(shuffled(1:14));     % Condition A onsets (s)
 ons{2} = sort(shuffled(15:28));    % Condition B onsets (s)
 ons{3} = sort(shuffled(29:42));    % Condition C onsets (s)
 
-X = onsets2fmridesign(ons, TR, run_len);
+X = onsets2fmridesign(ons, TR, run_len);   % convolve with canonical HRF
 names = {'A' 'B' 'C' 'Intercept'};
 
 disp(size(X))              % 200 x 4: [A, B, C, intercept]
@@ -54,8 +56,8 @@ xlabel('Regressor'); ylabel('Time (TRs)'); title('Design matrix X');
 % onsets2fmridesign scales the HRF to a peak of 1, so each task regressor
 % peaks near 1. With an intercept of 100, a beta of 1.0 is about a 1%
 % signal change, and the noise SD below is 0.15% of baseline.
-beta_true = [1.0 0.6 0.3 100]';
-sigma_noise = 0.15;
+beta_true = [1.0 0.6 0.3 100]';    % [A, B, C, intercept]
+sigma_noise = 0.15;                % noise SD, in % of baseline signal
 
 y = X * beta_true + sigma_noise .* randn(n_scans, 1);
 
@@ -89,8 +91,8 @@ con_names = {'A vs baseline'; 'C vs baseline'; 'A - B'; ...
 
 con_val = C' * beta_hat;                          % contrast estimates
 se_con  = sqrt(sigma2 * diag(C' * XtX_inv * C));  % contrast SEs
-t_con   = con_val ./ se_con;
-p_con   = 2 * (1 - tcdf(abs(t_con), dfe));
+t_con   = con_val ./ se_con;                      % t-statistics
+p_con   = 2 * (1 - tcdf(abs(t_con), dfe));        % two-tailed p-values
 true_val = C' * beta_true;
 
 disp(table(true_val, con_val, se_con, t_con, p_con, 'RowNames', con_names))
@@ -125,7 +127,7 @@ end
 % betas and covariate slope are identical; only the intercept changes:
 % "expected signal at w = 0" becomes "expected signal at average w".
 
-w   = 3 + randn(n_scans, 1);
+w   = 3 + randn(n_scans, 1);       % continuous covariate, mean ~3
 y_w = y + 0.5 * w;                 % data with a true covariate effect
 
 Xw_raw = [X(:, 1:3) w            ones(n_scans, 1)];
@@ -180,7 +182,7 @@ fprintf('F(A-B) = %5.3f = t(A-B)^2 = %5.3f\n', F_ab, t_ab ^ 2);
 % minimum-statistic rule: declare a conjunction only if EVERY component
 % contrast exceeds the threshold on its own, i.e., min(t) > t_crit.
 
-t_crit = tinv(0.95, dfe);           % one-sided, alpha = .05
+t_crit = tinv(0.95, dfe);           % one-sided threshold, alpha = .05
 c_AC = [1 0 -1 0]'; c_BC = [0 1 -1 0]';
 
 % Voxel 1 responds to both face types; voxel 2 only to famous faces

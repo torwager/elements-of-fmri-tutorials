@@ -1,4 +1,6 @@
 %% Chapter 21 Lab: Group Analysis (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch21-group-analysis
+%
 % This lab accompanies Chapter 21, "Group Analysis". You will simulate
 % hierarchical (multi-subject) data with known ground truth, compare fixed
 % effects (FFX) and random effects (RFX) inference, fit mixed effects
@@ -26,7 +28,7 @@
 % components -- within-subject noise and true between-subject variability
 % -- drive everything in this lab.
 
-rng(2021);
+rng(2021);          % seed the random number generator for reproducibility
 
 n_subj   = 20;      % subjects
 n_trials = 40;      % trials (1st-level observations) per subject
@@ -88,8 +90,8 @@ fprintf('%-28s  est = %.3f  t(%4d) = %6.2f  p = %.2g\n', ...
 % is nil. A valid test should reject ~5% of the time. Repeat with
 % sigma_b = 0 (identical subjects), the only world where FFX is valid.
 
-n_iter = 1000;
-sigma_b_levels = [0 0.5];
+n_iter = 1000;                 % simulated experiments; more -> stabler FPR estimates
+sigma_b_levels = [0 0.5];      % between-subject SDs: identical subjects vs. real differences
 fpr = zeros(numel(sigma_b_levels), 2);            % rows: sigma_b, cols: FFX RFX
 
 for s = 1:numel(sigma_b_levels)
@@ -125,11 +127,11 @@ title('FFX inflates false positives when between-subject variance exists');
 % slopes across subjects. We fit the full mixed model to trial-level data
 % and compare it with the summary statistics approach.
 
-rng(33);
-n_subj = 24; n_per_cond = 30;
+rng(33);                               % seed for reproducibility
+n_subj = 24; n_per_cond = 30;          % subjects; trials per condition
 betaG_0 = 0.2; betaG_1 = 0.6;          % population intercept, condition effect
-sd_int = 0.4; sd_slope = 0.5;          % between-subject SDs
-sigma_w = 1.0;
+sd_int = 0.4; sd_slope = 0.5;          % between-subject SDs of intercept, slope
+sigma_w = 1.0;                         % SD of trial-level (within-subject) noise
 
 subject = []; cond = []; y = [];
 for i = 1:n_subj
@@ -192,9 +194,9 @@ end
 % (IRLS) down-weights points far from the central mass of subjects.
 % CANlab's robfit.m applies this voxelwise to contrast images.
 
-rng(11);
-n2 = 30;
-perf = randn(n2, 1);                   % mean-centered covariate
+rng(11);                               % seed for reproducibility
+n2 = 30;                               % subjects contributing one COPE each
+perf = randn(n2, 1);                   % behavioral covariate (mean-centered)
 cope = 0.3 .* randn(n2, 1);            % contrast values: true slope = 0
 
 perf_o = perf; cope_o = cope;

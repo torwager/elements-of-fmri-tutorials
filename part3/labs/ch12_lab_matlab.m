@@ -1,4 +1,6 @@
 %% Chapter 12 Lab: fMRI Basics and Terminology (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part3/ch12-fmri-basics-and-terminology
+%
 % This lab accompanies Chapter 12, "fMRI Basics and Terminology". You will
 % load a set of brain images into a CANlab fmri_data object, inspect its
 % dimensions and voxel-to-world (affine) mapping, convert between voxel
@@ -62,7 +64,7 @@ voxel_size = abs(diag(imgs.volInfo.mat(1:3, 1:3)))'
 % coordinates [x y z] are in mm relative to the origin. The affine converts
 % between them (using homogeneous coordinates, with a trailing 1):
 
-vox = [25 30 16 1]';                 % a voxel coordinate, [i j k 1]'
+vox = [25 30 16 1]';                 % a voxel coordinate [i j k], plus trailing 1 (homogeneous)
 mm  = imgs.volInfo.mat * vox         % -> [x y z 1]' in mm
 
 % And the inverse mapping, mm -> voxel:
@@ -124,7 +126,7 @@ drawnow, snapnow
 % the image is the right side of the brain. You can verify with a region
 % known to be lateralized, or by displaying an anatomically labeled atlas:
 
-atl = load_atlas('canlab2018_2mm');
+atl = load_atlas('canlab2018_2mm');  % CANlab 2018 combined atlas, 2 mm resolution
 r = select_atlas_subset(atl, {'Ctx_LO1_L', 'Ctx_LO1_R'});  % L and R visual regions
 montage(r, 'regioncenters');
 drawnow, snapnow

@@ -34,42 +34,49 @@ Finally, the chapter dissolves a false dichotomy: understanding nature "for its 
 
 Chapter 2 has no figures in the book; the diagrams below summarize its central arguments.
 
-**Carving the mind at its joints — the ideal versus today's reality.** The aspiration is a near-1:1 mapping in which each mental category corresponds to a brain system embodying its generative mechanism, so that manipulating the system predictably changes the mind. What we actually observe today is a many-to-many tangle: familiar categories like fear, attention, and working memory each engage overlapping, distributed patterns of activity.
+**Carving the mind at its joints — the ideal.** The aspiration is a near-1:1 mapping in which each mental category corresponds to a brain system embodying its generative mechanism, so that manipulating the system produces a predictable change in mind and behavior.
 
 ```{mermaid}
 flowchart LR
-    subgraph I["The ideal: carving at the joints"]
-        direction LR
-        C1["Mental category"] --> S1["Brain system / circuit"] --> G1["Generative mechanism"]
-        G1 -.->|"manipulate the circuit →<br/>predictable change in<br/>mind and behavior"| C1
-    end
-    subgraph R["Today's reality: many-to-many"]
-        direction LR
-        F1["Fear"] --> P1["Pattern A"]
-        F1 --> P2["Pattern B"]
-        A1["Attention"] --> P1
-        A1 --> P3["Pattern C"]
-        W1["Working memory"] --> P2
-        W1 --> P3
-    end
-    I ~~~ R
-    style I fill:#dcfce7,stroke:#22c55e,color:#14532d
-    style R fill:#fef3c7,stroke:#f59e0b,color:#713f12
+    C1["Mental<br/>category"] --> S1["Brain system<br/>(circuit)"] --> G1["Generative<br/>mechanism"]
+    G1 -.->|"manipulate →<br/>predictable change"| C1
+    style C1 fill:#dcfce7,stroke:#22c55e,color:#14532d
+    style S1 fill:#dcfce7,stroke:#22c55e,color:#14532d
+    style G1 fill:#dcfce7,stroke:#22c55e,color:#14532d
 ```
 
-**Why surface categories fail, and what biology adds.** Folk categories built on observable features work well enough for everyday life, but the properties that matter are often invisible — pure water and arsenic-laced water look identical, while water and ice look nothing alike. Grounding categories in unobservable structure (genes for species; brain mechanisms for mental phenomena) yields classifications that are more stable, more accurate, and actionable.
+**…versus today's reality.** What we actually observe is a many-to-many tangle: familiar categories like fear, attention, and working memory each engage overlapping, distributed patterns of brain activity, and each pattern serves more than one category.
+
+```{mermaid}
+flowchart LR
+    F1["Fear"] --> P1["Pattern A"]
+    F1 --> P2["Pattern B"]
+    A1["Attention"] --> P1
+    A1 --> P3["Pattern C"]
+    W1["Working<br/>memory"] --> P2
+    W1 --> P3
+    style F1 fill:#fef3c7,stroke:#f59e0b,color:#713f12
+    style A1 fill:#fef3c7,stroke:#f59e0b,color:#713f12
+    style W1 fill:#fef3c7,stroke:#f59e0b,color:#713f12
+    style P1 fill:#fef3c7,stroke:#f59e0b,color:#713f12
+    style P2 fill:#fef3c7,stroke:#f59e0b,color:#713f12
+    style P3 fill:#fef3c7,stroke:#f59e0b,color:#713f12
+```
+
+**Why surface categories fail, and what biology adds.** Folk categories built on observable features work well enough for everyday life, but the properties that matter are often invisible — pure water and arsenic-laced water look identical, while water and ice look nothing alike. Grounding categories in hidden structure (genes for species; microbes for disease; brain mechanisms for mental phenomena) yields classifications that are more stable, more accurate, and actionable: biomarkers for otherwise unobservable mental events (infant pain, unconscious motives), mechanistic leverage points for intervention (drugs, neurostimulation, neurofeedback), and a common language across fields.
 
 ```{mermaid}
 flowchart TD
-    S["Surface features<br/>(what we can see and introspect)"] --> FC["Folk categories<br/>armchair emotions, symptom groupings,<br/>species by appearance"]
-    FC --> OK["Useful for everyday purposes…"]
-    FC --> BAD["…but misleading when appearance<br/>diverges from underlying nature<br/>(clear water vs. clear poison)"]
-    H["Hidden structure<br/>(genes, microbes, brain mechanisms)"] --> BC["Biologically grounded categories"]
-    BC --> Y1["Biomarkers for unobservable<br/>mental events<br/>(infant pain, unconscious motives)"]
-    BC --> Y2["Mechanistic leverage points<br/>(drugs, neurostimulation,<br/>neurofeedback, targeted therapy)"]
-    BC --> Y3["Common language<br/>across research fields"]
+    S["Surface features<br/>(seen, introspected)"] --> FC["Folk categories<br/>(emotions, symptoms,<br/>appearance)"]
+    FC --> OK["Useful in<br/>everyday life…"]
+    FC --> BAD["…misleading when looks<br/>diverge from nature"]
+    H["Hidden structure<br/>(genes, microbes,<br/>brain mechanisms)"] --> BC["Biologically grounded<br/>categories"]
+    BC --> Y1["Biomarkers for<br/>unobservable events"]
+    BC --> Y2["Mechanistic<br/>leverage points"]
+    BC --> Y3["Common language<br/>across fields"]
     style S fill:#fef3c7,stroke:#f59e0b,color:#713f12
     style FC fill:#fef3c7,stroke:#f59e0b,color:#713f12
+    style OK fill:#fef3c7,stroke:#f59e0b,color:#713f12
     style BAD fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
     style H fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style BC fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
@@ -78,38 +85,42 @@ flowchart TD
     style Y3 fill:#dcfce7,stroke:#22c55e,color:#14532d
 ```
 
-**The medicine parallel: what wrong categories cost, and what mechanism-grounded categories unlock.** Symptom-based disease categories paired with mythic mechanisms (Galen's four humors) produced deadly treatments for over a millennium. The germ theory re-grounded disease categories in biology and made previously inconceivable interventions obvious. The chapter's wager is that mapping mental categories onto brain mechanisms is the analogous move for the mind — with the crucial caveat that this transformation took medicine centuries, and cognitive neuroscience is only decades old.
+**The medicine parallel, part 1: what wrong categories cost.** For over a millennium, symptom-based disease categories paired with mythic mechanisms (Galen's four humors) produced deadly treatments — bleeding, blistering, powdered mummy, applied to depression and infection alike. The germ theory (Fracastoro's proposal in 1546, van Leeuwenhoek's microscopes, then Pasteur, Koch, and Lister) re-grounded disease categories in biological mechanism and made previously inconceivable interventions obvious: handwashing and sanitation first, antibiotics and antivirals later.
 
 ```{mermaid}
 flowchart TD
-    subgraph MED["Medicine's transformation (~500 years, still incomplete)"]
-        M1["Symptom-based categories<br/>'disorders of the stomach', fever, headache"] --> M2["Mythic mechanisms<br/>Galen's four humors, malignant spirits"]
-        M2 --> M3["Harmful treatments<br/>bleeding, blistering, powdered mummy —<br/>the same for depression as for infection"]
-        M1 --> M4["Germ theory<br/>Fracastoro 1546 → Leeuwenhoek →<br/>Pasteur, Koch, Lister"]
-        M4 --> M5["Inconceivable-before interventions<br/>handwashing, sanitation —<br/>then antibiotics, antivirals"]
-    end
-    subgraph MIND["The mind sciences today (~20 years in)"]
-        P1["Folk psychological categories<br/>anger, fear, attention, working memory;<br/>symptom-based diagnoses"] --> P2["Many-to-many mapping<br/>onto brain activity"]
-        P2 --> P3["Decoding research<br/>distributed patterns predict emotions,<br/>tasks, percepts, memories, intentions"]
-        P3 --> P4["New frontier<br/>brain-based categories and neuromarkers<br/>that complement — or replace —<br/>folk categories"]
-    end
-    MED -.->|"the analogy"| MIND
+    M1["Symptom-based<br/>categories"] --> M2["Mythic mechanisms<br/>(four humors)"]
+    M2 --> M3["Harmful treatments<br/>(bleeding, blistering)"]
+    M1 --> M4["Germ theory<br/>(1546 → Pasteur,<br/>Koch, Lister)"]
+    M4 --> M5["New interventions<br/>(handwashing, sanitation<br/>→ antibiotics)"]
+    style M1 fill:#fef3c7,stroke:#f59e0b,color:#713f12
     style M2 fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
     style M3 fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
     style M4 fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style M5 fill:#dcfce7,stroke:#22c55e,color:#14532d
+```
+
+**The medicine parallel, part 2: the mind sciences today.** The chapter's wager is that mapping mental categories onto brain mechanisms is the analogous move for the mind — with the crucial caveat that medicine's transformation took centuries, while the relevant decoding techniques are only about twenty years old.
+
+```{mermaid}
+flowchart TD
+    P1["Folk categories +<br/>symptom diagnoses"] --> P2["Many-to-many<br/>brain mapping"]
+    P2 --> P3["Decoding research<br/>(distributed patterns<br/>predict categories)"]
+    P3 --> P4["Brain-based categories<br/>and neuromarkers"]
+    style P1 fill:#fef3c7,stroke:#f59e0b,color:#713f12
+    style P2 fill:#fef3c7,stroke:#f59e0b,color:#713f12
     style P3 fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style P4 fill:#dcfce7,stroke:#22c55e,color:#14532d
 ```
 
-**Understanding and application form a loop, not a dichotomy.** Science yields the understanding that makes effective intervention possible; building technology tests and refines that understanding. Because the loop closes over generations, it requires public investment beyond the horizon of commercial return.
+**Understanding and application form a loop, not a dichotomy.** Science yields the understanding that makes effective intervention possible; building technology tests and refines that understanding. Because the loop closes over generations, it requires public investment beyond the horizon of commercial return — and many of its benefits are hidden in values and norms: seeing mental disorders as treatable processes rather than personal failings, and recognizing invisible harms (subclinical head trauma, sleep loss, early adversity) and invisible benefits (exercise, meditation, learning).
 
 ```{mermaid}
 flowchart LR
-    U["Scientific understanding<br/>'knowledge for its own sake'"] -->|"enables effective<br/>intervention"| T["Practical technology<br/>cures, enhanced performance,<br/>neuromarkers"]
-    T -->|"tests and refines<br/>our understanding"| U
-    PI["Public investment<br/>(the long game: decades to centuries,<br/>beyond business cycles)"] --> U
-    T --> B["Benefits — many hidden in values and norms:<br/>mental disorders as treatable processes, not blame;<br/>recognizing invisible harms (subclinical head trauma,<br/>sleep loss, early adversity) and invisible benefits<br/>(exercise, meditation, learning)"]
+    PI["Public investment<br/>(the long game)"] --> U["Scientific<br/>understanding"]
+    U -->|"enables<br/>intervention"| T["Practical<br/>technology"]
+    T -->|"tests and<br/>refines"| U
+    T --> B["Benefits<br/>(many hidden in<br/>values and norms)"]
     style U fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style T fill:#fef3c7,stroke:#f59e0b,color:#713f12
     style PI fill:#f3e8ff,stroke:#a855f7,color:#581c87

@@ -1,4 +1,6 @@
 %% Chapter 16 Lab: Artifacts and Noise in fMRI (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch16-artifacts-and-noise-in-fmri
+%
 % This lab accompanies Chapter 16, "Artifacts and Noise in fMRI". You will
 % build an fMRI-like time series from its noise ingredients -- slow drift,
 % AR(1) autocorrelated noise, transient spikes, and a heartbeat sampled at
@@ -22,19 +24,19 @@
 % e_t = phi*e_{t-1} + eta_t), a heartbeat simulated at high resolution and
 % sampled once per TR, and three transient spikes.
 
-rng(7);
-TR = 2; n = 240;
+rng(7);                                  % seed for reproducibility
+TR = 2; n = 240;                         % TR = repetition time (s); n = volumes (8-min run)
 t = (0:n-1)' * TR;                       % volume acquisition times (s)
 
 % Slow drift: sum of slow cosines (1/f-like low-frequency power)
 drift = 6*cos(2*pi*t/400) + 3*cos(2*pi*t/180);
 
 % AR(1) noise, phi = 0.5 (CANlab noise generator)
-phi = 0.5;
+phi = 0.5;                               % AR(1) coefficient: each error keeps half the last
 ar1 = noise_arp(n, phi);
 
 % Heartbeat at ~60 bpm with beat-to-beat jitter, built at 50 Hz
-dt = 0.02;
+dt = 0.02;                               % high-resolution time step (s): 50 Hz
 t_hi = (0:dt:(n*TR - dt))';
 beats = cumsum(normrnd(1, 0.05, round(n*TR*1.3), 1));
 beats = beats(beats < t_hi(end));
@@ -46,11 +48,11 @@ hb_tr = hb_hi(round(t / dt) + 1);        % what the scanner sees: 1/TR
 
 % Transient spikes: sudden shifts in 3 volumes
 spikes = zeros(n, 1);
-spike_vols = [61 62 151];                % MATLAB 1-based volume indices
-spikes(spike_vols) = [18 -12 15];
+spike_vols = [61 62 151];                % volumes to corrupt (MATLAB 1-based indices)
+spikes(spike_vols) = [18 -12 15];        % spike amplitudes (signal units)
 
 % Composite voxel time series
-y = 100 + drift + ar1 + 1.5*hb_tr + spikes;
+y = 100 + drift + ar1 + 1.5*hb_tr + spikes;   % baseline of 100 + all components
 
 create_figure('noise components', 5, 1);
 comps = {drift, ar1, 1.5*hb_tr, spikes, y};
@@ -72,7 +74,7 @@ xlabel('Time (s)');
 % with a magnitude and phase. Plotting power against frequency (the PSD)
 % shows where the noise lives. Drift dominates the lowest frequencies.
 
-nfft = n;
+nfft = n;                                % FFT length = number of time points
 f = (0:floor(nfft/2)-1)' / (nfft * TR);          % frequency axis (Hz)
 P = abs(fft(y - mean(y))) .^ 2;
 P = P(1:floor(nfft/2));
@@ -88,7 +90,7 @@ title('PSD of the composite voxel: drift dominates low frequencies');
 % and reappear below it. Classic demo: a 10 Hz sine sampled at 12 Hz
 % (Nyquist = 6 Hz) masquerades as a 12 - 10 = 2 Hz oscillation.
 
-fs_hi = 1000; fs_lo = 12; dur = 5; f_sig = 10;
+fs_hi = 1000; fs_lo = 12; dur = 5; f_sig = 10;   % fast/slow sampling rates (Hz); duration (s); signal freq (Hz)
 tt_hi = (0:1/fs_hi:dur)';
 tt_lo = (0:1/fs_lo:dur)';
 x_hi = sin(2*pi*f_sig*tt_hi);
@@ -127,7 +129,7 @@ legend({'original (10 Hz)' 'aliased (2 Hz)' 'Nyquist limit (6 Hz)'});
 % plus voxel-specific AR(1) noise, and corrupt the same three volumes with
 % spatially widespread intensity shifts.
 
-V = 200;
+V = 200;                                 % number of voxels in the simulated 'brain'
 w_drift = 0.2 + 1.3*rand(1, V);          % voxel-specific loadings
 w_hb = rand(1, V);
 noisemat = zeros(n, V);
@@ -173,7 +175,7 @@ disp('Flagged by RMSSD > 3 SD:'); disp(flag_rmssd');
 
 Yc = Y - mean(Y);
 [U, S, ~] = svd(Yc, 'econ');
-k = 5;
+k = 5;                                   % number of principal components to keep
 scores = U(:, 1:k) * S(1:k, 1:k);        % n x k PC scores per volume
 
 md2 = mahal(scores, scores);             % squared Mahalanobis distance
@@ -208,8 +210,8 @@ fprintf('Spike regressor matrix: %d x %d -> append to design matrix X\n', ...
 % For AR(1) noise the autocorrelation function decays geometrically:
 % corr(e_t, e_{t-k}) = phi^k. Check a long sample against theory.
 
-e_long = noise_arp(5000, phi);
-max_lag = 15;
+e_long = noise_arp(5000, phi);           % long AR(1) sample for stable estimates
+max_lag = 15;                            % longest lag (in TRs) to examine
 acf = ones(max_lag + 1, 1);
 for k_lag = 1:max_lag
     c = corrcoef(e_long(1:end-k_lag), e_long(1+k_lag:end));
@@ -228,7 +230,7 @@ legend({'empirical' 'theoretical \phi^k'});
 % AR(1) noise -- no signal at all -- 2000 times, and count how often naive
 % OLS declares p < .05. Valid inference would give ~5%.
 
-nsim = 2000;
+nsim = 2000;                             % number of null simulations; more for stable tail estimates
 X = [double(sin(2*pi*t/80) > 0), ones(n, 1)];
 p = size(X, 2);
 tcrit = tinv(0.975, n - p);

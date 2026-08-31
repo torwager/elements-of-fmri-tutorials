@@ -33,34 +33,43 @@ Finally, the participant is a human being lying in a narrow, noisy tube, asked t
 :::{figure} images/ch11-scanner-components.png
 :alt: Cutaway illustration of an MRI scanner showing the magnet, gradient coils, radiofrequency coil, patient table, and patient position
 :width: 85%
+:class: book-figure
 
-**The components of an MR scanner.** The three main components are the magnet, which produces the strong static field; the radiofrequency coil, which transmits RF pulses and receives the signals used to construct images; and the gradient coils, which create controlled spatial variations in field strength that encode the location of each signal. The participant lies on the table with the head at the center of the bore. Reproduced under a CC BY license from Amanamba et al. (2020). *(Figure 11.1 from the book.)*
+**The components of an MR scanner.** The three main components are the magnet, which produces the strong static field; the radiofrequency coil, which transmits RF pulses and receives the signals used to construct images; and the gradient coils, which create controlled spatial variations in field strength that encode the location of each signal. The participant lies on the table with the head at the center of the bore. Reproduced under a CC BY license from Amanamba et al. (2020). *(Figure 11.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 :::{figure} images/ch11-cleaning-cart-bore.png
 :alt: A floor cleaning machine pulled into the bore of an MRI scanner and stuck against the magnet opening
 :width: 70%
+:class: book-figure
 
-**Cleaning equipment pulled into the bore of a 1.5T magnet.** The static magnetic field is *always on* — even when the console computers are powered down — and its pull grows roughly with the inverse square of distance to the bore, so an object that feels harmless at the door can become an unstoppable projectile near the magnet. Accidents like this one have happened when staff assumed a dark console meant the field was off. Reproduced under a CC BY-SA 4.0 license (Wikimedia Commons, user Xksev). *(Figure 11.2 from the book.)*
+**Cleaning equipment pulled into the bore of a 1.5T magnet.** The static magnetic field is *always on* — even when the console computers are powered down — and its pull grows roughly with the inverse square of distance to the bore, so an object that feels harmless at the door can become an unstoppable projectile near the magnet. Accidents like this one have happened when staff assumed a dark console meant the field was off. Reproduced under a CC BY-SA 4.0 license (Wikimedia Commons, user Xksev). *(Figure 11.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
-**From arrival to scan: the safety workflow.** The diagram below summarizes how MR centers screen participants and manage the environment so that nothing ferromagnetic — on, in, or near a person — gets close to the bore.
+**From arrival to scan: the safety workflow.** The two diagrams below summarize how MR centers keep anything ferromagnetic — on, in, or near a person — away from the bore. First, every participant is screened with a written form and interview covering implants, surgeries, occupational metal exposure, tattoos and cosmetics, pregnancy, and claustrophobia. Electronic implants (such as pacemakers) or possible metal fragments in the eyes are contraindications; known implants (joints, clips, IUDs) go to a certified MR technologist or medical personnel, who decide whether they are MR safe or MR conditional under the specific protocol.
 
 ```{mermaid}
 flowchart TD
-    A["Participant arrives"] --> B["Safety screening form + interview<br/>implants, surgeries, metal exposure,<br/>tattoos/cosmetics, pregnancy, claustrophobia"]
-    B --> C{"Any implants or<br/>possible metal in body?"}
-    C -- "Electronic implant (e.g., pacemaker)<br/>or metal fragments (e.g., in eyes)" --> D["Contraindicated:<br/>do NOT enter MR environment"]
-    C -- "Known implant<br/>(e.g., joint, IUD, clips)" --> E["Review by certified MR<br/>technologist / medical personnel:<br/>MR safe vs. MR conditional<br/>(protocol-specific limits)"]
-    C -- "No" --> F["Remove all metal: jewelry, watches,<br/>cards, pens; change into scrubs<br/>(no underwires, no magnetic cosmetics)"]
+    A["Participant<br/>arrives"] --> B["Screening form<br/>+ interview"]
+    B --> C{"Implants or metal<br/>in the body?"}
+    C -- "Electronic implant /<br/>eye fragments" --> D["Contraindicated:<br/>no entry"]
+    C -- "Known implant" --> E["MR technologist review:<br/>safe vs. conditional"]
+    C -- "None" --> F["Remove all metal;<br/>change into scrubs"]
     E -- "Cleared" --> F
-    F --> G["Earplugs in<br/>(gradient noise > 100 dB)"]
-    G --> H["Enter scanner room past the 5 Gauss line<br/>only with screened, MR-safe items —<br/>remember: pull grows as 1/distance²<br/>and the field is ALWAYS on"]
-    H --> I["Position on table: head restraints<br/>(vacuum pillow, pads, straps),<br/>mirror, response devices, squeeze ball"]
-    I --> J["Scan: monitor comfort, motion,<br/>and timing synchronization"]
     style A fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style D fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
-    style H fill:#fef3c7,stroke:#f59e0b,color:#713f12
+    style F fill:#dcfce7,stroke:#22c55e,color:#14532d
+```
+
+Once cleared, the participant removes all metal (jewelry, watches, cards, pens — and no underwires or magnetic cosmetics, hence the scrubs), puts in earplugs, and enters the scanner room carrying only screened, MR-safe items. The critical habits of mind at the door: the field is *always on*, and its pull grows roughly as the inverse square of distance to the bore.
+
+```{mermaid}
+flowchart TD
+    W["Field is ALWAYS on;<br/>pull grows as 1/d²"] -.-> H
+    G["Earplugs in<br/>(noise > 100 dB)"] --> H["Cross the 5 Gauss line:<br/>MR-safe items only"]
+    H --> I["Position on table:<br/>head padding, mirror,<br/>buttons, squeeze ball"]
+    I --> J["Scan: monitor comfort,<br/>motion, and timing"]
+    style W fill:#fef3c7,stroke:#f59e0b,color:#713f12
     style J fill:#dcfce7,stroke:#22c55e,color:#14532d
 ```
 

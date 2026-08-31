@@ -8,8 +8,8 @@ subject: "Part 1: Motivation"
 :::{admonition} What you will learn
 :class: tip
 - Why fMRI became the tool of choice for studying the human brain in action — the scientific, economic, and social forces behind its popularity
-- How the open-source software ecosystem (SPM, FSL, AFNI) and data-sharing repositories (OpenNeuro, NeuroVault, Neurosynth) shaped the field's collaborative culture
-- What large-scale open datasets like UK Biobank, ABCD, and the Human Connectome Project offer, and who uses them
+- How the open-source software ecosystem ([SPM](https://www.fil.ion.ucl.ac.uk/spm/), FSL, AFNI) and data-sharing repositories ([OpenNeuro](https://openneuro.org), [NeuroVault](https://neurovault.org), [Neurosynth](https://neurosynth.org)) shaped the field's collaborative culture
+- What large-scale open datasets like [UK Biobank](https://www.ukbiobank.ac.uk), [ABCD](https://abcdstudy.org), and the [Human Connectome Project](https://www.humanconnectome.org) offer, and who uses them
 - How one MRI scanner, with different pulse sequences, yields many distinct image types — structural, diffusion, angiographic, spectroscopic, and functional
 - What inferential errors marked fMRI's early years, and how the field has matured beyond them
 :::
@@ -21,25 +21,26 @@ The human brain is, pound for pound, the most complex object in the known univer
 :::{figure} images/ch01_fig1_self_reflected.png
 :alt: Golden neurons and flowing axon bundles in motor and parietal cortex, from the artwork Self Reflected
 :width: 90%
+:class: book-figure
 
-The complexity and beauty of the brain. Motor and parietal cortex, detail from *Self Reflected*, 22K gold microetching under multicolored light, 2014–2016, Greg Dunn and Brian Edwards, reproduced with permission. *(Figure 1.1 from the book.)*
+The complexity and beauty of the brain. Motor and parietal cortex, detail from *Self Reflected*, 22K gold microetching under multicolored light, 2014–2016, Greg Dunn and Brian Edwards, reproduced with permission. *(Figure 1.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Functional Magnetic Resonance Imaging (fMRI) has become a staple of human neuroscience: it can capture signals related to brain activity and metabolism every second at roughly 320,000 locations across the brain, sampling the processes that let us concentrate, do mental arithmetic, share a joke, or compose music. It complements its cousins in noninvasive functional neuroimaging — PET, EEG, MEG, SPECT, NIRS, and functional ultrasound — each with unique strengths. Scientifically, fMRI offers a rare combination of reasonably high spatial *and* temporal resolution with even, whole-brain coverage: whole-brain images every second at ~2 mm resolution, or every 200 msec at lower resolution, and with clever designs it can discriminate psychological events as little as 100 msec apart. It is also well suited to longitudinal work — some individuals have been scanned up to 100 times over a few years with no apparent adverse effects, making repeated scanning across development, aging, training, or treatment feasible.
 
 Economics and accessibility matter too. The same MRI scanner used in every major hospital to image knees, backs, and lungs can — with the right software and pulse sequences — do fMRI, making the method widely available. fMRI is roughly three times less expensive than PET (though an order of magnitude more costly than EEG), and because it involves no injection of radioactive tracers, it faces lighter regulatory oversight, opening it to psychologists, health researchers, and behavioral scientists without medical approvals or radiation safety committees.
 
-The social factor may be the most distinctive: fMRI researchers largely see themselves as a community committed to collaborative science and open sharing. The creators of the field's most popular analysis packages — Statistical Parametric Mapping (SPM), the fMRIB Software Library (FSL), and Analysis of Functional Neuroimages (AFNI) — chose early on to make their software open-source and free, and each is sustained by user communities that have contributed hundreds of open extensions, toolboxes, and pipelines, many catalogued on the NIH's NITRC clearinghouse or GitHub. A growing open-science movement has added data-sharing repositories: OpenNeuro hosts thousands of complete fMRI datasets; NeuroVault and Neuromaps share statistical brain maps; Neurosynth and BrainMap provide meta-analytic summaries — Neurosynth alone synthesizes findings from over 14,000 publications. Funding agencies went further, prospectively funding studies designed from the outset to be shared: the Human Connectome Project (1,200 healthy adults, now expanding across the lifespan), IMAGEN (2,100 European adolescents), the longitudinal ABCD study (over 10,000 US adolescents), and UK Biobank, which plans brain scans of 100,000 people within a 500,000-person population health sample. Consortia such as ADNI (Alzheimer's), PPMI (Parkinson's), and ENIGMA (imaging genetics) pool scientists and data to accelerate progress on brain disorders.
+The social factor may be the most distinctive: fMRI researchers largely see themselves as a community committed to collaborative science and open sharing. The creators of the field's most popular analysis packages — [Statistical Parametric Mapping (SPM)](https://www.fil.ion.ucl.ac.uk/spm/), the fMRIB Software Library (FSL), and Analysis of Functional Neuroimages (AFNI) — chose early on to make their software open-source and free, and each is sustained by user communities that have contributed hundreds of open extensions, toolboxes, and pipelines, many catalogued on the NIH's NITRC clearinghouse or GitHub. A growing open-science movement has added data-sharing repositories: [OpenNeuro](https://openneuro.org) hosts thousands of complete fMRI datasets; [NeuroVault](https://neurovault.org) and Neuromaps share statistical brain maps; [Neurosynth](https://neurosynth.org) and BrainMap provide meta-analytic summaries — Neurosynth alone synthesizes findings from over 14,000 publications. Funding agencies went further, prospectively funding studies designed from the outset to be shared: the [Human Connectome Project](https://www.humanconnectome.org) (1,200 healthy adults, now expanding across the lifespan), IMAGEN (2,100 European adolescents), the longitudinal [ABCD study](https://abcdstudy.org) (over 10,000 US adolescents), and [UK Biobank](https://www.ukbiobank.ac.uk), which plans brain scans of 100,000 people within a 500,000-person population health sample. Consortia such as ADNI (Alzheimer's), PPMI (Parkinson's), and ENIGMA (imaging genetics) pool scientists and data to accelerate progress on brain disorders.
 
 | Study | Sample | Population |
 |---|---|---|
-| UK Biobank | 100,000 UK adults (planned; 50,000+ released) | Population health |
-| ABCD | 10,000 US adolescents, longitudinal | Development |
-| OpenNeuro | >10,000 participants across many studies | Multiple |
+| [UK Biobank](https://www.ukbiobank.ac.uk) | 100,000 UK adults (planned; 50,000+ released) | Population health |
+| [ABCD](https://abcdstudy.org) | 10,000 US adolescents, longitudinal | Development |
+| [OpenNeuro](https://openneuro.org) | >10,000 participants across many studies | Multiple |
 | INDI / 1000 FC / CoRR | ~5,000 across initiatives | Multiple |
 | ABIDE I & II | 2,156 autistic individuals | Autism |
 | ADNI 1/2/3 | ~2,500 with Alzheimer's, MCI, controls | Dementia |
-| HCP | 1,200 healthy US adults | Healthy adults |
+| [HCP](https://www.humanconnectome.org) | 1,200 healthy US adults | Healthy adults |
 | dHCP | 1,300, ages 5–21 | Development |
 | PPMI | 1,400 (424 with Parkinson's disease) | Parkinson's |
 | OASIS | 1,674 (150 longitudinal) | Dementia |
@@ -54,8 +55,9 @@ A second core advantage is versatility. The same scanner that collects functiona
 :::{figure} images/ch01_fig2_one_scanner_many_images.png
 :alt: Diagram showing structural image types (gray matter, white matter tracts, vasculature, elastic properties) on the left and functional types (task activity, connectivity, spectroscopy, physiology) on the right, around a central 3D brain
 :width: 85%
+:class: book-figure
 
-One scanner, many types of images. MRI provides structural (left) and functional (right) measures of the brain, offering multiple windows onto the relationships between brain, mind, body, and health. *(Figure 1.2 from the book.)*
+One scanner, many types of images. MRI provides structural (left) and functional (right) measures of the brain, offering multiple windows onto the relationships between brain, mind, body, and health. *(Figure 1.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 The field earned its maturity the hard way. In fMRI's heady early years, observing activity during memory retrieval was taken as the "neural basis" of memory; amygdala activity was read as unconscious threat; "pain area" activation during social rejection meant rejection literally hurt; and strong correlations (e.g., r = 0.9) were assumed to be practically meaningful. Each of these reflects a logical error or unaccounted statistical bias, and a wave of exposé-style papers on effect sizes, statistical power, reproducibility, and false positives shook researchers' and journalists' faith — prompting healthy self-correction. These problems are not unique to neuroimaging; they pervade genetics, animal models, psychology, and beyond. The chapters ahead give you the conceptual tools to ask the right questions — to tell findings that are robust and credible from those that are too good to be true.
@@ -80,7 +82,7 @@ The tabs below are **static previews** with copy buttons — paste the code into
 % in an emotion regulation study (Wager et al. 2008, Neuron).
 % load_image_set reads the images into an fmri_data object -- the basic
 % CANlab container storing image data as a [voxels x images] matrix.
-[data_obj, subject_names, image_names] = load_image_set('emotionreg');
+[data_obj, subject_names, image_names] = load_image_set('emotionreg');   % 'emotionreg' = keyword for the bundled 30-subject dataset
 
 data_obj              % display a summary of the object
 
@@ -99,16 +101,31 @@ from nilearn.plotting import plot_anat
 import matplotlib.pyplot as plt
 
 # Load the MNI152 standard-space anatomical template (bundled with nilearn)
-template = load_mni152_template(resolution=2)
-print(template.shape)                       # 3D grid of voxels
-print(template.header.get_zooms())          # voxel size in mm
+template = load_mni152_template(resolution=2)   # resolution = voxel size in mm (2 = 2-mm isotropic voxels)
+print(template.shape)                       # 3D grid of voxels (x, y, z)
+print(template.header.get_zooms())          # voxel size in mm along each axis
 
 # Display orthogonal slices through the volume
-plot_anat(template, title="MNI152 template", display_mode="ortho")
+plot_anat(template, title="MNI152 template",
+          display_mode="ortho")             # ortho = sagittal + coronal + axial views
 plt.show()
 ```
 :::
 ::::
+
+**Example output:** running the Python tab prints the template's dimensions and voxel size, then displays orthogonal slices:
+
+```text
+(99, 117, 95)
+(np.float32(2.0), np.float32(2.0), np.float32(2.0))
+```
+
+:::{figure} images/ch01_step1_output.png
+:alt: Sagittal, coronal, and axial slices through the MNI152 anatomical template with crosshairs at the cut coordinates
+:width: 90%
+
+Orthogonal views of the MNI152 standard-space template — a 99 × 117 × 95 grid of 2-mm voxels. The MATLAB tab's `plot(data_obj)` produces an analogous multi-panel summary of the loaded dataset.
+:::
 
 Both snippets illustrate the same idea: a brain image is just structured data — a 3D (or 4D) array plus spatial metadata — wrapped in an object that knows how to summarize and display itself. Everything in this book builds on that foundation.
 

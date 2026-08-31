@@ -33,17 +33,19 @@ This chapter begins our journey into fMRI data analysis by establishing the voca
 :::{figure} images/ch12_fig1_image_terminology.png
 :alt: Field of view, slice thickness, matrix size, in-plane resolution, and voxel size illustrated on brain slices
 :width: 85%
+:class: book-figure
 
-Basic MR image terminology. The field of view, slice thickness, matrix size, and in-plane resolution together determine the voxel size — and hence the spatial resolution of the image. *(Figure 12.1 from the book.)*
+Basic MR image terminology. The field of view, slice thickness, matrix size, and in-plane resolution together determine the voxel size — and hence the spatial resolution of the image. *(Figure 12.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
-Once acquired, a 3-D volume can be displayed as slices in any orientation. **Axial** (horizontal) slices cut from bottom to top, **coronal** slices from front to back, **sagittal** slices from left to right, and **oblique** slices at other angles. Each dimension of brain space has a name and an axis: the left–right dimension is **x**, the posterior–anterior (back–front) dimension is **y**, and the inferior–superior (bottom–top) dimension is **z**. Anterior is also called *rostral* ("toward the head") and posterior *caudal* ("toward the tail"); inferior locations are *ventral* ("toward the belly") and superior ones *dorsal* ("toward the back") — though in the brainstem, which lies parallel to the back, dorsal means toward the back of the head and rostral means toward the midbrain. Locations are reported as [x, y, z] coordinate triplets in millimeters relative to an origin at the **anterior commissure**, a small white-matter bundle connecting the hemispheres. Beware, though: conventions differ. SPM and FSL use the "LPI" convention (negative x = left), while AFNI's default "RAI"/DICOM convention reverses the signs of x and y. This book uses LPI throughout.
+Once acquired, a 3-D volume can be displayed as slices in any orientation. **Axial** (horizontal) slices cut from bottom to top, **coronal** slices from front to back, **sagittal** slices from left to right, and **oblique** slices at other angles. Each dimension of brain space has a name and an axis: the left–right dimension is **x**, the posterior–anterior (back–front) dimension is **y**, and the inferior–superior (bottom–top) dimension is **z**. Anterior is also called *rostral* ("toward the head") and posterior *caudal* ("toward the tail"); inferior locations are *ventral* ("toward the belly") and superior ones *dorsal* ("toward the back") — though in the brainstem, which lies parallel to the back, dorsal means toward the back of the head and rostral means toward the midbrain. Locations are reported as [x, y, z] coordinate triplets in millimeters relative to an origin at the **anterior commissure**, a small white-matter bundle connecting the hemispheres. Beware, though: conventions differ. [SPM](https://www.fil.ion.ucl.ac.uk/spm/) and FSL use the "LPI" convention (negative x = left), while AFNI's default "RAI"/DICOM convention reverses the signs of x and y. This book uses LPI throughout.
 
 :::{figure} images/ch12_fig2_orientation.png
 :alt: Sagittal, coronal, and axial slice orientations with x, y, and z axis labels on a 3-D head rendering
 :width: 90%
+:class: book-figure
 
-Nomenclature for standard coordinate space and anatomical position. The brain can be visualized in sagittal, coronal, or axial slices; x runs left–right, y posterior–anterior, and z inferior–superior. *(Figure 12.2 from the book.)*
+Nomenclature for standard coordinate space and anatomical position. The brain can be visualized in sagittal, coronal, or axial slices; x runs left–right, y posterior–anterior, and z inferior–superior. *(Figure 12.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 An fMRI **run** is a time series of 3-D **volumes** acquired while the participant performs a task or rests. One volume is collected every **repetition time (TR)** — typically 2–3 seconds in older studies, and under 500 ms with modern accelerated ("multiband") sequences. Functional (T2*-weighted) images have lower spatial resolution and less tissue contrast than structural (T1-weighted) images, but their signal fluctuations over time track local blood flow and oxygen metabolism, which in turn reflect neural activity. The absolute image values are arbitrary; what carries information is *relative* change across time, quantified for example as percentage signal change. Fixing one voxel's position and extracting its intensity at every TR yields that voxel's **time series** — the fundamental object of fMRI analysis. A single volume commonly contains 100,000 or more voxels, each with its own time series, making fMRI a "time series problem on steroids."
@@ -51,15 +53,33 @@ An fMRI **run** is a time series of 3-D **volumes** acquired while the participa
 :::{figure} images/ch12_fig5_time_series.png
 :alt: A sequence of brain volumes sampled every TR, with one voxel highlighted and its extracted time series shown below task condition bars
 :width: 90%
+:class: book-figure
 
-Terminology and sampling of fMRI time series. One brain volume is acquired every TR; fixing a voxel's position and extracting its intensity at each TR yields a time series that can be related to an experimental task — here an on–off "block" (or "boxcar") design shown as red and blue bars. *(Figure 12.5 from the book.)*
+Terminology and sampling of fMRI time series. One brain volume is acquired every TR; fixing a voxel's position and extracting its intensity at each TR yields a time series that can be related to an experimental task — here an on–off "block" (or "boxcar") design shown as red and blue bars. *(Figure 12.5 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 A standard analysis pipeline flows from **experimental design** through **data acquisition** and **reconstruction** into a series of **preprocessing** steps — slice-timing correction, motion correction, co-registration of functional to structural images, spatial normalization (warping) to a standard anatomical reference space, and often spatial smoothing and denoising — before **statistical analysis**. In task fMRI, voxels are typically analyzed one at a time ("mass-univariate" analysis), most often with multiple regression relating each voxel's time series to the task design, while accounting for the slow, delayed **hemodynamic response function (HRF)** that peaks about 5–6 seconds after neural activity. Multivariate methods that model many voxels jointly are increasingly common as well.
 
 The data themselves are fundamentally **hierarchical**: voxels are nested within slices, slices within volumes, volumes within runs (typically 4–10 minutes each), runs within scanning sessions, sessions within participants, and participants sometimes within groups. This structure shapes analysis: a **first-level** analysis models each participant's time series data, producing *contrast maps* of experimental effects, which become input to a **second-level** analysis that tests reliability across participants and differences between groups or individuals.
 
-Finally, images live in files with particular formats and conventions. Scanners produce DICOM files (one slice, one time point each — a study can generate millions); analysis packages convert these to **NIfTI** format (.nii), which stores a 3-D volume or a 4-D time series in a single file along with meta-data, including the **affine matrix** that maps voxel (matrix) coordinates to world (mm) coordinates. A notorious pitfall is **left–right flipping**: in *radiological* display format the brain's left is on the image's right (as if viewing the patient from the feet), whereas in *neurological* format — the standard in cognitive neuroscience — the brain's right is on the image's right. Because packages handle orientation meta-data differently, flipping errors appear even in published papers. Safeguards include consistent use of NIfTI and one software package, fiducial markers (a Vitamin E capsule taped to one side of the head), and anatomical heuristics — in most people the *left* occipital lobe is larger, pushing the calcarine fissure rightward ("left looms larger"). The cortex can also be analyzed on extracted 2-D *surfaces* (GIFTI and CIFTI "grayordinate" formats popularized by FreeSurfer and the Human Connectome Project). Most researchers work within a rich ecosystem of free packages — SPM, FSL, AFNI, FreeSurfer, and Python tools such as nilearn and Nipype, plus MATLAB toolboxes including the CANlab object-oriented tools — which can be combined, with care, into custom workflows.
+Finally, images live in files with particular formats and conventions. Scanners produce DICOM files (one slice, one time point each — a study can generate millions); analysis packages convert these to **NIfTI** format (.nii), which stores a 3-D volume or a 4-D time series in a single file along with meta-data, including the **affine matrix** that maps voxel (matrix) coordinates to world (mm) coordinates. Writing a voxel's indices as $[i, j, k]$ (its position in the data array) and its physical location as $[x, y, z]$ (in millimeters relative to the origin), the mapping is a single matrix–vector product in homogeneous coordinates:
+
+::::{div}
+:class: eq-tip
+$$
+\begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix} = \mathbf{A} \begin{bmatrix} i \\ j \\ k \\ 1 \end{bmatrix}
+$$
+:::{div}
+:class: eq-tip-text
+[x, y, z] — world coordinates (mm, relative to the origin at the anterior commissure) · **A** — 4 × 4 affine matrix stored in the NIfTI header · [i, j, k] — voxel (matrix) indices into the data array · trailing 1 — homogeneous coordinate that lets **A** encode translations as well as scaling and rotation
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $[i, j, k]$ *are voxel (matrix) indices into the data array,* $\mathbf{A}$ *is the 4 × 4 affine matrix stored in the image header — its diagonal holds the voxel sizes in mm, its last column the origin, and off-diagonal entries any rotations — and* $[x, y, z]$ *are world coordinates in millimeters relative to the origin at the anterior commissure.*
+:::
+
+A notorious pitfall is **left–right flipping**: in *radiological* display format the brain's left is on the image's right (as if viewing the patient from the feet), whereas in *neurological* format — the standard in cognitive neuroscience — the brain's right is on the image's right. Because packages handle orientation meta-data differently, flipping errors appear even in published papers. Safeguards include consistent use of NIfTI and one software package, fiducial markers (a Vitamin E capsule taped to one side of the head), and anatomical heuristics — in most people the *left* occipital lobe is larger, pushing the calcarine fissure rightward ("left looms larger"). The cortex can also be analyzed on extracted 2-D *surfaces* (GIFTI and CIFTI "grayordinate" formats popularized by FreeSurfer and the [Human Connectome Project](https://www.humanconnectome.org)). Most researchers work within a rich ecosystem of free packages — SPM, FSL, AFNI, FreeSurfer, and Python tools such as nilearn and Nipype, plus MATLAB toolboxes including the CANlab object-oriented tools — which can be combined, with care, into custom workflows.
 
 ## Hands-on tutorial
 
@@ -96,9 +116,9 @@ mm  = imgs.volInfo.mat * vox % [x y z 1]' in mm relative to the origin
 import numpy as np, nibabel as nib
 from nibabel.affines import apply_affine
 
-rng = np.random.default_rng(0)
-shape = (20, 24, 12, 60)                    # x, y, z, time: 60 volumes
-data = 100 + rng.standard_normal(shape)     # arbitrary units around 100
+rng = np.random.default_rng(0)              # fixed seed, so results reproduce exactly
+shape = (20, 24, 12, 60)                    # (x, y, z, t): 20 x 24 matrix, 12 slices, 60 volumes
+data = 100 + rng.standard_normal(shape)     # baseline ~100 a.u. + noise (absolute values are arbitrary)
 
 affine = np.diag([3.0, 3.0, 3.0, 1.0])      # 3 mm isotropic voxels
 affine[:3, 3] = [-28.5, -34.5, -16.5]       # so world (0,0,0) is mid-volume
@@ -112,6 +132,15 @@ print(apply_affine(affine, [9, 11, 5]))     # voxel [i, j, k] -> mm
 :::
 ::::
 
+**Example output:**
+
+```text
+(20, 24, 12, 60) (np.float32(3.0), np.float32(3.0), np.float32(3.0), np.float32(2.0))
+[-1.5 -1.5 -1.5]
+```
+
+The image is 20 × 24 × 12 voxels × 60 volumes, with 3 mm voxel sizes and the 2-s TR stored as the header "zooms." Voxel [9, 11, 5] maps to [−1.5, −1.5, −1.5] mm — just off the world origin, because the exact volume center falls between voxels.
+
 **Step 2 — Extract one voxel's values and view slices.** A voxel's time series is the raw material of every analysis to come; a montage of slices is the standard way to view a whole volume at once.
 
 ::::{tab-set}
@@ -124,7 +153,7 @@ orthviews(m);                         % interactive 3-view (orthogonal) display
 figure; axis off; montage(m);         % canonical slice montage
 
 % One voxel's values across the columns of .dat:
-v = imgs.dat(1000, :)';
+v = imgs.dat(1000, :)';               % row 1000 = one voxel; columns = the 30 images
 figure; plot(v, 'o-');
 xlabel('Image number'); ylabel('Value (a.u.)');
 ```
@@ -135,19 +164,28 @@ xlabel('Image number'); ylabel('Value (a.u.)');
 ```python
 import matplotlib.pyplot as plt
 
-ts = data[9, 11, 5, :]                       # one voxel's time series
-t = np.arange(shape[3]) * 2.0                # TR = 2 s
+ts = data[9, 11, 5, :]                       # one voxel's time series: fix [i, j, k], keep all TRs
+t = np.arange(shape[3]) * 2.0                # time axis in seconds: volume number x TR (2 s)
 fig, ax = plt.subplots(figsize=(7, 2.5))
 ax.plot(t, ts); ax.set(xlabel='Time (s)', ylabel='Signal (a.u.)')
 
 mean_vol = data.mean(axis=3)                 # average volume over time
-fig, axes = plt.subplots(2, 6, figsize=(9, 3))
+fig, axes = plt.subplots(2, 6, figsize=(9, 3))   # 12 axial slices in a 2 x 6 grid
 for k, ax in enumerate(axes.ravel()):        # one axial slice per panel
     ax.imshow(mean_vol[:, :, k].T, cmap='gray', origin='lower')
     ax.axis('off')
 ```
 :::
 ::::
+
+**Example output:**
+
+:::{figure} images/ch12_step2_output.png
+:alt: A noisy simulated voxel time series plotted over two minutes, above a montage of twelve noisy axial slices
+:width: 90%
+
+Output of the Python tab: one voxel's time series (top) and the axial slice montage of the mean volume (bottom). These simulated volumes are pure noise around a baseline of 100, so the slices look like static — in the full lab you build a brain-shaped dataset with an "active" region and watch it emerge from exactly these views.
+:::
 
 The full labs go further: simulating an "active" region with a boxcar task signal, saving and reloading NIfTI files, converting between voxel and world coordinates in both directions, and displaying the same slice in radiological and neurological orientation.
 

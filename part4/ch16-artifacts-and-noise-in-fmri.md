@@ -35,25 +35,38 @@ A first family of problems is visible in the images themselves. **Susceptibility
 :::{figure} images/ch16_fig1_image_artifacts.png
 :alt: Six example brain images showing susceptibility artifact, RF noise k-space spike, eddy current artifact, chemical shift, wrap-around ghosting, and Gibbs ringing
 :width: 90%
+:class: book-figure
 
-Several common types of image artifacts. These can generally be avoided with appropriate pulse sequences and acquisition parameters, though they are present to some degree in most images. Routine visual inspection matters: new artifacts can signal changes in hardware status and environmental noise. *(Figure 16.1 from the book.)*
+Several common types of image artifacts. These can generally be avoided with appropriate pulse sequences and acquisition parameters, though they are present to some degree in most images. Routine visual inspection matters: new artifacts can signal changes in hardware status and environmental noise. *(Figure 16.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 A second family lives in the time series. fMRI signals **drift** slowly over a run — visible even in phantoms, so not neural in origin — due to scanner instabilities and slow changes in head position and physiology. To reason about drift, it helps to view signals in the *frequency domain*: the Fourier transform re-expresses a time series, without loss of information, as a set of sine waves, each with a magnitude (power) and phase. Drift concentrates power at the lowest frequencies, in inverse proportion to frequency — so-called **1/f noise**. Because task-related signals often live at nearby low frequencies, drift can mask true effects or masquerade as false ones, and it makes designs in which a process unfolds only once, slowly (a drug high, a developing mood), difficult — though modern, more stable scanners have relaxed this constraint somewhat. Drift is typically removed with a high-pass filter (Chapter 19).
 
 Sampling in time brings its own trap: **aliasing**. The Nyquist theorem says that capturing a periodic signal requires sampling at least twice its frequency. In fMRI the sampling rate is $F_s = 1/\mathrm{TR}$, so the highest recoverable frequency is the Nyquist limit,
 
+::::{div}
+:class: eq-tip
 $$
-f_{\mathrm{Nyquist}} = \frac{F_s}{2} = \frac{1}{2\,\mathrm{TR}}.
+f_{\mathrm{Nyquist}} = \frac{F_s}{2} = \frac{1}{2\,\mathrm{TR}}
 $$
+:::{div}
+:class: eq-tip-text
+f_Nyquist — highest frequency recoverable from the sampled data (Hz) · F_s — sampling rate, 1/TR (Hz) · TR — repetition time between volumes (s)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $f_{\mathrm{Nyquist}}$ *is the highest frequency that can be recovered from the sampled data,* $F_s = 1/\mathrm{TR}$ *the sampling rate, and* $\mathrm{TR}$ *the repetition time between volumes.*
+:::
 
 Signals above this limit do not disappear — they are reflected around the Nyquist frequency and reappear as spurious low-frequency fluctuations. With a typical TR of 2 s (Nyquist = 0.25 Hz), a 1 Hz heartbeat is aliased down into the same low-frequency band as the task. Worse, the aliased pattern changes dramatically with small variations in heartbeat timing, so it can be neither cleanly filtered nor easily modeled with covariates.
 
 :::{figure} images/ch16_fig3_temporal_aliasing.png
 :alt: A 10 Hz sine wave sampled at 12 Hz appears as a 2 Hz oscillation; in the frequency domain the peak is reflected around the Nyquist limit
 :width: 85%
+:class: book-figure
 
-Temporal aliasing caused by under-sampling. A 10 Hz sine wave (black, sampled at 1,000 Hz) is sampled at only 12 Hz (purple). The samples catch different phases of the underlying signal, so it appears to oscillate at a lower frequency. In the frequency domain (bottom), the original signal is reflected around the Nyquist limit (dashed line), reappearing near 2 Hz. *(Figure 16.3 from the book.)*
+Temporal aliasing caused by under-sampling. A 10 Hz sine wave (black, sampled at 1,000 Hz) is sampled at only 12 Hz (purple). The samples catch different phases of the underlying signal, so it appears to oscillate at a lower frequency. In the frequency domain (bottom), the original signal is reflected around the Nyquist limit (dashed line), reappearing near 2 Hz. *(Figure 16.3 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Several noise sources shape the BOLD time series itself. **Thermal noise** from random electron motion adds independent noise to every voxel; SNR falls with 1 over voxel volume (1 mm isotropic voxels have 27× lower SNR than 3 mm voxels), which is why smoothing and larger voxels help, and why very high resolution only becomes routine at ultra-high field. **Transient "spikes"** — from gradient imprecision or its interaction with head movement — produce individual images with aberrant intensity. Relatedly, the first few volumes of every run are brighter because T1 contrast has not yet reached steady state; they are routinely discarded (check that the effect has actually dissipated). **Head movement** produces complex artifacts because the field is not perfectly homogeneous, movement itself distorts the field, and moving tissue is re-excited at irregular intervals, disrupting steady-state saturation (*spin-history* effects). If movement covaries with the task, it can produce convincing-looking false activations. **Physiological noise** is pervasive: cardiac pulsation moves tissue and produces inflow effects near vessels; respiration changes the field via thoracic movement, producing spatially distributed phase shifts; and heart rate and breathing depth themselves fluctuate with task demands, placing noise squarely in the frequency band of the HRF.
@@ -63,8 +76,9 @@ Transient artifacts can be found with statistical outlier detection applied to e
 :::{figure} images/ch16_fig5_rmssd_outliers.png
 :alt: RMSSD time course with a 3 standard deviation threshold line and one flagged volume, next to a sagittal slice showing a broad intensity shift
 :width: 90%
+:class: book-figure
 
-Detecting transient image artifacts with RMSSD (DVARS). BOLD signal changes slowly, but artifacts can be immediate, so the total change from one image to the next is a sensitive diagnostic. The dashed line marks 3 standard deviations above the mean; the flagged image (right) shows a bright rim at the top of the brain and dark areas below — a sudden, spatially broad signal shift. *(Figure 16.5 from the book.)*
+Detecting transient image artifacts with RMSSD (DVARS). BOLD signal changes slowly, but artifacts can be immediate, so the total change from one image to the next is a sensitive diagnostic. The dashed line marks 3 standard deviations above the mean; the flagged image (right) shows a bright rim at the top of the brain and dark areas below — a sudden, spatially broad signal shift. *(Figure 16.5 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 The residue of all these processes is noise that is correlated across time. Autocorrelation matters because ordinary least squares assumes independent errors: with positively autocorrelated noise, a naive GLM underestimates the uncertainty of its estimates, inflating t-statistics and false positive rates. Chapters 18–19 develop the remedy (generalized least squares with prewhitening); the tutorial below lets you generate the problem — and see the inflation — yourself.
@@ -86,16 +100,24 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % Requires CanlabCore on your MATLAB path (noise_arp)
 % Adapted from CANlab tutorials (github.com/canlab)
-rng(7); TR = 2; n = 240; t = (0:n-1)' * TR;      % 8-min run
+rng(7);                                          % seed for reproducibility
+TR = 2;                                          % TR = repetition time (s)
+n  = 240;                                        % n = number of volumes (an 8-min run)
+t  = (0:n-1)' * TR;                              % volume acquisition times (s)
 
-drift = 6*cos(2*pi*t/400) + 3*cos(2*pi*t/180);   % slow scanner drift
-ar    = noise_arp(n, .5);                        % AR(1) noise, phi = 0.5
-y     = 100 + drift + ar;
-y([61 62 151]) = y([61 62 151]) + [18 -12 15]';  % transient spikes
+drift = 6*cos(2*pi*t/400) + 3*cos(2*pi*t/180);   % slow scanner drift (400-s and 180-s periods)
+phi = 0.5;                                       % AR(1) coefficient: each error keeps half the last
+ar  = noise_arp(n, phi);                         % AR(1) autocorrelated noise
+y   = 100 + drift + ar;                          % baseline of 100 + drift + noise
+y([61 62 151]) = y([61 62 151]) + [18 -12 15]';  % transient spikes in 3 volumes
 
-rmssd = [NaN; abs(diff(y))];                     % successive differences
-z = (rmssd - mean(rmssd, 'omitnan')) ./ std(rmssd, 'omitnan');
-find(z > 3)                                      % flagged volumes
+rmssd = [NaN; abs(diff(y))];                     % successive differences (single-voxel DVARS)
+z = (rmssd - mean(rmssd, 'omitnan')) ./ std(rmssd, 'omitnan');  % z-score the differences
+wh = find(z > 3)                                 % flagged volumes: change > 3 SD above the mean
+
+figure; plot(t, y, 'k-'); hold on;               % time series with flagged volumes marked
+plot(t(wh), y(wh), 'ro', 'MarkerFaceColor', 'r');
+xlabel('Time (s)'); ylabel('Signal (a.u.)');
 ```
 :::
 :::{tab-item} Python
@@ -103,23 +125,43 @@ find(z > 3)                                      % flagged volumes
 
 ```python
 import numpy as np
-rng = np.random.default_rng(7)
-TR, n = 2.0, 240                                  # 8-min run
-t = np.arange(n) * TR
+import matplotlib.pyplot as plt
+rng = np.random.default_rng(7)                    # seed for reproducibility
+TR, n = 2.0, 240                                  # TR = repetition time (s); n = volumes (8-min run)
+t = np.arange(n) * TR                             # volume acquisition times (s)
 
-drift = 6*np.cos(2*np.pi*t/400) + 3*np.cos(2*np.pi*t/180)  # slow drift
-eta, ar = rng.standard_normal(n), np.zeros(n)     # AR(1) noise, phi = 0.5
+drift = 6*np.cos(2*np.pi*t/400) + 3*np.cos(2*np.pi*t/180)  # slow scanner drift
+eta, ar = rng.standard_normal(n), np.zeros(n)     # eta = white noise; ar = AR(1) noise
 for i in range(1, n):
-    ar[i] = 0.5 * ar[i-1] + eta[i]
-y = 100 + drift + ar
-y[[60, 61, 150]] += [18, -12, 15]                 # transient spikes
+    ar[i] = 0.5 * ar[i-1] + eta[i]                # phi = 0.5: each error keeps half the last
+y = 100 + drift + ar                              # baseline of 100 + drift + noise
+y[[60, 61, 150]] += [18, -12, 15]                 # transient spikes in 3 volumes
 
-rmssd = np.abs(np.diff(y))                        # successive differences
-z = (rmssd - rmssd.mean()) / rmssd.std()
-print(np.where(z > 3)[0] + 1)                     # flagged volumes
+rmssd = np.abs(np.diff(y))                        # successive differences (single-voxel DVARS)
+z = (rmssd - rmssd.mean()) / rmssd.std()          # z-score the differences
+flagged = np.where(z > 3)[0] + 1                  # flagged volumes: change > 3 SD above the mean
+print("Flagged volumes:", flagged)
+
+plt.figure(figsize=(8, 3))                        # time series with flagged volumes marked
+plt.plot(t, y, "k", lw=0.8, label="voxel time series")
+plt.plot(t[flagged], y[flagged], "ro", ms=5, label="flagged volumes")
+plt.xlabel("Time (s)"); plt.ylabel("Signal (a.u.)"); plt.legend(fontsize=8)
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+Flagged volumes: [ 60  61  62 150 151]
+```
+
+:::{figure} images/ch16_step1_output.png
+:alt: Simulated voxel time series with slow drift and AR(1) noise; red dots mark five flagged volumes around the three inserted spikes
+:width: 85%
+
+The simulated voxel with its three inserted spikes. The successive-difference test flags the spike volumes — and the volumes just after them, because a spike produces a large change both *into* and *out of* the artifact. In practice, adjacent flagged volumes are all treated as outliers.
+:::
 
 **Step 2 — See autocorrelation break naive OLS.** We fit a blocked task regressor to pure AR(1) noise — no signal at all — thousands of times. With independent noise, about 5% of tests should be "significant" at p < .05. Watch what actually happens.
 
@@ -128,13 +170,15 @@ print(np.where(z > 3)[0] + 1)                     # flagged volumes
 :sync: matlab
 
 ```matlab
-X = [double(sin(2*pi*t/80) > 0), ones(n, 1)];    % 40-s on/off blocks
-c = inv(X'*X); nfp = 0; nsim = 2000;
+X = [double(sin(2*pi*t/80) > 0), ones(n, 1)];    % 40-s on/off blocks + intercept
+c = inv(X'*X);                                   % (X'X)^-1, used for standard errors
+nfp = 0;                                         % nfp = false positive counter
+nsim = 2000;                                     % nsim = number of null simulations
 for i = 1:nsim
-    e = noise_arp(n, .5);                        % null data: noise only
-    b = X \ e;  r = e - X*b;
-    se = sqrt((r'*r)/(n-2) * c(1,1));
-    nfp = nfp + (abs(b(1)/se) > tinv(.975, n-2));
+    e = noise_arp(n, phi);                       % null data: AR(1) noise only, no signal
+    b = X \ e;  r = e - X*b;                     % OLS fit and residuals
+    se = sqrt((r'*r)/(n-2) * c(1,1));            % naive OLS standard error
+    nfp = nfp + (abs(b(1)/se) > tinv(.975, n-2));  % count |t| beyond the two-sided .05 cutoff
 end
 nfp / nsim     % false positive rate: several times the nominal 0.05
 ```
@@ -144,21 +188,29 @@ nfp / nsim     % false positive rate: several times the nominal 0.05
 
 ```python
 from scipy import stats
-X = np.c_[(np.sin(2*np.pi*t/80) > 0).astype(float), np.ones(n)]
-c = np.linalg.inv(X.T @ X)
-tcrit, nfp, nsim = stats.t.ppf(0.975, n - 2), 0, 2000
+X = np.c_[(np.sin(2*np.pi*t/80) > 0).astype(float), np.ones(n)]  # 40-s blocks + intercept
+c = np.linalg.inv(X.T @ X)                        # (X'X)^-1, used for standard errors
+tcrit, nfp, nsim = stats.t.ppf(0.975, n - 2), 0, 2000  # .05 critical value; counter; number of null simulations
 for _ in range(nsim):
-    eta, e = rng.standard_normal(n), np.zeros(n)  # null data: noise only
+    eta, e = rng.standard_normal(n), np.zeros(n)  # null data: AR(1) noise only, no signal
     for i in range(1, n):
-        e[i] = 0.5 * e[i-1] + eta[i]
-    b = np.linalg.lstsq(X, e, rcond=None)[0]
-    r = e - X @ b
-    se = np.sqrt(r @ r / (n - 2) * c[0, 0])
-    nfp += abs(b[0] / se) > tcrit
-print(nfp / nsim)   # false positive rate: several times the nominal 0.05
+        e[i] = 0.5 * e[i-1] + eta[i]              # phi = 0.5, as in Step 1
+    b = np.linalg.lstsq(X, e, rcond=None)[0]      # OLS fit
+    r = e - X @ b                                 # residuals
+    se = np.sqrt(r @ r / (n - 2) * c[0, 0])       # naive OLS standard error
+    nfp += abs(b[0] / se) > tcrit                 # count |t| beyond the two-sided .05 cutoff
+print("False positive rate:", nfp / nsim)         # several times the nominal 0.05
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+False positive rate: 0.2355
+```
+
+Nearly five times the nominal 0.05 — every one of those a "significant activation" in data containing no signal at all.
 
 The full labs go further: they visualize each noise component and its power spectrum, demonstrate temporal aliasing with a jittered heartbeat sampled at the TR, detect outliers in a multi-voxel dataset with both RMSSD/DVARS and Mahalanobis distance, build spike regressors, and show that prewhitening restores valid false positive rates.
 

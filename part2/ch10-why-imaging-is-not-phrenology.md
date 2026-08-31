@@ -26,7 +26,7 @@ Phrenology was controversial even in its own era and is now a premier example of
 
 Neuroimaging passes these tests. Mechanistically, the links between BOLD signals, regional blood flow, and electrical activity in neuronal populations are firmly established: BOLD fMRI is closely coupled to local field potentials (Chapter 14). Empirically, associations between fMRI activity and stimuli, task demands, and behavior are highly reproducible across studies and laboratories, documented in hundreds of meta-analyses. And predictively, fMRI patterns can be used to *decode* the type or intensity of stimuli and tasks from brain activity alone, with models tested unbiasedly in independent samples. Decoding is the most powerful of these validations because it is falsifiable in the strongest sense: the model predicts an objectively observable state of the world — $P(\text{stimulus type} \mid \text{fMRI activity})$ — in advance, without post hoc adjustment. Making and testing precise, falsifiable predictions is how scientific claims earn trust in every field; Einstein became famous when his 1915 predictions about gravitational lensing were confirmed during the 1919 solar eclipse, and as Milton Friedman put it, "The only relevant test of the validity of a hypothesis is comparison of prediction with experience."
 
-Two examples make this concrete. Neurosynth.org aggregates reported activation peaks from thousands of studies, yielding meta-analytic maps for thousands of psychological terms. Using maps for working memory, emotion, and pain, a Gaussian Naive Bayes classifier was applied — untouched — to 281 images from *independent* individual participants (79 experiencing heat pain, 108 viewing aversive pictures, 94 performing working memory). It picked the correct task with 65–95% sensitivity and 80–98% specificity, far above the ~38% chance level. In the second example, the Neurosynth working-memory map was used as a *pattern of interest*: a weighted average of each participant's data image, with the meta-analytic map supplying the weights, gives a single **pattern response** per person. Although the pattern came from entirely different studies, populations, and scanners, the response was stronger for working memory than rest in 100% of test participants, and stronger for a harder (3-back) than an easier (2-back) task in 95% — effect sizes of d = 1.97 and 1.09, far beyond conventional benchmarks for "large" effects. A stable, reproducible pattern, strong enough to support inferences about individual people.
+Two examples make this concrete. [Neurosynth.org](https://neurosynth.org) aggregates reported activation peaks from thousands of studies, yielding meta-analytic maps for thousands of psychological terms. Using maps for working memory, emotion, and pain, a Gaussian Naive Bayes classifier was applied — untouched — to 281 images from *independent* individual participants (79 experiencing heat pain, 108 viewing aversive pictures, 94 performing working memory). It picked the correct task with 65–95% sensitivity and 80–98% specificity, far above the ~38% chance level. In the second example, the Neurosynth working-memory map was used as a *pattern of interest*: a weighted average of each participant's data image, with the meta-analytic map supplying the weights, gives a single **pattern response** per person. Although the pattern came from entirely different studies, populations, and scanners, the response was stronger for working memory than rest in 100% of test participants, and stronger for a harder (3-back) than an easier (2-back) task in 95% — effect sizes of d = 1.97 and 1.09, far beyond conventional benchmarks for "large" effects. A stable, reproducible pattern, strong enough to support inferences about individual people.
 
 These are not isolated cases. Reproducible findings span distinct emotion types, social cognition, emotion regulation, memory, and brain disorders from Alzheimer's to PTSD and chronic pain. Trait-like clinical biomarkers are harder, but progress is real: one large study (N = 871) classified autism at 67% accuracy, and another with over 1,000 participants identified four depression "biotypes," classifying patients versus controls at close to 90% accuracy and predicting response to brain-stimulation treatment. Perhaps the clearest exhibit is the **Neurologic Pain Signature (NPS)**, an fMRI-based measure that responds to painful stimulation across diverse populations worldwide and tracks pain intensity strongly enough to make accurate predictions about individuals. Validated in more than 50 unique samples, and tested in 20 cohorts across North America, Europe, and Asia (N = 603), it responded as expected in 95% of participants, with effect sizes roughly 10 times larger than typical correlations between stable traits and resting-state activity or brain structure. None of this means the neuroimaging literature is free of pseudoscientific claims — rigor varies widely — but many associations are robust enough that they are simply not in dispute. In short, they have all the hallmarks of solid science that phrenology did not.
 
@@ -35,18 +35,19 @@ These are not isolated cases. Reproducible findings span distinct emotion types,
 :::{figure} images/ch10_fig1_phrenology_map.png
 :alt: A 19th-century phrenological map showing mental faculties assigned to regions of the skull
 :width: 70%
+:class: book-figure
 
-A phrenological map: putative associations between protrusions on the skull and mental faculties such as "firmness," "benevolence," and "destructiveness." Gall assigned his twenty-seven faculties to skull locations on the basis of case anecdotes — an unreproducible, cherry-picked method with no plausible mechanism, since skull shape places essentially no constraint on the function of the brain tissue beneath. *(Figure 10.1 from the book.)*
+A phrenological map: putative associations between protrusions on the skull and mental faculties such as "firmness," "benevolence," and "destructiveness." Gall assigned his twenty-seven faculties to skull locations on the basis of case anecdotes — an unreproducible, cherry-picked method with no plausible mechanism, since skull shape places essentially no constraint on the function of the brain tissue beneath. *(Figure 10.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 **The hidden inferences behind "the neural basis of X."** A forward-inference finding — activity associated with a mental state — is routinely misread as licensing three much stronger claims, each of which requires its own program of evidence.
 
 ```{mermaid}
 flowchart TD
-    A["Published finding (forward inference)<br/>Mental state X is associated with<br/>activity in region R, on average"] --> B["'Region R is the neural basis of X'"]
-    B -.->|implicitly assumes| C["Positive predictive value<br/>We can tell someone is in state X<br/>from activity in R<br/>(requires reverse inference: testing R<br/>against arousal, emotion, other states)"]
-    B -.->|implicitly assumes| D["Necessity<br/>Without R, state X is impossible<br/>(requires lesion evidence)"]
-    B -.->|implicitly assumes| E["Sufficiency<br/>Stimulating R produces state X<br/>(requires stimulation evidence)"]
+    A["Published finding<br/>(forward inference)<br/>State X is associated<br/>with activity in region R"] --> B["Headline claim<br/>'R is the neural<br/>basis of X'"]
+    B -.->|assumes| C["Predictive value<br/>R tells us someone<br/>is in state X<br/><i>needs reverse inference</i>"]
+    B -.->|assumes| D["Necessity<br/>Without R,<br/>no state X<br/><i>needs lesion evidence</i>"]
+    B -.->|assumes| E["Sufficiency<br/>Stimulating R<br/>produces X<br/><i>needs stimulation evidence</i>"]
     style A fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style B fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
     style C fill:#fef3c7,stroke:#f59e0b,color:#713f12
@@ -57,21 +58,24 @@ flowchart TD
 **What separates science from pseudoscience — for any brain–mind method.** The same three criteria apply whether the technique is lesion mapping, electrophysiology, optogenetics, or fMRI. Phrenology fails all three; well-conducted neuroimaging meets all three.
 
 ```{mermaid}
-flowchart LR
+flowchart TD
+    C["Three criteria for<br/>scientific claims<br/>(a) reproducible evidence<br/>(b) unbiased tests<br/>(c) plausible mechanism"]
+    C --> P
+    C --> N
     subgraph P["Phrenology"]
-        P1["Anecdotal case studies,<br/>cherry-picked evidence"]
-        P2["No unbiased hypothesis tests;<br/>claims not reproducible"]
-        P3["No plausible mechanism:<br/>skull shape does not constrain<br/>brain function"]
+        direction TB
+        P1["Cherry-picked<br/>case anecdotes"]
+        P2["No unbiased tests;<br/>not reproducible"]
+        P3["No mechanism:<br/>skull shape ≠<br/>brain function"]
     end
     subgraph N["Neuroimaging done well"]
-        N1["Reproducible associations:<br/>hundreds of meta-analyses;<br/>consistent task-evoked activity<br/>across labs"]
-        N2["Predefined, falsifiable predictions<br/>tested in independent samples<br/>without post hoc adjustment"]
-        N3["Established mechanism:<br/>BOLD is coupled to local field<br/>potentials and blood flow"]
+        direction TB
+        N1["Reproducible across labs;<br/>hundreds of meta-analyses"]
+        N2["Predefined, falsifiable<br/>tests in new samples"]
+        N3["Mechanism: BOLD tracks<br/>local field potentials"]
     end
-    C["Criteria for scientific claims<br/>(a) strong, reproducible evidence<br/>(b) unbiased hypothesis testing<br/>(c) plausible mechanism"] --> P
-    C --> N
     P --> V1["Pseudoscience"]
-    N --> V2["Valid brain-mind mapping"]
+    N --> V2["Valid brain–mind<br/>mapping"]
     style C fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style P fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
     style N fill:#dcfce7,stroke:#22c55e,color:#14532d
@@ -82,12 +86,12 @@ flowchart LR
 **Prediction as the strongest validation.** Decoding models close the loop that association studies leave open: they commit to a falsifiable prediction about the observable world before the data are seen.
 
 ```{mermaid}
-flowchart LR
-    A["Train a model on prior data<br/>e.g., Neurosynth meta-analytic maps<br/>for working memory, emotion, pain"] --> B["Fix the model in advance<br/>no tuning to the test sample"]
-    B --> C["Predict observable states<br/>in independent participants:<br/>P(stimulus or task | fMRI activity)"]
+flowchart TD
+    A["Train a model<br/>on prior data<br/>e.g., Neurosynth maps"] --> B["Fix the model<br/>in advance —<br/>no tuning to test data"]
+    B --> C["Predict observable states<br/>in new participants:<br/>P(stimulus | fMRI)"]
     C --> D{"Prediction<br/>correct?"}
-    D -->|"Yes: e.g., 3-way task classification<br/>65-95% sensitivity, 80-98% specificity<br/>vs ~38% chance; NPS responds in 95%<br/>of participants across 20 cohorts"| E["Claim survives a strong,<br/>unbiased test"]
-    D -->|No| F["Claim is falsified —<br/>and the field learns which states<br/>fMRI does not capture"]
+    D -->|Yes| E["Claim survives a<br/>strong, unbiased test<br/>e.g., 3-way task classification<br/>far above chance;<br/>NPS responds in 95%<br/>across 20 cohorts"]
+    D -->|No| F["Claim is falsified —<br/>we learn what fMRI<br/>does not capture"]
     style A fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     style E fill:#dcfce7,stroke:#22c55e,color:#14532d
     style F fill:#fef3c7,stroke:#f59e0b,color:#713f12

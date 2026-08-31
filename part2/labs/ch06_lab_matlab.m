@@ -1,4 +1,5 @@
 %% Lab 6 — Building a Brain Map from Scratch (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part2/ch06-inferences-about-mind-brain-and
 %[text] In this lab you will run the complete statistical brain-mapping loop in
 %[text] miniature, on simulated data where *you* planted the true signal:
 %[text] simulate a two-condition experiment at many "voxels", build a
@@ -23,8 +24,8 @@ end
 %[text] choose the truth: a 40 x 40 grid of voxels, with an [A - B] effect of
 %[text] 1 signal unit in two circular regions and exactly zero elsewhere.
 
-rng(6);
-nx = 40; ny = 40;                       % 40 x 40 voxel "slice"
+rng(6);                                 % fix the random seed for reproducible results
+nx = 40; ny = 40;                       % nx, ny = grid size: a 40 x 40 voxel "slice" (1,600 tests)
 [xx, yy] = meshgrid(1:nx, 1:ny);
 
 % True signal: effect of 1 inside two circular regions, 0 elsewhere
@@ -44,8 +45,8 @@ fprintf('Voxels with true signal: %d of %d\n', sum(truth(:)), numel(truth));
 %[text] Figure 6.2). "Massively univariate" means the same simple test is
 %[text] repeated independently at every voxel.
 
-n_trials = 40;                          % trials per condition
-noise_sd = 2.0;                         % trial-to-trial noise
+n_trials = 40;                          % n_trials = trials per condition (A and B each)
+noise_sd = 2.0;                         % noise_sd = SD of trial-to-trial noise, in signal units
 
 % Trial-level responses at every voxel [ny x nx x n_trials]
 trials_A = 100 + repmat(true_effect, 1, 1, n_trials) + noise_sd * randn(ny, nx, n_trials);
@@ -75,8 +76,8 @@ colormap(gca, 'parula');
 %[text] t-test across participants at every voxel — treating participants as
 %[text] a random effect.
 
-n_sub = 24;                             % participants
-subj_sd = 1.0;                          % between-person variability + noise
+n_sub = 24;                             % n_sub = number of participants
+subj_sd = 1.0;                          % subj_sd = SD of between-person variability + noise
 
 % One difference image per participant = true effect + noise [ny x nx x n_sub]
 diff_imgs = repmat(true_effect, 1, 1, n_sub) + subj_sd * randn(ny, nx, n_sub);
@@ -96,8 +97,8 @@ title(sprintf('Group t map (n = %d, df = %d)', n_sub, n_sub - 1));
 %[text] rate: chance of ANY false positive), and Benjamini-Hochberg FDR
 %[text] (expected proportion of significant voxels that are false positives).
 
-alpha = 0.05;
-n_vox = nx * ny;
+alpha = 0.05;                           % alpha = acceptable false positive rate per test
+n_vox = nx * ny;                        % n_vox = number of tests in the family (1,600)
 
 sig_unc  = p_map < alpha;               % no correction
 sig_bonf = p_map < alpha / n_vox;       % Bonferroni (FWER)

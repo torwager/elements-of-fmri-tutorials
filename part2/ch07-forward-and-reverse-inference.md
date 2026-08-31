@@ -11,7 +11,7 @@ subject: "Part 2: Brain Mapping"
 - How the diagnostic-testing concepts of sensitivity, specificity, base rate, and positive predictive value (PPV) map onto brain mapping
 - How Bayes' rule links forward and reverse inference, and why PPV depends strongly on specificity and base rate but only weakly on sensitivity
 - Why "affirming the consequent" is a logical fallacy — and how it sneaks into interpretations of brain activation
-- How meta-analytic databases (e.g., Neurosynth) and multivariate predictive models make valid reverse inference possible
+- How meta-analytic databases (e.g., [Neurosynth](https://neurosynth.org)) and multivariate predictive models make valid reverse inference possible
 :::
 
 :::{admonition} 🖥️ Ways to run this chapter's code
@@ -35,23 +35,46 @@ Often, though, what we really want is the opposite direction. If the caudate nuc
 :::{figure} images/ch07_fig1_forward_reverse_inference.png
 :alt: Forward inference maps psychological states to brain activity via sensitivity; reverse inference maps brain activity to psychological states via PPV; a two-by-two table relates hits, misses, false alarms, and correct rejections to sensitivity, specificity, PPV, and NPV
 :width: 90%
+:class: book-figure
 
-Forward and reverse inference applied to brain mapping, and their relationship with diagnostic testing measures. "Brain" refers to a brain measure being present (e.g., activation above threshold); "Psy" refers to an underlying psychological state being present. Sensitivity is $P(\text{Brain} \mid \text{Psy})$; specificity is $P(\sim\text{Brain} \mid \sim\text{Psy})$; PPV is $P(\text{Psy} \mid \text{Brain})$. *(Figure 7.1 from the book.)*
+Forward and reverse inference applied to brain mapping, and their relationship with diagnostic testing measures. "Brain" refers to a brain measure being present (e.g., activation above threshold); "Psy" refers to an underlying psychological state being present. Sensitivity is $P(\text{Brain} \mid \text{Psy})$; specificity is $P(\sim\text{Brain} \mid \sim\text{Psy})$; PPV is $P(\text{Psy} \mid \text{Brain})$. In the two-by-two table, $\alpha$ is the empirical false-positive rate (1 − specificity), $\beta$ the miss rate (1 − sensitivity), FAR the false alarm rate, and NPV the negative predictive value. *(Figure 7.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 The catch is that forward and reverse inference are not interchangeable. A region can respond reliably to a task without being informative about that task, because most brain structures respond to many things — there is a many-to-many mapping between psychological constructs and brain regions. The caudate is strongly activated by reward, cognitive control, motor behavior, and more; even 99% sensitivity to punishment decisions would not make caudate activation good evidence of punishment motivation. Treating it as such is the classical logical fallacy of **affirming the consequent**: if all dogs prefer ice cream over fruit, and Mary prefers ice cream, it does not follow that Mary is a dog. $P(\text{Ice Cream} \mid \text{Dog}) = 1$ says nothing about $P(\text{Dog} \mid \text{Ice Cream})$ until we consider $P(\text{Ice Cream} \mid \sim\text{Dog})$.
 
 **Bayes' rule** makes the relationship exact:
 
+::::{div}
+:class: eq-tip
 $$
 P(\text{Psy} \mid \text{Brain}) = \frac{P(\text{Brain} \mid \text{Psy}) \; P(\text{Psy})}{P(\text{Brain})}
 $$
+:::{div}
+:class: eq-tip-text
+P(Psy | Brain) — reverse inference (PPV) · P(Brain | Psy) — forward inference (sensitivity) · P(Psy) — base rate of the mental state · P(Brain) — overall probability of the brain response, across all states
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $P(\text{Psy} \mid \text{Brain})$ *is the reverse inference (the PPV),* $P(\text{Brain} \mid \text{Psy})$ *the forward inference (sensitivity),* $P(\text{Psy})$ *the base rate of the mental state, and* $P(\text{Brain})$ *the overall probability of observing the brain response across all states, present or absent.*
+:::
 
 Expanding the denominator over the state being present or absent gives the PPV as a function of three quantities — sensitivity, **specificity** ($P(\sim\text{Brain} \mid \sim\text{Psy})$, i.e., how rarely the region activates in the *absence* of the state), and the **base rate** $P(\text{Psy})$ (the proportion of time the state occurs at all):
 
+::::{div}
+:class: eq-tip
 $$
-\text{PPV} = \frac{\text{Sens} \times P(\text{Psy})}{\text{Sens} \times P(\text{Psy}) + (1 - \text{Spec}) \times \left(1 - P(\text{Psy})\right)}
+\text{PPV} = \frac{\text{Sens} \times P(\text{Psy})}{\text{Sens} \times P(\text{Psy}) + (1 - \text{Spec}) \times P(\sim\text{Psy})}
 $$
+:::{div}
+:class: eq-tip-text
+PPV — positive predictive value, P(Psy | Brain) · Sens — sensitivity, P(Brain | Psy) · Spec — specificity, P(~Brain | ~Psy) · P(Psy) — base rate of the state · P(~Psy) — probability the state is absent, 1 − P(Psy)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\text{PPV}$ *is the positive predictive value* $P(\text{Psy} \mid \text{Brain})$*,* $\text{Sens}$ *the sensitivity* $P(\text{Brain} \mid \text{Psy})$*,* $\text{Spec}$ *the specificity* $P(\sim\text{Brain} \mid \sim\text{Psy})$*,* $P(\text{Psy})$ *the base rate of the state, and* $P(\sim\text{Psy}) = 1 - P(\text{Psy})$ *the probability that the state is absent.*
+:::
 
 Plugging in numbers is sobering. Suppose the caudate responds to punishment motivation with 90% sensitivity and 80% specificity, and people experience that state 10% of the time (probably generous). Observing caudate activity then implies punishment motivation with probability of only **33%** — nowhere near the 90% sensitivity. Raising sensitivity to a perfect 100% barely helps (PPV = 36%). But drop the base rate to 1% and the PPV collapses to **4%**. PPV is driven by specificity and base rate, not sensitivity — and standard brain maps measure only sensitivity. The same arithmetic bedevils medical screening: mammography has roughly 90% sensitivity and 80–99% specificity, but with a ~1.5% ten-year base rate of breast cancer in 40–50-year-old women, the PPV of a positive screen is only about 6% in the U.S. (at 80% specificity) versus about 40% in Denmark (at 98% specificity).
 
@@ -77,9 +100,9 @@ ppv = @(sens, spec, br) (sens .* br) ./ ...
       (sens .* br + (1 - spec) .* (1 - br));
 
 % Chapter example: caudate and punishment motivation
-fprintf('Sens 0.90, Spec 0.80, BR 0.10 -> PPV = %.2f\n', ppv(.90, .80, .10));
-fprintf('Sens 1.00 (perfect!)         -> PPV = %.2f\n', ppv(1.0, .80, .10));
-fprintf('Base rate 0.01               -> PPV = %.2f\n', ppv(.90, .80, .01));
+fprintf('Sens 0.90, Spec 0.80, BR 0.10 -> PPV = %.2f\n', ppv(.90, .80, .10));  % chapter values: sens, spec, base rate
+fprintf('Sens 1.00 (perfect!)         -> PPV = %.2f\n', ppv(1.0, .80, .10));   % perfect sensitivity, same spec and base rate
+fprintf('Base rate 0.01               -> PPV = %.2f\n', ppv(.90, .80, .01));   % rare state: base rate drops to 1%
 ```
 :::
 :::{tab-item} Python
@@ -94,12 +117,20 @@ def ppv(sens, spec, base_rate):
     return sens * br / (sens * br + (1 - spec) * (1 - br))
 
 # Chapter example: caudate and punishment motivation
-print(f"Sens 0.90, Spec 0.80, BR 0.10 -> PPV = {ppv(.90, .80, .10):.2f}")
-print(f"Sens 1.00 (perfect!)          -> PPV = {ppv(1.0, .80, .10):.2f}")
-print(f"Base rate 0.01                -> PPV = {ppv(.90, .80, .01):.2f}")
+print(f"Sens 0.90, Spec 0.80, BR 0.10 -> PPV = {ppv(.90, .80, .10):.2f}")  # chapter values: sens, spec, base rate
+print(f"Sens 1.00 (perfect!)          -> PPV = {ppv(1.0, .80, .10):.2f}")  # perfect sensitivity, same spec and base rate
+print(f"Base rate 0.01                -> PPV = {ppv(.90, .80, .01):.2f}")  # rare state: base rate drops to 1%
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+Sens 0.90, Spec 0.80, BR 0.10 -> PPV = 0.33
+Sens 1.00 (perfect!)          -> PPV = 0.36
+Base rate 0.01                -> PPV = 0.04
+```
 
 You should get PPV = 0.33, 0.36, and 0.04 — matching the chapter. Perfect sensitivity buys almost nothing; a rarer state destroys the inference.
 
@@ -110,8 +141,8 @@ You should get PPV = 0.33, 0.36, and 0.04 — matching the chapter. Perfect sens
 :sync: matlab
 
 ```matlab
-spec = linspace(.5, .999, 200);
-base_rates = [.5 .1 .01];
+spec = linspace(.5, .999, 200);   % spec = specificity grid, chance (0.5) to near-perfect
+base_rates = [.5 .1 .01];         % base_rates = P(Psy): common, uncommon, rare
 
 figure; hold on;
 for br = base_rates
@@ -129,9 +160,9 @@ legend('Location', 'northwest');
 ```python
 import matplotlib.pyplot as plt
 
-spec = np.linspace(0.5, 0.999, 200)
+spec = np.linspace(0.5, 0.999, 200)     # spec = specificity grid, chance (0.5) to near-perfect
 fig, ax = plt.subplots(figsize=(6, 4))
-for br in [0.5, 0.1, 0.01]:
+for br in [0.5, 0.1, 0.01]:             # br = base rate P(Psy): common, uncommon, rare
     ax.plot(spec, ppv(0.90, spec, br), lw=2, label=f"base rate = {br}")
 ax.axhline(0.9, ls="--", color="gray")
 ax.set(xlabel="Specificity", ylabel="PPV = P(Psy | Brain)",
@@ -140,6 +171,15 @@ ax.legend()
 ```
 :::
 ::::
+
+**Example output:**
+
+:::{figure} images/ch07_step2_output.png
+:alt: Line plot of PPV versus specificity for base rates 0.5, 0.1, and 0.01, with a dashed line at PPV = 0.9; only the high-base-rate curve crosses the line before specificity approaches 1
+:width: 80%
+
+PPV rises with specificity, but at low base rates even near-perfect specificity barely supports a confident reverse inference.
+:::
 
 At a 10% base rate, even 99% specificity yields a PPV of about 0.91 — barely clearing the bar — and at a 1% base rate no realistic specificity suffices for a single region. This is why open-ended tests across many alternative states, and multivariate patterns tuned for discrimination, are central to modern reverse inference.
 

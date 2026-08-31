@@ -33,8 +33,9 @@ Before any statistical analysis, fMRI data pass through a sequence of preprocess
 :::{figure} images/ch17_fig1_preproc_pipeline.png
 :alt: Preprocessing pipeline showing the structural T1 stream (coregister to functional, warp to atlas template) and the functional stream (denoise, distortion correction, slice timing, realignment, normalization, smoothing)
 :width: 90%
+:class: book-figure
 
-An example preprocessing pipeline. The structural (T1) image is coregistered to the functional images and warped to an atlas template; the resulting warping parameters are then applied to the functional time series, which has itself been denoised, distortion-corrected, slice-time corrected, and realigned. Smoothing comes last. *(Figure 17.1 from the book.)*
+An example preprocessing pipeline. The structural (T1) image is coregistered to the functional images and warped to an atlas template; the resulting warping parameters are then applied to the functional time series, which has itself been denoised, distortion-corrected, slice-time corrected, and realigned. Smoothing comes last. *(Figure 17.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 **Reconstruction and artifact checks.** Images are acquired in k-space and reconstructed into image space at the scanner, stacked into 3-D volumes (one per TR), and aggregated into 4-D NIfTI files whose headers record voxel size, TR, TE, and more. This is the moment to check for scanner artifacts and distortions — sometimes with surprising results: one early PET study localized "anticipatory pain activation" to the temporal pole, which turned out to be the jaw of subjects clenching their teeth.
@@ -44,40 +45,53 @@ An example preprocessing pipeline. The structural (T1) image is coregistered to 
 :::{figure} images/ch17_fig2_distortion_correction.png
 :alt: EPI image with susceptibility artifacts, estimated distortion field map in the phase encoding direction, and distortion correction error with overcorrected brainstem
 :width: 95%
+:class: book-figure
 
-Distortion correction. Left: a functional EPI image with characteristic distortion in orbitofrontal cortex and brainstem. Center: estimated distortion along the phase-encoding direction from a reverse-blip acquisition (red = expansion, blue = compression). Right: correction improves the match to the T1 anatomy but can also over-correct — here functional signal is expanded beyond the brainstem boundary. *(Figure 17.2 from the book.)*
+Distortion correction. Left: a functional EPI image with characteristic distortion in orbitofrontal cortex and brainstem. Center: estimated distortion along the phase-encoding direction from a reverse-blip acquisition (red = expansion, blue = compression). Right: correction improves the match to the T1 anatomy but can also over-correct — here functional signal is expanded beyond the brainstem boundary. *(Figure 17.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 **Slice-timing correction.** Slices within a volume are acquired at different times, but analyses treat each volume as a snapshot. Slice-timing correction interpolates each voxel's time series to the acquisition time of a reference slice (often the middle of the TR). Getting the actual acquisition order right — sequential vs. interleaved — is essential; assuming the wrong order does harm. Interpolation always introduces some error, can interact badly with head motion, and can smear transient "spike" artifacts in time. With modern rapid acquisitions (TR ≤ 1 s), it is increasingly common to skip slice-timing correction entirely and instead shift the *task regressors* per slice or use flexible hemodynamic basis sets. Correction matters more as TR grows, for brief events, and for resting-state connectivity at long TRs, where timing offsets between regions distort correlations.
 
 **Motion correction (realignment).** Head motion is among the most serious artifact sources in fMRI: a voxel's time series is only meaningful if it samples the same brain location at every time point. Realignment registers each volume to a reference (the first or mean image) using a rigid-body transformation with 6 parameters — translations in $x, y, z$ and rotations (roll, pitch, yaw) — estimated by iteratively minimizing squared differences between images. The six parameter time courses are saved and routinely used as nuisance covariates in the GLM. Realignment does not fix everything: spin-history effects persist during and after movement. Additional defenses include head restraints and participant training, prospective motion correction, motion covariates in the GLM, and *censoring* high-motion volumes. Censoring uses **framewise displacement**, the sum of absolute frame-to-frame changes in the six parameters, with rotations converted to millimeters as arc length on a sphere of radius 50 mm (roughly the cortex-to-center distance):
 
+::::{div}
+:class: eq-tip
 $$
 \mathrm{FWD}_t = |\Delta d_{x,t}| + |\Delta d_{y,t}| + |\Delta d_{z,t}| + 50\left(|\Delta \alpha_t| + |\Delta \beta_t| + |\Delta \gamma_t|\right)
 $$
+:::{div}
+:class: eq-tip-text
+FWDₜ — framewise displacement at frame t (mm) · Δd — frame-to-frame change in each translation (mm) · Δα, Δβ, Δγ — changes in the three rotations (radians) · 50 — sphere radius (mm) converting rotation to arc length
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\mathrm{FWD}_t$ *is the framewise displacement at frame* $t$*,* $\Delta d_{x,t}, \Delta d_{y,t}, \Delta d_{z,t}$ *are the frame-to-frame changes in the three translations (in mm),* $\Delta \alpha_t, \Delta \beta_t, \Delta \gamma_t$ *the changes in the three rotations (in radians), and the factor 50 converts rotations to millimeters of arc length on a 50-mm-radius sphere.*
+:::
 
-with rotations in radians. Volumes exceeding a threshold (0.2–0.5 mm is typical for resting state) are removed by "scrubbing" or — preferably — modeled with *spike regression*, one nuisance regressor per bad image, which preserves the natural temporal correlation structure for inference. Typical mean FWD is about 0.05 mm in healthy young adults, 0.10 mm in the population-based UK Biobank, and 0.2–0.4 mm in children; a mean-FWD cutoff around 0.25 mm excludes only the worst runs in adults. But beware selection bias: motion is heritable, correlated with body-mass index and clinical variables, and can correlate with task states — so aggressive exclusion of images, runs, or participants can mask true effects or manufacture spurious ones. Conservative censoring plus vigorous motion *prevention* (padding, tape for tactile feedback, coaching, mock-scanner training) is the recommended combination.
+Volumes exceeding a threshold (0.2–0.5 mm is typical for resting state) are removed by "scrubbing" or — preferably — modeled with *spike regression*, one nuisance regressor per bad image, which preserves the natural temporal correlation structure for inference. Typical mean FWD is about 0.05 mm in healthy young adults, 0.10 mm in the population-based [UK Biobank](https://www.ukbiobank.ac.uk), and 0.2–0.4 mm in children; a mean-FWD cutoff around 0.25 mm excludes only the worst runs in adults. But beware selection bias: motion is heritable, correlated with body-mass index and clinical variables, and can correlate with task states — so aggressive exclusion of images, runs, or participants can mask true effects or manufacture spurious ones. Conservative censoring plus vigorous motion *prevention* (padding, tape for tactile feedback, coaching, mock-scanner training) is the recommended combination.
 
 **Coregistration.** The session's high-resolution structural image must be aligned to the functional images, both for visualization and so that normalization estimated from the detailed T1 can be applied to the functionals. A rigid-body transform is used, but minimizing squared intensity differences is inappropriate across modalities — tissue intensities are ordered W > G > V in functional images and V > G > W in structural images — so coregistration instead maximizes **mutual information**. Coregistration is a common failure point, largely because susceptibility distortions differ across modalities; checking it for every participant is essential quality control.
 
-**Normalization.** Group analysis requires each voxel to correspond to the same brain region in every subject. Normalization registers each subject's anatomy to a standardized atlas space defined by a template — usually a group-average brain in volume or surface space. Linear (affine) registration adds scaling and shearing to the rigid-body parameters but is too coarse on its own; nonlinear algorithms (SPM's unified segmentation, FSL's FNIRT, ANTs) use smooth 3-D basis functions to locally stretch and shrink the image. Surface-based normalization (FreeSurfer) instead treats the cortex as a sheet and aligns folding patterns — consistently outperforming volumetric methods for cortex, and enabling smoothing that does not mix signals across gyri or into non-gray tissue. Flexibility is a double-edged sword: too many unconstrained basis functions overfit local features and can grossly distort overall brain shape (a "local minimum" solution), while too-rigid warps leave individuals poorly aligned. Inter-subject registration is one of the largest sources of error in group analysis, so inspect every normalized brain.
+**Normalization.** Group analysis requires each voxel to correspond to the same brain region in every subject. Normalization registers each subject's anatomy to a standardized atlas space defined by a template — usually a group-average brain in volume or surface space. Linear (affine) registration adds scaling and shearing to the rigid-body parameters but is too coarse on its own; nonlinear algorithms ([SPM](https://www.fil.ion.ucl.ac.uk/spm/)'s unified segmentation, FSL's FNIRT, ANTs) use smooth 3-D basis functions to locally stretch and shrink the image. Surface-based normalization (FreeSurfer) instead treats the cortex as a sheet and aligns folding patterns — consistently outperforming volumetric methods for cortex, and enabling smoothing that does not mix signals across gyri or into non-gray tissue. Flexibility is a double-edged sword: too many unconstrained basis functions overfit local features and can grossly distort overall brain shape (a "local minimum" solution), while too-rigid warps leave individuals poorly aligned. Inter-subject registration is one of the largest sources of error in group analysis, so inspect every normalized brain.
 
 The choice of template matters more than many realize. "MNI space" is not one thing: MNI305, MNI152, ICBM2009 (symmetric and asymmetric variants), IXI555, and others differ in resolution, sharpness, the locations of some structures, and even the origin, shifting the whole brain relative to other templates. Report the exact template you used, and check that anatomical atlases used for localization match it.
 
 :::{figure} images/ch17_fig5_mni_templates.png
-:alt: Axial slices of six templates registered to MNI space: MNI305, MNI152, IXI555, Keuken7T, ICBM2009sym, CIT168
+:alt: Axial slices of six templates registered to MNI space: MNI305, MNI152, ICBM2009, IXI555, Keuken 7T, and CIT168
 :width: 95%
+:class: book-figure
 
-Templates normalized to MNI space are broadly similar but differ in resolution, smoothness, and the locations of some structures. MNI305 and MNI152 were common targets in the 2000s; higher-definition templates such as IXI555 and ICBM2009 have gradually replaced them. *(Figure 17.5 from the book.)*
+Templates normalized to MNI space are broadly similar but differ in resolution, smoothness, and the locations of some structures. MNI305 and MNI152 were common targets in the 2000s; higher-definition templates such as ICBM2009 and IXI555 have gradually replaced them. *(Figure 17.5 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
-**Spatial smoothing.** Smoothing convolves the data with a 3-D Gaussian kernel characterized by its full width at half maximum, $\mathrm{FWHM} = 2\sqrt{2\ln 2}\,\sigma \approx 2.355\,\sigma$. It compensates for residual anatomical misalignment after normalization and satisfies the smoothness assumptions of Gaussian random field theory for multiple-comparisons correction. The cost is partial-volume mixing: averaging truly active voxels with null neighbors dilutes signal. In theory, a kernel matched to the spatial extent of the activation is optimal (the matched-filter idea), but in practice one fixed kernel — typically 6 or 8 mm — is applied everywhere, even though signals in cortex are smoother than in the brainstem. MVPA studies often skip smoothing to preserve fine-grained patterns, though modest smoothing can actually help when decoding across participants.
+**Spatial smoothing.** Smoothing convolves the data with a 3-D Gaussian kernel characterized by its full width at half maximum, $\mathrm{FWHM} = 2\sqrt{2\ln 2}\,\sigma \approx 2.355\,\sigma$, where $\sigma$ is the standard deviation of the Gaussian kernel in millimeters. It compensates for residual anatomical misalignment after normalization and satisfies the smoothness assumptions of Gaussian random field theory for multiple-comparisons correction. The cost is partial-volume mixing: averaging truly active voxels with null neighbors dilutes signal. In theory, a kernel matched to the spatial extent of the activation is optimal (the matched-filter idea), but in practice one fixed kernel — typically 6 or 8 mm — is applied everywhere, even though signals in cortex are smoother than in the brainstem. MVPA studies often skip smoothing to preserve fine-grained patterns, though modest smoothing can actually help when decoding across participants.
 
 **Temporal filtering.** Each voxel's time series contains slow scanner drift and low-frequency noise; high-pass filtering removes it, either by adding low-frequency cosine covariates to the GLM or by premultiplying data and regressors with a filtering matrix (frequency-domain filtering via the Fourier transform is equivalent). The critical rule: **your task frequencies must not overlap the filter's stopband**. SPM's default 128-s (0.0078 Hz) cutoff will remove nearly all true signal from designs with alternating blocks of about 32 s or longer — producing null results no matter how strong the effect. Resting-state analyses typically band-pass at 0.01–0.08 Hz, which brackets the canonical HRF's peak frequency (~0.03 Hz) and excludes much respiratory (0.08–0.4 Hz) and aliased cardiac noise, though interest in faster BOLD components is growing. Physiological noise correction (e.g., RETROICOR, RVHRCOR) uses recorded respiration and pulse to build nuisance regressors — with the same caveat that closes the loop on this chapter's theme: tasks change physiology, so corrections remove real signal along with artifact, and they help only when the artifact removed outweighs the signal lost.
 
 ## Hands-on tutorial
 
-Real preprocessing runs inside packages like SPM, FSL, and fMRIPrep — but every step is easier to reason about once you have simulated it yourself. Here we look at two steps you can fully understand in a few lines of code: using realignment parameters as nuisance regressors, and designing a high-pass filter that removes drift without removing your task. The full labs add slice-timing and smoothing-kernel simulations.
+Real preprocessing runs inside packages like SPM, FSL, and [fMRIPrep](https://fmriprep.org) — but every step is easier to reason about once you have simulated it yourself. Here we look at two steps you can fully understand in a few lines of code: using realignment parameters as nuisance regressors, and designing a high-pass filter that removes drift without removing your task. The full labs add slice-timing and smoothing-kernel simulations.
 
 **Step 1 — Motion parameters as nuisance regressors.** We simulate a voxel time series contaminated by head motion, then quantify how much variance the six realignment parameters explain.
 
@@ -92,23 +106,30 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % Requires CanlabCore + SPM12 on your MATLAB path
 % Adapted from CANlab tutorials (github.com/canlab)
-rng(17); n = 200; TR = 1;
+rng(17);           % seed the random-number generator for reproducibility
+n = 200; TR = 1;   % n = volumes (frames); TR = repetition time (s)
 
-mp = cumsum(0.02 * randn(n, 6));          % 6 motion params (random walk)
-mp(120:124, :) = mp(120:124, :) + 0.8;    % a sudden head jerk
+% 6 motion params (random walk): 3 translations (mm), 3 rotations (radians)
+mp = cumsum(0.02 * randn(n, 6));
+mp(:, 4:6) = mp(:, 4:6) * 0.005;              % rotations are small in radians
+mp(120:124, 1:3) = mp(120:124, 1:3) + 0.8;    % a sudden 0.8 mm head jerk
+mp(120:124, 4:6) = mp(120:124, 4:6) + 0.004;  % with a small rotation component
 
-true_signal = noise_arp(n, [.5 .1]);      % "neural" fluctuations, AR(2)
-y = true_signal + mp * [2 1.5 1 3 2 1]' + 0.5 * randn(n, 1);
+true_signal = noise_arp(n, [.5 .1]);   % "neural" fluctuations, AR(2)
+w = [2 1.5 1 300 200 100]';            % motion-artifact coupling weights
+y = true_signal + mp * w + 0.5 * randn(n, 1);   % voxel = signal + artifact + noise
 
 % Variance explained by motion parameters (R^2 from nuisance regression)
-X  = [mp ones(n, 1)];
-r  = y - X * (X \ y);
+X  = [mp ones(n, 1)];      % design: 6 motion params + intercept
+r  = y - X * (X \ y);      % residuals after regressing out motion
 R2 = 1 - var(r) / var(y);
 fprintf('Motion explains %.0f%% of voxel variance\n', 100 * R2)
 
 % Framewise displacement: |diffs| summed, rotations (radians) x 50 mm
 fwd = sum(abs(diff(mp(:, 1:3))), 2) + 50 * sum(abs(diff(mp(:, 4:6))), 2);
-create_figure('FWD'); plot(fwd); plot_horizontal_line(0.5);
+thresh = 0.5;              % censoring threshold (mm); 0.2-0.5 mm is typical
+fprintf('%d frames exceed a %.1f mm censoring threshold\n', sum(fwd > thresh), thresh)
+create_figure('FWD'); plot([0; fwd]); plot_horizontal_line(thresh);
 xlabel('Frame'); ylabel('FWD (mm)');
 ```
 :::
@@ -117,30 +138,55 @@ xlabel('Frame'); ylabel('FWD (mm)');
 
 ```python
 import numpy as np
+import matplotlib.pyplot as plt
 
-rng = np.random.default_rng(17)
-n, TR = 200, 1.0
+rng = np.random.default_rng(17)   # seed for reproducibility
+n, TR = 200, 1.0                  # n = volumes (frames); TR = repetition time (s)
 
-mp = np.cumsum(0.02 * rng.standard_normal((n, 6)), axis=0)  # 6 motion params
-mp[120:125] += 0.8                                          # a sudden head jerk
+# 6 motion params (random walk): 3 translations (mm), 3 rotations (radians)
+mp = np.cumsum(0.02 * rng.standard_normal((n, 6)), axis=0)
+mp[:, 3:] *= 0.005        # rotations are small in radians
+mp[120:125, :3] += 0.8    # a sudden 0.8 mm head jerk at frame 120
+mp[120:125, 3:] += 0.004  # with a small rotation component
 
 # AR(2)-like "neural" fluctuations plus motion-coupled artifact
 true_signal = np.convolve(rng.standard_normal(n), [1, .5, .1])[:n]
-y = true_signal + mp @ np.array([2, 1.5, 1, 3, 2, 1]) \
-    + 0.5 * rng.standard_normal(n)
+w = np.array([2, 1.5, 1, 300, 200, 100])   # motion-artifact coupling weights
+y = true_signal + mp @ w + 0.5 * rng.standard_normal(n)
 
 # Variance explained by motion parameters (R^2 from nuisance regression)
-X = np.column_stack([mp, np.ones(n)])
+X = np.column_stack([mp, np.ones(n)])      # design: 6 motion params + intercept
 resid = y - X @ np.linalg.lstsq(X, y, rcond=None)[0]
 print(f"Motion explains {100 * (1 - resid.var() / y.var()):.0f}% of variance")
 
 # Framewise displacement: |diffs| summed, rotations (radians) x 50 mm
 fwd = (np.abs(np.diff(mp[:, :3], axis=0)).sum(1)
        + 50 * np.abs(np.diff(mp[:, 3:], axis=0)).sum(1))
-print(f"{(fwd > 0.5).sum()} frames exceed a 0.5 mm censoring threshold")
+thresh = 0.5              # censoring threshold (mm); 0.2-0.5 mm is typical
+print(f"{(fwd > thresh).sum()} frames exceed a {thresh} mm censoring threshold")
+
+fig, ax = plt.subplots(figsize=(7, 3))
+ax.plot(np.r_[0, fwd], "k", lw=0.9)   # prepend 0: frame 1 has no predecessor
+ax.axhline(thresh, color="r", ls="--", label=f"{thresh} mm censoring threshold")
+ax.set_xlabel("Frame"); ax.set_ylabel("FWD (mm)")
+ax.set_title("Framewise displacement"); ax.legend()
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+Motion explains 53% of variance
+2 frames exceed a 0.5 mm censoring threshold
+```
+
+:::{figure} images/ch17_step1_output.png
+:alt: Framewise displacement trace over 200 frames, flat near 0.05 mm except two spikes at the onset and offset of the simulated head jerk, both exceeding the 0.5 mm censoring threshold
+:width: 85%
+
+The FWD trace flags exactly the frames where the simulated head jerk begins and ends — these two frames would each get a spike regressor.
+:::
 
 **Step 2 — High-pass filtering without destroying the task.** We build a discrete-cosine high-pass filter (the same construction SPM uses) and apply it as a residual-forming matrix, following the CANlab principle that filtering and nuisance regression should happen in *one* step.
 
@@ -150,13 +196,13 @@ print(f"{(fwd > 0.5).sum()} frames exceed a 0.5 mm censoring threshold")
 
 ```matlab
 % Adapted from CANlab_help_examples: linear_filtering_a_timeseries.m
-TR = 2; n = 300; hpf = 128;                       % cutoff in seconds
+TR = 2; n = 300; hpf = 128;   % TR (s); n = volumes; hpf = high-pass cutoff (s)
 
 [S, KL, KH] = use_spm_filter(TR, n, 'none', 'specify', hpf);
 % KH: low-frequency cosine regressors; S: residual-forming matrix
 
-task  = repmat([ones(15, 1); zeros(15, 1)], 10, 1);   % 30-s alternating blocks
-drift = 4 * cos((1:n)' * 2 * pi / 280);               % slow scanner drift
+task  = repmat([ones(15, 1); zeros(15, 1)], 10, 1);   % 30-s alternating blocks (15 TRs on, 15 off)
+drift = 4 * cos((1:n)' * 2 * pi / 280);               % slow scanner drift (280-s period)
 y_obs = task + drift + noise_arp(n, [.7 .3]);
 
 y_filt = S * y_obs;                                % drift removed
@@ -175,18 +221,18 @@ fprintf('Filter removes %.0f%% of task variance\n', 100 * task_lost)
 import numpy as np
 from scipy.linalg import pinv
 
-TR, n, hpf = 2.0, 300, 128.0                      # cutoff in seconds
+TR, n, hpf = 2.0, 300, 128.0   # TR (s); n = volumes; hpf = high-pass cutoff (s)
 
 # Discrete-cosine high-pass basis (SPM's construction)
-k = int(np.floor(2 * n * TR / hpf + 1))
-t = np.arange(n)
+k = int(np.floor(2 * n * TR / hpf + 1))   # of basis functions below the cutoff
+t = np.arange(n)                          # frame indices 0..n-1
 KH = np.column_stack([np.sqrt(2 / n) * np.cos(np.pi * (2 * t + 1) * j / (2 * n))
                       for j in range(1, k)])
 S = np.eye(n) - KH @ pinv(KH)                     # residual-forming matrix
 
-task = np.tile(np.r_[np.ones(15), np.zeros(15)], 10)  # 30-s alternating blocks
-drift = 4 * np.cos(np.arange(n) * 2 * np.pi / 280)    # slow scanner drift
-rng = np.random.default_rng(0)
+task = np.tile(np.r_[np.ones(15), np.zeros(15)], 10)  # 30-s blocks (15 TRs on, 15 off)
+drift = 4 * np.cos(np.arange(n) * 2 * np.pi / 280)    # slow drift (280-s period)
+rng = np.random.default_rng(0)                        # seed for reproducibility
 y_obs = task + drift + rng.standard_normal(n)
 
 y_filt = S @ y_obs                                # drift removed
@@ -200,6 +246,13 @@ print(f"Filter removes {100 * (1 - (S @ task).var() / task_c.var()):.0f}% "
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+corr(task, observed) = 0.17, filtered = 0.44
+Filter removes 3% of task variance
+```
 
 With 30-s alternating blocks (60-s period), the 128-s filter leaves the task nearly untouched while removing the drift. Re-run the same code with 64-s blocks (128-s period) and watch the filter remove most of your task variance — the exact failure mode the chapter warns about. The full labs continue with a slice-timing offset demo and a smoothing-kernel tradeoff simulation.
 

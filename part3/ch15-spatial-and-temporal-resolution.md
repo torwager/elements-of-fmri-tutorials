@@ -35,8 +35,9 @@ Spatial resolution matters because neurons with similar functional properties te
 :::{figure} images/ch15_fig1_spatial_scales.png
 :alt: Diagram of spatial scales of brain functional organization from large-scale networks to cell ensembles, with the scales accessible to group fMRI, individual-subject fMRI, and MVPA
 :width: 90%
+:class: book-figure
 
-The brain encodes psychological and behavioral information at multiple spatial scales, from large-scale networks (2–100 cm) through topographic maps and regions (1 mm–2 cm) and functional columns (100 μm–2 mm) down to cell ensembles and single neurons. Group fMRI is sensitive to the coarser scales; individual-subject analyses and MVPA extend sensitivity toward finer ones. *(Figure 15.1 from the book.)*
+The brain encodes psychological and behavioral information at multiple spatial scales, from large-scale networks (2–100 cm) through topographic maps and regions (1 mm–2 cm) and functional columns (100 μm–2 mm) down to cell ensembles and single neurons. Group fMRI is sensitive to the coarser scales; individual-subject analyses and MVPA extend sensitivity toward finer ones. *(Figure 15.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Given all that structure, why not simply acquire the smallest voxels the scanner allows? Three costs push back. First, the signal-to-noise ratio (SNR) of a voxel is proportional to its volume — halving each side of a 3 mm voxel cuts its volume, and thus its intrinsic SNR, by a factor of eight. Second, higher-resolution images take longer to acquire, degrading temporal resolution and increasing motion-related artifacts. Third, at the other extreme, voxels that are too *large* average over many neural populations and tissue types, diluting the signal from any one of them — the **partial volume effect** — and are more prone to susceptibility artifacts where they span tissue boundaries. The optimal voxel size balances these costs.
@@ -45,26 +46,39 @@ Even a perfectly chosen voxel size overstates what a study can resolve. The **ef
 
 On the temporal side, fMRI is coarse compared with EEG or MEG. The sampling rate is set by the TR (typically 0.5–3 s), but the deeper limit is the hemodynamic response itself, which begins ~2 s after a brief event and peaks at 5–6 s. A TR of 2 s has therefore long been considered "adequate" — yet slow sampling carries real costs. The **Nyquist theorem** states that a periodic signal can only be resolved if it is sampled at more than twice its frequency; with sampling frequency $F_s = 1/\mathrm{TR}$, the highest resolvable frequency is
 
+::::{div}
+:class: eq-tip
 $$
-f_{\mathrm{Nyquist}} = \frac{F_s}{2} = \frac{1}{2\,\mathrm{TR}}.
+f_{\mathrm{Nyquist}} = \frac{F_s}{2} = \frac{1}{2\,\mathrm{TR}}
 $$
+:::{div}
+:class: eq-tip-text
+f_Nyquist — highest resolvable frequency (Hz) · F_s — sampling frequency (Hz, volumes per second) · TR — repetition time (s, time between volumes)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $f_{\mathrm{Nyquist}}$ *is the highest frequency that can be resolved,* $F_s = 1/\mathrm{TR}$ *the sampling frequency (volumes per second), and* $\mathrm{TR}$ *the repetition time in seconds.*
+:::
 
 Any signal above this limit does not disappear — it is *reflected* (folded) back around the Nyquist frequency and masquerades as a lower-frequency signal, a phenomenon called **aliasing**. A 1 Hz heartbeat sampled at TR = 0.5 s ($f_{\mathrm{Nyquist}} = 1$ Hz) stays at its own frequency, well above the slow task-related band, where it can be filtered out. The same heartbeat sampled at TR = 2 s ($f_{\mathrm{Nyquist}} = 0.25$ Hz) is aliased into the low frequencies where task effects live, becoming inseparable from activation. Physiological noise is the largest noise source in fMRI and a major source of temporal autocorrelation, so aliased cardiac and respiratory signals are particularly damaging — for task analyses and even more so for functional connectivity. Slow sampling has a second cost: if event onsets are locked to the TR, the response peak can fall between samples. Presenting events at variable times relative to the TR oversamples the hemodynamic response and avoids this bias.
 
 :::{figure} images/ch15_fig_heartbeat_aliasing.png
 :alt: A simulated heartbeat signal sampled at TR of 1 second, with the power spectrum showing high-frequency cardiac power folded below the Nyquist limit into low frequencies
 :width: 85%
+:class: book-figure
 
-Aliasing of physiological noise. Top: a simulated heartbeat at 60 beats per minute (black) sampled at TR = 1 s (purple). Bottom: in the frequency domain, cardiac power above the Nyquist limit (dashed line at $1/(2\,\mathrm{TR}) = 0.5$ Hz) is folded back into the low temporal frequencies where task-related signal resides. *(Figure 16.6 from the book.)*
+Aliasing of physiological noise. Top: a simulated heartbeat at 60 beats per minute (black) sampled at TR = 1 s (purple). Bottom: in the frequency domain, cardiac power above the Nyquist limit (dashed line at $1/(2\,\mathrm{TR}) = 0.5$ Hz) is folded back into the low temporal frequencies where task-related signal resides. *(Figure 16.6 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
-Designing an acquisition protocol means balancing four desirable properties — brain coverage, spatial resolution, temporal resolution, and freedom from artifacts — where improving one generally costs another. Whole-brain coverage at ~4 mm slice thickness takes about 2 s with standard protocols; better spatial or temporal resolution can be bought by reducing coverage, or by **accelerated imaging**: in-plane acceleration (skipping lines of k-space, with multi-coil reconstruction correcting the resulting aliasing artifacts) and **multiband / simultaneous multi-slice (SMS)** imaging, which excites and reads multiple slices at once. Multiband can reduce whole-brain TRs from ~2 s to a few hundred milliseconds — a current recommended standard is ~3 mm isotropic voxels, whole-brain, at TR < 1 s (e.g., multiband factor 6) — though each image is noisier, and aggressive acceleration can reduce contrast-to-noise and BOLD sensitivity. Many groups now push TR below 500 ms specifically to keep physiological signals below the Nyquist limit. Adopting a well-piloted standard protocol (e.g., harmonized with the Human Connectome Project or ABCD studies) reduces guesswork and aids comparability across studies.
+Designing an acquisition protocol means balancing four desirable properties — brain coverage, spatial resolution, temporal resolution, and freedom from artifacts — where improving one generally costs another. Whole-brain coverage at ~4 mm slice thickness takes about 2 s with standard protocols; better spatial or temporal resolution can be bought by reducing coverage, or by **accelerated imaging**: in-plane acceleration (skipping lines of k-space, with multi-coil reconstruction correcting the resulting aliasing artifacts) and **multiband / simultaneous multi-slice (SMS)** imaging, which excites and reads multiple slices at once. Multiband can reduce whole-brain TRs from ~2 s to a few hundred milliseconds — a current recommended standard is ~3 mm isotropic voxels, whole-brain, at TR < 1 s (e.g., multiband factor 6) — though each image is noisier, and aggressive acceleration can reduce contrast-to-noise and BOLD sensitivity. Many groups now push TR below 500 ms specifically to keep physiological signals below the Nyquist limit. Adopting a well-piloted standard protocol (e.g., harmonized with the [Human Connectome Project](https://www.humanconnectome.org) or [ABCD](https://abcdstudy.org) studies) reduces guesswork and aids comparability across studies.
 
 :::{figure} images/ch15_fig2_acquisition_tradeoffs.png
 :alt: Tetrahedron with vertices labeled coverage, spatial resolution, temporal resolution, and artifacts, representing acquisition tradeoffs
 :width: 55%
+:class: book-figure
 
-fMRI acquisition involves tradeoffs among brain coverage, spatial resolution, temporal resolution, and absence of artifacts: parameter choices that improve one generally cost another. *(Figure 15.2A from the book.)*
+fMRI acquisition involves tradeoffs among brain coverage, spatial resolution, temporal resolution, and absence of artifacts: parameter choices that improve one generally cost another. *(Figure 15.2A from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 ## Hands-on tutorial
@@ -84,12 +98,13 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % Adapted from CANlab tutorials (canlab.github.io) and
 % github.com/canlab/FMRI_simulations
-fs = 1000;  t = 0:1/fs:60-1/fs;      % 60 s "ground truth", 1000 Hz
-heart = sin(2*pi*1.1*t);             % heartbeat: 66 bpm = 1.1 Hz
+fs = 1000;                           % fs = simulation sampling rate (Hz) for "ground truth"
+t = 0:1/fs:60-1/fs;                  % t = time vector, 60 s long
+heart = sin(2*pi*1.1*t);             % simulated heartbeat: 66 bpm = 1.1 Hz
 
-for TR = [0.4 2.0]
-    samp = heart(1:round(TR*fs):end);    % one sample per TR
-    n = numel(samp);
+for TR = [0.4 2.0]                   % TR = time between volumes (s): fast vs. typical
+    samp = heart(1:round(TR*fs):end);    % sample once per TR, like the scanner
+    n = numel(samp);                     % n = number of samples (volumes)
     f = (0:floor(n/2)) ./ (n*TR);        % frequencies up to Nyquist
     p = abs(fft(samp)) / n;  p = p(1:floor(n/2)+1);
     [~, imax] = max(p);
@@ -104,12 +119,12 @@ end
 ```python
 import numpy as np
 
-fs = 1000
-t = np.arange(0, 60, 1 / fs)         # 60 s "ground truth", 1000 Hz
-heart = np.sin(2 * np.pi * 1.1 * t)  # heartbeat: 66 bpm = 1.1 Hz
+fs = 1000                            # fs = simulation sampling rate (Hz) for "ground truth"
+t = np.arange(0, 60, 1 / fs)         # t = time vector, 60 s long
+heart = np.sin(2 * np.pi * 1.1 * t)  # simulated heartbeat: 66 bpm = 1.1 Hz
 
-for TR in (0.4, 2.0):
-    samp = heart[::round(TR * fs)]           # one sample per TR
+for TR in (0.4, 2.0):                # TR = time between volumes (s): fast vs. typical
+    samp = heart[::round(TR * fs)]           # sample once per TR, like the scanner
     freqs = np.fft.rfftfreq(len(samp), d=TR) # frequencies up to Nyquist
     power = np.abs(np.fft.rfft(samp)) / len(samp)
     print(f"TR = {TR} s: Nyquist = {1/(2*TR):.2f} Hz, "
@@ -118,6 +133,13 @@ for TR in (0.4, 2.0):
 :::
 ::::
 
+**Example output:**
+
+```text
+TR = 0.4 s: Nyquist = 1.25 Hz, spectral peak at 1.10 Hz
+TR = 2.0 s: Nyquist = 0.25 Hz, spectral peak at 0.10 Hz
+```
+
 **Step 2 — Smooth small vs. large activations.** A 1-D "cortical strip" (1 voxel = 1 mm) contains two activations of equal amplitude: one narrow (~3.5 mm FWHM, the scale of a small nucleus or column cluster) and one broad (~19 mm). Smoothing with a typical 8 mm FWHM Gaussian kernel suppresses noise and preserves the broad activation, but flattens the narrow one — smoothing is a *matched filter* that favors signals at its own scale.
 
 ::::{tab-set}
@@ -125,13 +147,14 @@ for TR in (0.4, 2.0):
 :sync: matlab
 
 ```matlab
-rng(1);
-x = (1:200)';                              % 1 voxel = 1 mm
-small = 2*exp(-(x - 60).^2 / (2*1.5^2));   % ~3.5 mm FWHM activation
-large = 2*exp(-(x - 140).^2 / (2*8^2));    % ~19 mm FWHM activation
-y = small + large + randn(200, 1);         % add noise, sd = 1
+rng(1);                                    % seed for reproducible noise
+x = (1:200)';                              % position along the strip: 1 voxel = 1 mm
+small = 2*exp(-(x - 60).^2 / (2*1.5^2));   % narrow activation: ~3.5 mm FWHM, amplitude 2
+large = 2*exp(-(x - 140).^2 / (2*8^2));    % broad activation: ~19 mm FWHM, amplitude 2
+y = small + large + randn(200, 1);         % add Gaussian noise, sd = 1
 
-fwhm = 8;  sig = fwhm / (2*sqrt(2*log(2)));      % FWHM -> sigma
+fwhm = 8;                                  % fwhm = smoothing kernel FWHM (mm), a typical choice
+sig = fwhm / (2*sqrt(2*log(2)));           % convert FWHM -> Gaussian sigma
 kern = exp(-(-20:20).^2 / (2*sig^2))';  kern = kern / sum(kern);
 ysmooth = conv(y, kern, 'same');
 
@@ -149,14 +172,14 @@ xlabel('Position (mm)')
 from scipy.ndimage import gaussian_filter1d
 import matplotlib.pyplot as plt
 
-rng = np.random.default_rng(1)
-x = np.arange(200)                             # 1 voxel = 1 mm
-small = 2 * np.exp(-(x - 60)**2 / (2 * 1.5**2))   # ~3.5 mm FWHM
-large = 2 * np.exp(-(x - 140)**2 / (2 * 8**2))    # ~19 mm FWHM
-y = small + large + rng.standard_normal(200)      # add noise, sd = 1
+rng = np.random.default_rng(1)                 # seed for reproducible noise
+x = np.arange(200)                             # position along the strip: 1 voxel = 1 mm
+small = 2 * np.exp(-(x - 60)**2 / (2 * 1.5**2))   # narrow activation: ~3.5 mm FWHM, amplitude 2
+large = 2 * np.exp(-(x - 140)**2 / (2 * 8**2))    # broad activation: ~19 mm FWHM, amplitude 2
+y = small + large + rng.standard_normal(200)      # add Gaussian noise, sd = 1
 
-fwhm = 8
-sigma = fwhm / (2 * np.sqrt(2 * np.log(2)))       # FWHM -> sigma
+fwhm = 8                                          # fwhm = smoothing kernel FWHM (mm), a typical choice
+sigma = fwhm / (2 * np.sqrt(2 * np.log(2)))       # convert FWHM -> Gaussian sigma
 y_smooth = gaussian_filter1d(y, sigma)
 
 plt.plot(x, y, color=".7", label="Noisy data")
@@ -166,6 +189,15 @@ plt.xlabel("Position (mm)"); plt.legend()
 ```
 :::
 ::::
+
+**Example output:**
+
+:::{figure} images/ch15_step2_output.png
+:alt: Noisy one-dimensional signal containing a narrow and a broad activation, with the smoothed version preserving the broad peak but flattening the narrow one
+:width: 85%
+
+The 8 mm kernel preserves the broad (~19 mm) activation almost intact but flattens the narrow (~3.5 mm) one to a fraction of its true amplitude.
+:::
 
 The full labs go further: building intuitions for sine waves and the FFT, aliasing a realistic spiky heartbeat with beat-to-beat variability, mapping which TRs keep cardiac signal separable from task frequencies, and quantifying how smoothing changes peak amplitude and SNR as a function of activation size.
 

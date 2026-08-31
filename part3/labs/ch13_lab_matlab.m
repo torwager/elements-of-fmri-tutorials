@@ -11,6 +11,8 @@
 % MATLAB" (canlab.github.io, github.com/canlab).
 %
 % Runtime: seconds. All data are simulated.
+%
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part3/ch13-fundamental-mri-physics
 
 %% 1. T1 recovery and T2 decay: exponential curves
 % After an RF pulse, longitudinal magnetization recovers as
@@ -35,7 +37,9 @@ t2decay = @(t, T2) exp(-t ./ T2);       % transverse decay
 % White matter    600      80    0.70
 % CSF            3000    2000    1.00
 
-T1s = [1000 600 3000];  T2s = [100 80 2000];  rhos = [0.85 0.70 1.00];
+T1s = [1000 600 3000];   % T1 per tissue (ms): [gray, white, CSF]
+T2s = [100 80 2000];     % T2 per tissue (ms): [gray, white, CSF]
+rhos = [0.85 0.70 1.00]; % relative proton density: [gray, white, CSF]
 names = {'Gray matter', 'White matter', 'CSF'};
 colors = [1 .5 0; 1 0 0; 0 0 1];        % orange, red, blue
 
@@ -85,8 +89,8 @@ legend([names, {'decayed to 37%'}]);
 
 signal = @(TR, TE, T1, T2, rho) rho .* (1 - exp(-TR ./ T1)) .* exp(-TE ./ T2);
 
-TRs = linspace(50, 6000, 400);
-TEs = linspace(1, 400, 400);
+TRs = linspace(50, 6000, 400);          % TR values to sweep (ms)
+TEs = linspace(1, 400, 400);            % TE values to sweep (ms)
 
 figure('Name', 'Signal equation');
 
@@ -119,8 +123,8 @@ legend([names, {'TE = 100 (T2-weighted)'}]);
 % interior, and two CSF-filled ventricles -- then evaluate the signal
 % equation voxelwise at three (TR, TE) settings.
 
-n = 128;
-[x, y] = meshgrid(linspace(-1, 1, n));
+n = 128;                                 % image matrix size (n-by-n voxels)
+[x, y] = meshgrid(linspace(-1, 1, n));   % voxel coordinate grids on [-1, 1]
 ellipse = @(cx, cy, axr, ayr) ((x - cx) ./ axr).^2 + ((y - cy) ./ ayr).^2 < 1;
 
 labels = zeros(n);                       % 0 = background
@@ -162,10 +166,10 @@ colormap gray;
 img = weighted_image(500, 10);           % the T1-weighted phantom
 
 F = fftshift(fft2(img));                 % image -> k-space (center in middle)
-[kx, ky] = meshgrid((1:n) - n/2 - 1);
-k_radius = sqrt(kx.^2 + ky.^2);
+[kx, ky] = meshgrid((1:n) - n/2 - 1);    % k-space coordinate grids
+k_radius = sqrt(kx.^2 + ky.^2);          % distance from k-space center
 
-center_mask = k_radius < 10;             % low spatial frequencies only
+center_mask = k_radius < 10;             % keep radius < 10 (of 64): low spatial frequencies only
 
 figure('Name', 'k-space filtering');
 subplot(1, 4, 1); imagesc(img); axis image off; title('Image');
