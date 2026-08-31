@@ -106,20 +106,46 @@ project:
     - title: "Part 6 · Brain Connectivity"
       children:
         - file: part6/ch30-introduction-to-brain-connectivity.md
+          children:
+            - file: part6/labs/ch30-lab-python.ipynb
         - file: part6/ch31-multivariate-decomposition-pca-and-ica.md
+          children:
+            - file: part6/labs/ch31-lab-python.ipynb
         - file: part6/ch32-network-analysis.md
+          children:
+            - file: part6/labs/ch32-lab-python.ipynb
         - file: part6/ch33-dynamic-connectivity.md
+          children:
+            - file: part6/labs/ch33-lab-python.ipynb
         - file: part6/ch34-structural-equation-and-path-models.md
+          children:
+            - file: part6/labs/ch34-lab-python.ipynb
         - file: part6/ch35-dynamic-causal-models.md
+          children:
+            - file: part6/labs/ch35-lab-python.ipynb
         - file: part6/ch36-granger-causal-models.md
+          children:
+            - file: part6/labs/ch36-lab-python.ipynb
     - title: "Part 7 · Predictive Modeling"
       children:
         - file: part7/ch37-multivariate-brain-analysis-from-maps.md
+          children:
+            - file: part7/labs/ch37-lab-python.ipynb
         - file: part7/ch38-machine-learning-principles-and-algorithms.md
+          children:
+            - file: part7/labs/ch38-lab-python.ipynb
         - file: part7/ch39-training-and-testing-predictive-models.md
+          children:
+            - file: part7/labs/ch39-lab-python.ipynb
         - file: part7/ch40-applying-predictive-models-to-fmri.md
+          children:
+            - file: part7/labs/ch40-lab-python.ipynb
         - file: part7/ch41-biomarkers-and-translational-neuroscience.md
+          children:
+            - file: part7/labs/ch41-lab-python.ipynb
         - file: part7/ch42-ai-and-neuroscience.md
+          children:
+            - file: part7/labs/ch42-lab-python.ipynb
 site:
   template: book-theme
   options:
