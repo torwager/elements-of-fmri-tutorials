@@ -69,6 +69,8 @@ project:
           children:
             - file: part4/labs/ch18-lab-python.ipynb
         - file: part4/ch19-glm-design-specification.md
+          children:
+            - file: part4/labs/ch19-lab-python.ipynb
         - file: part4/ch20-contrasts-and-inference-with-the.md
           children:
             - file: part4/labs/ch20-lab-python.ipynb
@@ -93,6 +95,8 @@ project:
           children:
             - file: part5/labs/ch26-lab-python.ipynb
         - file: part5/ch27-experimental-design-and-task-fmri.md
+          children:
+            - file: part5/labs/ch27-lab-python.ipynb
         - file: part5/ch28-resting-state-and-ecological-designs.md
           children:
             - file: part5/labs/ch28-lab-python.ipynb

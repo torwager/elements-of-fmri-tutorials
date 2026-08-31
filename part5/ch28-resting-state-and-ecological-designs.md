@@ -33,6 +33,19 @@ A note of caution about naming: networks are often given psychological labels �
 
 Rest has enormous practical appeal. Scans of 6–12 minutes suffice to identify group-level networks (reliability improves up to ~9–13 minutes of data), require no stimulus-delivery or response equipment, and can be run in clinical settings — which is why open repositories now contain resting-state data from tens of thousands of participants (HCP, ABCD, UK Biobank, ENIGMA, ABIDE, and others). The hopes are that resting connectivity will yield markers of aging, psychopathology, and clinical symptoms; guide brain stimulation targets; and support **precision functional mapping** — identifying functional areas within individuals, which requires much more data per person (40–90+ minutes). But rest has real pitfalls. Cognition is completely unconstrained: different people (and the same person at different moments) engage in different thoughts, and different connectivity patterns track different types of spontaneous thought. Wakefulness drifts — one study found that about half of resting participants are asleep after 10 minutes, and the transition to sleep changes activity patterns drastically. And some coherent "connectivity" reflects head motion, respiration, and cardiac pulsation rather than neural activity. Whether a given resting-state finding reflects intrinsic architecture, mental state, or physiological artifact is often genuinely hard to determine.
 
+:::{table} A sample of large open resting-state datasets and how much resting data each acquires per person. Sample sizes are approximate. *(Adapted from Table 28.1 in the book.)*
+:label: tbl-ch28-datasets
+
+| Study | Resting time per person | Sample |
+|---|---|---|
+| HCP | 60 min | ~1,200 healthy US adults |
+| dHCP | 26 min | ~1,300 US participants, ages 5–21 |
+| ABCD | 20 min | ~10,000 US adolescents |
+| UK Biobank | 6 min | ~100,000 UK adults |
+| ENIGMA | 4–15 min | ~60,000 across contributing studies |
+| ABIDE / ABIDE II | 5–8 min | ~2,150 autistic individuals |
+:::
+
 Naturalistic designs occupy a middle ground. A movie or story is not experimentally manipulated — these are observational designs — but it exposes everyone to the *same* rich sequence of visual, auditory, linguistic, social, and emotional events, engaging beliefs and expectations across multiple time scales. This shared time-locking enables analyses that rest cannot support. The most fundamental is **inter-subject correlation (ISC)**: directly correlating time series across individuals, region by region. Where activity is driven by the shared stimulus, time courses align across people and ISC is high; where activity reflects idiosyncratic thought or noise, ISC is near zero. ISC requires no model of individual events or HRFs — the other subjects' brains serve as the "model." During rest there is no shared stimulus, so ISC provides a natural null benchmark. Beyond ISC, naturalistic data support encoding and decoding models that predict brain responses from stimulus features (and can partially reconstruct what a person is seeing), comparisons between brain representations and artificial neural network layers, and functional alignment methods such as hyperalignment (Chapters 30 and 38 develop these tools). Notably, connectivity measured during movie watching tends to be more reliable, and more predictive of behavior and cognitive performance, than connectivity measured at rest.
 
 ## Hands-on tutorial
@@ -52,14 +65,15 @@ rng(28);
 TR = 2; n_t = 300; n_roi = 8;
 network = [1 1 1 1 2 2 2 2];            % network membership
 
-smooth = @(z) conv(z, gausswin(9) ./ sum(gausswin(9)), 'same');
-net_sig = [smooth(randn(n_t, 1)) smooth(randn(n_t, 1))];
+kern    = exp(-0.5 * ((-4:4)' ./ 2) .^ 2); kern = kern ./ sum(kern);
+smoothz = @(z) zscore(conv(z, kern, 'same'));   % slow (low-frequency) noise
+net_sig = [smoothz(randn(n_t, 1)) smoothz(randn(n_t, 1))];
 
 Y = zeros(n_t, n_roi);
 w = 0.7;                                 % network signal weight
 for i = 1:n_roi
     Y(:, i) = w * net_sig(:, network(i)) + ...
-              (1 - w) * smooth(randn(n_t, 1));
+              (1 - w) * smoothz(randn(n_t, 1));
 end
 Y = zscore(Y);
 
@@ -107,12 +121,12 @@ plt.title("Resting-state functional connectivity")
 ```matlab
 % Shared "movie" drive + idiosyncratic noise, 10 subjects
 n_sub = 10;
-movie_sig = smooth(randn(n_t, 1));       % shared stimulus time course
+movie_sig = smoothz(randn(n_t, 1));      % shared stimulus time course
 
 Y_movie = 0.6 * repmat(movie_sig, 1, n_sub) + ...
-          0.4 * cell2mat(arrayfun(@(s) smooth(randn(n_t, 1)), ...
+          0.4 * cell2mat(arrayfun(@(s) smoothz(randn(n_t, 1)), ...
                 1:n_sub, 'UniformOutput', false));
-Y_rest  = cell2mat(arrayfun(@(s) smooth(randn(n_t, 1)), ...
+Y_rest  = cell2mat(arrayfun(@(s) smoothz(randn(n_t, 1)), ...
                 1:n_sub, 'UniformOutput', false));  % nothing shared
 
 isc = @(Y) arrayfun(@(s) corr(Y(:, s), ...
@@ -146,7 +160,7 @@ print(f"Mean ISC: movie = {isc(Y_movie).mean():.2f}, "
 :::
 ::::
 
-The movie condition should show ISC around 0.6–0.8, and rest near zero — the shared stimulus is what synchronizes brains. The full labs go further: they add **motion spikes** and a **vigilance/arousal drift** to the simulations and show how both inflate functional connectivity — including a spurious "group difference" between drowsy and alert subjects — and how scrubbing and nuisance regression help.
+The movie condition should show a mean ISC near 0.8, and rest near zero — the shared stimulus is what synchronizes brains. The full labs go further: they add **motion spikes** and a **vigilance/arousal drift** to the simulations and show how both inflate functional connectivity — including a spurious "group difference" between drowsy and alert subjects — and how scrubbing and nuisance regression help.
 
 :::{card} **Go deeper**
 Open the full Python lab notebook [→](./labs/ch28-lab-python.ipynb) or download the [MATLAB live script](./labs/ch28_lab_matlab.m), which mirrors it using CANlab-style idioms.

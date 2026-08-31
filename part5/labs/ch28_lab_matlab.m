@@ -82,7 +82,7 @@ title('Resting-state functional connectivity');
 fprintf('Mean within-network r:  %3.2f\n', mean_offdiag(FC_rest, same_net));
 fprintf('Mean between-network r: %3.2f\n', mean_offdiag(FC_rest, ~same_net));
 
-% Strong within-network, near-zero between-network correlations. Clustering
+% Strong within-network and much weaker between-network r. Clustering
 % and ICA (Chapter 30) find networks by discovering this structure in
 % matrices with thousands of regions instead of 8.
 

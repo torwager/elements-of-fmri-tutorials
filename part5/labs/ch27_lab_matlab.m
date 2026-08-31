@@ -79,49 +79,77 @@ title('Efficiency of [A vs. baseline]');
 % intercept. Jitter creates the peaks AND valleys needed to compare
 % events with an implicit resting baseline.
 
-%% 3. Collinearity: pairwise correlations
+%% 3. Collinearity: correlations among regressors
 % Efficiency drops when regressors are correlated -- the model cannot
-% assign credit among predictors that make similar predictions. Let's
-% corrupt the dense design so that most B events co-occur with A events.
+% assign credit among predictors that make similar predictions. Look at
+% the correlations among the task regressors in our three designs.
 
-[X, e, ons] = create_random_er_design(TR, ISI, eventduration, [.5 .5], ...
-    HPlength, dononlin, 'scanLength', scanLength);
+create_figure('correlations', 1, 3);
+for i = 1:3
+    subplot(1, 3, i);
+    imagesc(corr(designs{i}(:, 1:2)), [-1 1]); colorbar;
+    title(names{i}); set(gca, 'XTick', 1:2, 'YTick', 1:2);
+end
 
-% Replace 3/4 of condition 2's onsets with condition 1's onsets
-wh = randperm(size(ons{2}, 1));
-wh = wh(1:round(0.75 * numel(wh)));
-ons{2}(wh, 1) = ons{1}(wh, 1);
-ons{2}(:, 1) = sort(ons{2}(:, 1));
+for i = 1:3
+    r = corr(designs{i}(:, 1), designs{i}(:, 2));
+    fprintf('%-16s corr(A, B) = %5.2f\n', names{i}, r);
+end
 
-Xcoll = plotDesign(ons, [], TR);     % rebuild design from corrupted onsets
-
-create_figure('pairwise correlations', 1, 2);
-subplot(1, 2, 1); imagesc(corr(X)); colorbar; title('Random design');
-subplot(1, 2, 2); imagesc(corr(Xcoll)); colorbar; title('Collinear design');
+% Block and dense designs have strongly NEGATIVE A-B correlations: with no
+% rest, whenever A is on, B is off. That is fine for A - B but terrible
+% for estimating either condition against baseline.
 
 %% 4. Variance inflation factors
 % Pairwise correlations miss the worst case: a regressor predictable from
-% a COMBINATION of the others. The variance inflation factor for
-% regressor j is VIF_j = 1 / (1 - R^2_j), where R^2_j comes from
-% regressing predictor j on all remaining predictors. VIF = 1 is perfect
-% (orthogonal); ~2+ deserves attention; ~4-8+ is serious trouble.
+% a COMBINATION of the others (including the intercept). The variance
+% inflation factor for regressor j is VIF_j = 1 / (1 - R^2_j), where
+% R^2_j comes from regressing predictor j on all remaining predictors.
+% VIF = 1 is perfect (orthogonal); ~2+ deserves attention; ~4-8+ is
+% serious trouble.
 
-create_figure('vifs random');
-vifs_random = getvif(X, false, 'plot');
-title('VIFs: random design (near 1 = good)');
+for i = 1:3
+    create_figure(['vifs ' names{i}]);
+    v = getvif(designs{i}, false, 'plot');   % CanlabCore
+    title(sprintf('VIFs: %s', names{i}));
+    fprintf('%-16s VIF(A) = %6.2f   VIF(B) = %6.2f\n', names{i}, v(1), v(2));
+end
 
-create_figure('vifs collinear');
-vifs_coll = getvif(Xcoll, false, 'plot');
-title('VIFs: collinear design');
+% The no-rest trap: block and dense designs show VIFs in the tens. Each
+% regressor is almost perfectly predictable from the other plus the
+% intercept, so neither beta is well estimated on its own -- yet the
+% A - B contrast is estimated precisely (Section 2). VIF is a
+% PER-PARAMETER diagnostic; specific contrasts can escape collinearity.
+% The sparse jittered design keeps VIFs near 1.
 
-disp(table(vifs_random(1:2)', vifs_coll(1:2)', ...
-    'VariableNames', {'VIF_random' 'VIF_collinear'}, ...
-    'RowNames', {'Condition A' 'Condition B'}))
+%% 4b. The fixed-lag trap: the most common collinearity mistake in tasks
+% A very natural way to program a task is: cue, then stimulus exactly 2 s
+% later, every trial. The two convolved regressors then look nearly
+% identical, and the model cannot tell cue-related from stimulus-related
+% signal.
 
-% Both task regressors' VIFs blow up in the corrupted design: each is
-% largely predictable from the other, so both beta variances are
-% inflated, and the two estimates become negatively correlated -- true
-% signal for A can masquerade as deactivation for B.
+cue  = ons_s{1}(:, 1);              % cue onsets from the sparse design
+dur  = eventduration * ones(size(cue));
+lags = [2 6 10];                    % jittered cue -> stimulus intervals
+lag  = lags(randi(3, numel(cue), 1))';
+
+Xfix = onsets2fmridesign({[cue dur] [cue + 2   dur]}, TR, scanLength);
+Xjit = onsets2fmridesign({[cue dur] [cue + lag dur]}, TR, scanLength);
+
+vf = getvif(Xfix);  vj = getvif(Xjit);
+fprintf('cue-stim, fixed 2-s lag: corr %5.2f  VIF %5.2f  e(A-B) %6.1f\n', ...
+    corr(Xfix(:, 1), Xfix(:, 2)), vf(1), eff(Xfix, c_diff));
+fprintf('cue-stim, jittered lag : corr %5.2f  VIF %5.2f  e(A-B) %6.1f\n', ...
+    corr(Xjit(:, 1), Xjit(:, 2)), vj(1), eff(Xjit, c_diff));
+
+create_figure('cue-stimulus lag', 1, 2);
+subplot(1, 2, 1); plot(Xfix(:, 1:2)); title('Fixed 2-s cue-stimulus lag');
+xlabel('Time (TRs)'); legend({'Cue' 'Stimulus'});
+subplot(1, 2, 2); plot(Xjit(:, 1:2)); title('Jittered cue-stimulus lag');
+xlabel('Time (TRs)');
+
+% Jittering the cue -> stimulus interval decorrelates the regressors and
+% restores efficiency. Jitter is the cure.
 
 %% 5. Detection vs. estimation efficiency: the fundamental tradeoff
 % Detection efficiency assumes a canonical HRF and asks how precisely we
@@ -216,7 +244,10 @@ legend({'Random ER designs' 'Blocked (16 s)'});
 %    [A vs. baseline] despite having the most trials?
 % 3. How high do the VIFs get in Section 4? What correlation between two
 %    regressors corresponds to a VIF of 2?
-% 4. Set dononlin = 1 in Section 1 and re-score the three designs. Which
+% 4. In Section 4b, how much does the fixed 2-s cue-stimulus lag cost you
+%    relative to the jittered version? What lag distribution would you
+%    use in a real task, and what psychological cost does jitter carry?
+% 5. Set dononlin = 1 in Section 1 and re-score the three designs. Which
 %    design's efficiency drops most, and why?
 
 %% Local function: FIR design matrix from onsets

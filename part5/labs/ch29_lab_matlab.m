@@ -19,11 +19,18 @@
 % With true effect size d = mu/sigma and sample size N, the one-sample
 % t statistic follows a noncentral t distribution with N - 1 degrees of
 % freedom and noncentrality delta = d*sqrt(N). Power is the probability
-% of exceeding the two-tailed critical value:
+% of exceeding the critical value (two-tailed for a planned test):
 %
 %   power = 1 - nctcdf(tcrit, N - 1, d*sqrt(N))
 %
 % (Local functions implementing this are defined at the end of the file.)
+%
+% One convention to fix up front: a PLANNED test is usually two-tailed,
+% whereas thresholds applied to fMRI statistic maps ("p < .001") are
+% conventionally DIRECTIONAL (one tail), because we threshold positive
+% activations. The helper functions take a 'tails' argument so we can
+% follow that convention -- as CANlab's power_calc.m does, where the
+% alpha input is one-tailed.
 
 dvals = [0.2 0.5 0.8];   % Cohen's benchmarks: small, medium, large
 alpha = 0.05;
@@ -89,22 +96,37 @@ end
 % How much do required sample sizes grow?
 
 alphas     = [0.05  0.001  0.05/1000  4.26e-6];
-alphanames = {'p < .05 (single ROI)', 'p < .001 (~FDR)', ...
+tails      = [2     1      1          1];
+alphanames = {'p < .05, two-tailed (ROI)', 'p < .001 (~FDR q < .05)', ...
               'Bonferroni, 1000 tests', 'FWER whole brain'};
 d_grid = [0.2 0.3 0.5 0.8];
 
-fprintf('\n%-24s', 'threshold');
+fprintf('\nN for 80%% power, ONE-SAMPLE test\n');
+fprintf('%-26s', 'threshold');
 fprintf('  d=%-5.1f', d_grid); fprintf('\n');
 for i = 1:length(alphas)
-    fprintf('%-24s', alphanames{i});
+    fprintf('%-26s', alphanames{i});
     for j = 1:length(d_grid)
-        fprintf('  %-7d', n_for_power(@power_1samp, d_grid(j), alphas(i)));
+        fprintf('  %-7d', n_for_power(@power_1samp, d_grid(j), alphas(i), tails(i)));
+    end
+    fprintf('\n');
+end
+
+fprintf('\nTOTAL N for 80%% power, TWO-GROUP comparison (patients vs. controls)\n');
+fprintf('%-26s', 'threshold');
+fprintf('  d=%-5.1f', d_grid); fprintf('\n');
+for i = 1:length(alphas)
+    fprintf('%-26s', alphanames{i});
+    for j = 1:length(d_grid)
+        fprintf('  %-7d', 2 * n_for_power(@power_2samp, d_grid(j), alphas(i), tails(i)));
     end
     fprintf('\n');
 end
 
 % Correction multiplies the required sample by ~3-4x: a d = 0.5 effect
-% needs ~34 participants for one ROI test but ~120 under FWER correction.
+% needs 34 participants for one ROI test but ~122 under FWER correction.
+% A two-group comparison needs ~4x the total sample: 128 at p < .05 and
+% ~460 with FWER correction. (Book planning values: 34, 121, 130, 466.)
 
 %% 5. Correlations: reproducing the book's Figure 29.2 reference values
 % For brain-behavior correlations we use the Fisher z approximation:
@@ -116,15 +138,16 @@ r_grid = [0.1 0.2 0.3 0.4 0.5];
 fprintf('\nN for 80%% power to detect a correlation:\n');
 fprintf('%5s %8s %8s %8s\n', 'r', 'p<.05', 'p<.001', 'FWER');
 for i = 1:length(r_grid)
-    n05   = n_for_power(@power_corr, r_grid(i), 0.05);
-    n001  = n_for_power(@power_corr, r_grid(i), 0.001);
-    nfwer = n_for_power(@power_corr, r_grid(i), 4.26e-6);
+    n05   = n_for_power(@power_corr, r_grid(i), 0.05,    2);
+    n001  = n_for_power(@power_corr, r_grid(i), 0.001,   1);
+    nfwer = n_for_power(@power_corr, r_grid(i), 4.26e-6, 1);
     fprintf('%5.1f %8d %8d %8d\n', r_grid(i), n05, n001, nfwer);
 end
 
-% r = 0.5 needs ~28 (single ROI), ~53 (p<.001), ~100 (FWER); r = 0.1
-% needs ~780, ~1,540, and ~2,800. Small effects + whole-brain search is
-% a brutal combination.
+% These reproduce the book's Figure 29.2 values to within a participant
+% or two: r = 0.5 needs ~30 (single ROI), ~55 (p < .001), ~96 (FWER);
+% r = 0.1 needs ~780, ~1,540, and ~2,790. Small effects plus whole-brain
+% search is a brutal combination.
 
 %% 6. Minimum detectable effect size for a planned sample
 % Invert the power analysis: given the N you can afford, what is the
@@ -139,16 +162,18 @@ r_search = 0.02:0.002:0.99;
 fprintf('\nMinimum detectable effect with 80%% power:\n');
 fprintf('%6s %10s %10s %10s %10s\n', 'N', 'd, p<.05', 'd, FWER', 'r, p<.05', 'r, FWER');
 for i = 1:length(n_grid)
-    d05   = min(d_search(power_1samp(d_search, n_grid(i), 0.05)    >= .8));
-    dfwer = min(d_search(power_1samp(d_search, n_grid(i), 4.26e-6) >= .8));
-    r05   = min(r_search(power_corr(r_search, n_grid(i), 0.05)     >= .8));
-    rfwer = min(r_search(power_corr(r_search, n_grid(i), 4.26e-6)  >= .8));
+    d05   = min(d_search(power_1samp(d_search, n_grid(i), 0.05,    2) >= .8));
+    dfwer = min(d_search(power_1samp(d_search, n_grid(i), 4.26e-6, 1) >= .8));
+    r05   = min(r_search(power_corr(r_search, n_grid(i), 0.05,     2) >= .8));
+    rfwer = min(r_search(power_corr(r_search, n_grid(i), 4.26e-6,  1) >= .8));
     fprintf('%6d %10.2f %10.2f %10.2f %10.2f\n', n_grid(i), d05, dfwer, r05, rfwer);
 end
 
-% With FWER correction, an N = 30 study is only powered for very large
-% effects (d > 1.2) -- far larger than the d ~ 0.5 typical of task
-% effects in individual voxels (based on HCP reference activations).
+% This reconstructs Figure 29.2C/D from scratch: N = 30 -> d ~ 1.17,
+% N = 100 -> d ~ 0.56, N = 1000 -> d ~ 0.17. With FWER correction, an
+% N = 30 study is powered only for very large effects -- far larger than
+% the d ~ 0.5 typical of task effects in individual voxels (based on HCP
+% reference activations).
 
 %% 7. The winner's curse: effect size inflation at a threshold
 % Simulate 20,000 voxels that ALL share the same true effect (d = 0.5,
@@ -160,16 +185,17 @@ rng(29)
 n_sub = 30;  n_vox = 20000;  d_true = 0.5;
 
 dat = d_true + randn(n_sub, n_vox);      % subjects x voxels
-[~, p, ~, st] = ttest(dat);
+[~, ~, ~, st] = ttest(dat);
+p_dir = 1 - tcdf(st.tstat, n_sub - 1);   % directional p, as in mapping
 d_hat = st.tstat ./ sqrt(n_sub);         % observed effect size per voxel
 
-sig = p < .001;
+sig = p_dir < .001;
 fprintf('\nTrue effect size:                 d = %.2f\n', d_true);
 fprintf('Mean estimate, ALL voxels:        d = %.2f  (unbiased)\n', mean(d_hat));
 fprintf('Mean estimate, significant only:  d = %.2f  (%.0f%% inflated)\n', ...
     mean(d_hat(sig)), 100 * (mean(d_hat(sig)) / d_true - 1));
-fprintf('Voxels significant at p < .001:   %.1f%% (= power at this threshold)\n', ...
-    100 * mean(sig));
+fprintf('Voxels significant at p < .001:   %.1f%% (analytic power: %.1f%%)\n', ...
+    100 * mean(sig), 100 * power_1samp(d_true, n_sub, .001, 1));
 
 figure('Color', 'w'); hold on
 edges = -0.2:0.03:1.4;
@@ -196,11 +222,12 @@ fprintf('  p<%-8.2g', thresholds); fprintf('\n');
 for i = 1:length(sample_sizes)
     n = sample_sizes(i);
     dat = d_true + randn(n, n_vox);
-    [~, p, ~, st] = ttest(dat);
+    [~, ~, ~, st] = ttest(dat);
+    p_dir = 1 - tcdf(st.tstat, n - 1);
     d_hat = st.tstat ./ sqrt(n);
     fprintf('%5d', n);
     for j = 1:length(thresholds)
-        s = p < thresholds(j);
+        s = p_dir < thresholds(j);
         if sum(s) >= 10
             fprintf('  %-10.2f', mean(d_hat(s)));
         else
@@ -232,11 +259,17 @@ xlabel('Sample size (N)'); ylabel('Power')
 title('Power for BWAS-scale effects, p < .05 (cf. Marek et al. 2022)')
 legend('Location', 'southeast')
 
-n_uni   = n_for_power(@power_corr, 0.095, 0.05);
-n_multi = n_for_power(@power_corr, 0.39,  0.05);
-fprintf('\nN for 80%% power: univariate r = 0.095 -> %d; multivariate r = 0.39 -> %d\n', ...
-    n_uni, n_multi);
-fprintf('Sample size reduction: %.0f-fold\n', n_uni / n_multi);
+n_uni   = n_for_power(@power_corr, 0.095, 0.05, 2);
+n_multi = n_for_power(@power_corr, 0.39,  0.05, 2);
+fprintf('\np < .05:  univariate r = 0.095 -> N = %d; multivariate r = 0.39 -> N = %d (%.0f-fold)\n', ...
+    n_uni, n_multi, n_uni / n_multi);
+
+% Same comparison at a p < .001 mapping threshold, using the round values
+% quoted in the literature (univariate r = 0.1 vs. multivariate r = 0.4)
+n_uni_001   = n_for_power(@power_corr, 0.10, 0.001, 1);
+n_multi_001 = n_for_power(@power_corr, 0.40, 0.001, 1);
+fprintf('p < .001: univariate r = 0.10  -> N = %d; multivariate r = 0.40 -> N = %d (%.0f-fold)\n', ...
+    n_uni_001, n_multi_001, n_uni_001 / n_multi_001);
 
 % The best univariate effects need thousands of participants; multivariate
 % effects of r ~ 0.4 are detectable with N in the tens to low hundreds --
@@ -249,29 +282,35 @@ fprintf('Sample size reduction: %.0f-fold\n', n_uni / n_multi);
 % noncentral t distribution (cf. power_calc.m); power_corr uses the
 % Fisher z approximation for correlations.
 
-function pow = power_1samp(d, n, alpha)
-% Power of a two-tailed one-sample t-test with true effect size d.
-tcrit = tinv(1 - alpha/2, n - 1);
+function pow = power_1samp(d, n, alpha, tails)
+% Power of a one-sample t-test with true effect size d.
+% tails = 2 for a two-sided planned test (default); tails = 1 for the
+% directional thresholds conventionally applied to fMRI statistic maps.
+if nargin < 4, tails = 2; end
+tcrit = tinv(1 - alpha/tails, n - 1);
 pow = 1 - nctcdf(tcrit, n - 1, d .* sqrt(n));
 end
 
-function pow = power_2samp(d, n_per_group, alpha) %#ok<DEFNU>
-% Power of a two-tailed two-sample t-test, balanced groups. Total N is
+function pow = power_2samp(d, n_per_group, alpha, tails)
+% Power of a two-sample t-test, balanced groups. Total N is
 % 2*n_per_group -- roughly 4x the one-sample requirement.
+if nargin < 4, tails = 2; end
 df = 2 .* n_per_group - 2;
-tcrit = tinv(1 - alpha/2, df);
+tcrit = tinv(1 - alpha/tails, df);
 pow = 1 - nctcdf(tcrit, df, d .* sqrt(n_per_group ./ 2));
 end
 
-function pow = power_corr(r, n, alpha)
-% Power to detect a correlation r (two-tailed), Fisher z approximation.
-zcrit = norminv(1 - alpha/2);
+function pow = power_corr(r, n, alpha, tails)
+% Power to detect a correlation r, Fisher z approximation.
+if nargin < 4, tails = 2; end
+zcrit = norminv(1 - alpha/tails);
 pow = normcdf(sqrt(n - 3) .* atanh(r) - zcrit);
 end
 
-function ncrit = n_for_power(power_fn, effect, alpha)
-% Smallest N (or n per group) achieving 80% power; empty if > 5000.
-nvals = 3:5000;
-pow = power_fn(effect, nvals, alpha);
+function ncrit = n_for_power(power_fn, effect, alpha, tails)
+% Smallest N (or n per group) achieving 80% power; empty if > 6000.
+if nargin < 4, tails = 2; end
+nvals = 3:6000;
+pow = power_fn(effect, nvals, alpha, tails);
 ncrit = nvals(find(pow >= .80, 1));
 end
