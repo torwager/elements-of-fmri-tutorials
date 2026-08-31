@@ -14,9 +14,9 @@ project:
   license:
     content: CC-BY-4.0
     code: MIT
-  # In-browser execution (JupyterLite/Pyodide) — enable after exemplar pages are validated:
-  # jupyter:
-  #   lite: true
+  # In-browser execution: JupyterLite/Pyodide via thebe-lite — no server needed
+  jupyter:
+    lite: true
   toc:
     - file: intro.md
     - file: how-to-use.md

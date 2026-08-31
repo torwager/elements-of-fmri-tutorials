@@ -81,7 +81,11 @@ Order from easier to harder. Cover the chapter's main points.
 
 - First markdown cell: title + one-paragraph intro + "how to run this" note
   (browser/Colab/local + link back to the chapter page)
-- First code cell: imports only from: numpy, scipy, pandas, matplotlib,
+- If the notebook uses nilearn/nibabel, the FIRST code cell must be:
+  `# Setup — needed when running in your browser or on Colab (safe to re-run anywhere)`
+  `%pip install -q nilearn`
+  (numpy/scipy/pandas/sklearn/statsmodels/networkx need no bootstrap — Pyodide auto-loads them.)
+- Then imports only from: numpy, scipy, pandas, matplotlib,
   scikit-learn, statsmodels, nibabel, nilearn (the Pyodide-safe stack).
   `n_jobs=1` everywhere. No internet downloads unless from
   raw.githubusercontent/OSF (CORS-safe), data ≤ a few MB.
