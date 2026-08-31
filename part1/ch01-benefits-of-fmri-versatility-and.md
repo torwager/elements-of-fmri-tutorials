@@ -177,7 +177,8 @@ Both snippets illustrate the same idea: a brain image is just structured data �
 
 :::{div}
 :class: book-tile
-📖 **The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
+![Cover of Elements of Functional Magnetic Resonance Imaging](../cover-small.jpg)
+**The book:** [*Elements of Functional Magnetic Resonance Imaging*](https://mitpress.mit.edu/9780262045049/elements-of-functional-magnetic-resonance-imaging/) — Wager & Lindquist, MIT Press
 :::
 
 ---
