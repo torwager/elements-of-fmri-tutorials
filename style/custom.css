@@ -145,7 +145,7 @@ html.dark button[aria-label="start compute environment"]::after {
     line-height: 1.45;
   }
   html.dark .book-tile { background: #1f2937; border-color: #374151; border-left-color: var(--efmri-steel); }
-  .book-tile img { float: left; width: 44px; height: auto; margin: 2px 10px 4px 0; border-radius: 3px; box-shadow: 0 4px 10px -4px rgba(26,35,50,.5); }
+  .book-tile img { float: left; width: 44px !important; height: 57px !important; max-width: 44px !important; object-fit: cover; margin: 2px 10px 4px 0 !important; border-radius: 3px; box-shadow: 0 4px 10px -4px rgba(26,35,50,.5); display: block; }
   .book-tile p { margin: 0; overflow: hidden; }
   /* run-quick sits well above the book tile on code pages (book tile can be ~5 lines tall) */
   .run-quick { bottom: 170px; }
