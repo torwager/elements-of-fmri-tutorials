@@ -60,27 +60,45 @@ project:
     - title: "Part 4 · Signal Processing and Analysis"
       children:
         - file: part4/ch16-artifacts-and-noise-in-fmri.md
+          children:
+            - file: part4/labs/ch16-lab-python.ipynb
         - file: part4/ch17-image-preprocessing.md
+          children:
+            - file: part4/labs/ch17-lab-python.ipynb
         - file: part4/ch18-the-general-linear-model-and.md
           children:
             - file: part4/labs/ch18-lab-python.ipynb
         - file: part4/ch19-glm-design-specification.md
         - file: part4/ch20-contrasts-and-inference-with-the.md
+          children:
+            - file: part4/labs/ch20-lab-python.ipynb
         - file: part4/ch21-group-analysis.md
+          children:
+            - file: part4/labs/ch21-lab-python.ipynb
         - file: part4/ch22-multiple-comparisons.md
           children:
             - file: part4/labs/ch22-lab-python.ipynb
         - file: part4/ch23-localizing-and-interpreting-results.md
+          children:
+            - file: part4/labs/ch23-lab-python.ipynb
         - file: part4/ch24-analysis-pipelines-variations-and-variability.md
+          children:
+            - file: part4/labs/ch24-lab-python.ipynb
         - file: part4/ch25-neuroimaging-meta-analysis.md
+          children:
+            - file: part4/labs/ch25-lab-python.ipynb
     - title: "Part 5 · Experimental Design"
       children:
         - file: part5/ch26-experiments-observation-and-causality.md
+          children:
+            - file: part5/labs/ch26-lab-python.ipynb
         - file: part5/ch27-experimental-design-and-task-fmri.md
         - file: part5/ch28-resting-state-and-ecological-designs.md
           children:
             - file: part5/labs/ch28-lab-python.ipynb
         - file: part5/ch29-statistical-power-and-sample-size.md
+          children:
+            - file: part5/labs/ch29-lab-python.ipynb
     - title: "Part 6 · Brain Connectivity"
       children:
         - file: part6/ch30-introduction-to-brain-connectivity.md
