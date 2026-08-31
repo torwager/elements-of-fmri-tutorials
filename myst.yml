@@ -78,6 +78,8 @@ project:
         - file: part5/ch26-experiments-observation-and-causality.md
         - file: part5/ch27-experimental-design-and-task-fmri.md
         - file: part5/ch28-resting-state-and-ecological-designs.md
+          children:
+            - file: part5/labs/ch28-lab-python.ipynb
         - file: part5/ch29-statistical-power-and-sample-size.md
     - title: "Part 6 · Brain Connectivity"
       children:
