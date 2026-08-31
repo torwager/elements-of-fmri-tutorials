@@ -38,10 +38,17 @@ code, pre, kbd, samp {
   font-size: 0.92em;
 }
 
-/* Light-mode ground: warm paper instead of stark white */
-:root:not([data-theme='dark']) body,
-html:not(.dark) body {
+/* Light-mode ground: warm paper instead of stark white.
+   IMPORTANT: apply ONLY when neither dark marker is present — the theme
+   toggles dark mode via a class on <html>, not a data-theme attribute. */
+html:not(.dark):not([data-theme='dark']) body {
   background-color: var(--efmri-bg);
+}
+
+/* Dark-mode adjustments for our custom elements */
+html.dark .eq-where, html[data-theme='dark'] .eq-where { color: #a7aeb8; }
+html.dark .eq-tip .eq-tip-text, html[data-theme='dark'] .eq-tip .eq-tip-text {
+  background: #f5f2ec; color: #1a2332;
 }
 
 /* Amber-accented details */
