@@ -7,6 +7,9 @@
 % confident -- and spurious -- directed influence. Finally, you will apply
 % a deconvolution remedy.
 %
+% Companion to:
+%   https://torwager.github.io/elements-of-fmri-tutorials/book/part6/ch36-granger-causal-models
+%
 % Requirements: SPM12 on your MATLAB path (for spm_hrf) and the Statistics
 % and Machine Learning Toolbox (for fcdf).
 %   https://www.fil.ion.ucl.ac.uk/spm/
@@ -22,14 +25,14 @@
 % the ground truth is a one-way influence: X drives Y at lag 1, with no
 % reverse influence. Think of each time step as one TR.
 
-rng(7);
+rng(7);                               % seed, for reproducibility
 n = 400;                              % time points (think: TRs)
 A = [0.5 0.0; ...                     % X(t) <- 0.5*X(t-1)
      0.4 0.5];                        % Y(t) <- 0.4*X(t-1) + 0.5*Y(t-1)
 
 Z = zeros(n, 2);
 for t = 2:n
-    Z(t, :) = (A * Z(t-1, :)')' + randn(1, 2);
+    Z(t, :) = (A * Z(t-1, :)')' + randn(1, 2);   % VAR(1) step + unit-variance noise
 end
 X = Z(:, 1);
 Y = Z(:, 2);
@@ -49,7 +52,7 @@ title('VAR(1) simulation: X drives Y at lag 1');
 % residual sum of squares), X Granger causes Y. The helper granger_F at
 % the bottom of this script implements the test for any lag order p.
 
-[F_xy, p_xy] = granger_F(Y, X, 1);    % X -> Y (true influence)
+[F_xy, p_xy] = granger_F(Y, X, 1);    % X -> Y (true influence); lag order p = 1
 [F_yx, p_yx] = granger_F(X, Y, 1);    % Y -> X (no influence)
 
 fprintf('X -> Y:  F = %8.2f,  p = %.3g   (true influence)\n', F_xy, p_xy);
@@ -83,21 +86,23 @@ fprintf('Net influence (X->Y positive): %+.4f\n', Fg_xy - Fg_yx);
 % but region 1's HRF peaks early (~4 s) and region 2's peaks late (~7 s)
 % -- a difference well within the physiological range.
 
-TR = 1; n2 = 1000; burn = 50;
+TR = 1;                               % sampling interval (s)
+n2 = 1000;                            % time points
+burn = 50;                            % burn-in samples to discard (initial transient)
 A_sym = [0.4 0.3; ...                 % region 1 <- itself + region 2, equally
          0.3 0.4];                    % region 2 <- itself + region 1, equally
 
 Zn = zeros(n2 + burn, 2);
 for t = 2:(n2 + burn)
-    Zn(t, :) = (A_sym * Zn(t-1, :)')' + randn(1, 2);
+    Zn(t, :) = (A_sym * Zn(t-1, :)')' + randn(1, 2);   % VAR(1) step + unit-variance noise
 end
 Zn = Zn(burn+1:end, :);               % discard initial transient
 neu1 = Zn(:, 1);
 neu2 = Zn(:, 2);
 
 % Two plausible regional HRFs (SPM double-gamma; p(1) = delay of response)
-h_fast = spm_hrf(TR, [4 16 1 1 6 0 32]);  h_fast = h_fast / max(h_fast);
-h_slow = spm_hrf(TR, [7 16 1 1 6 0 32]);  h_slow = h_slow / max(h_slow);
+h_fast = spm_hrf(TR, [4 16 1 1 6 0 32]);  h_fast = h_fast / max(h_fast);   % delay of response = 4 s (early peak)
+h_slow = spm_hrf(TR, [7 16 1 1 6 0 32]);  h_slow = h_slow / max(h_slow);   % delay of response = 7 s (late peak)
 
 figure;
 plot(0:numel(h_fast)-1, h_fast, 0:numel(h_slow)-1, h_slow, 'LineWidth', 1);
@@ -106,8 +111,9 @@ xlabel('time (s)'); ylabel('response (a.u.)');
 title('Two plausible regional HRFs');
 
 % Pass each region's neural series through ITS OWN HRF, plus noise
-b1 = conv(neu1, h_fast); bold1 = b1(1:n2) + 0.05 * randn(n2, 1);
-b2 = conv(neu2, h_slow); bold2 = b2(1:n2) + 0.05 * randn(n2, 1);
+sd_noise = 0.05;                      % measurement-noise SD
+b1 = conv(neu1, h_fast); bold1 = b1(1:n2) + sd_noise * randn(n2, 1);
+b2 = conv(neu2, h_slow); bold2 = b2(1:n2) + sd_noise * randn(n2, 1);
 
 figure;
 plot(100:199, zscore(bold1(101:200)), 100:199, zscore(bold2(101:200)), ...
@@ -141,7 +147,7 @@ fprintf('%-18s  %10.4f  %10.4f   (asymmetric: SPURIOUS)\n', ...
 % Here we grant ourselves a luxury real analyses never have: the TRUE
 % regional HRFs. In practice the HRF must be estimated from the data.
 
-lam = 0.05;
+lam = 0.05;                           % ridge penalty; larger = smoother, more damped estimate
 neu1_hat = deconvolve(bold1, h_fast, lam);
 neu2_hat = deconvolve(bold2, h_slow, lam);
 

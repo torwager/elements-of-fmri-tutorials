@@ -32,20 +32,32 @@ Thousands of neuroimaging papers are now published every year, and at the same t
 
 Meta-analysis serves three linked goals. **Consistency**: which regions are reliably activated by a given task or state across the literature, providing a consensus estimate of true activations. **Specificity**: whether a region's activation is selective for one psychological process or common to many. A region consistently activated by monetary reward does not license the "reverse inference" that activity there implies reward — that inference is warranted only if the region is *not* also activated by punishment, memory retrieval, movement planning, and so on. Because individual studies rarely span many psychological domains, meta-analysis provides a unique way to compare activation patterns across the full range of tasks in the literature. **Generalizability**: whether a region that responds to, say, monetary reward also responds to social and vicarious reward — a window into whether our psychological constructs are biologically coherent categories, and into whether findings replicate across scanners, analysis software, and other methodological choices that ought to be ignorable. Meta-analysis can also map **co-activation** — regions that tend to be reported together across studies — a meta-analytic analogue of functional connectivity (Chapter 30).
 
-In an ideal world, meta-analysis would pool full statistical maps from every study, fitting a mixed-effects model to effect sizes at each voxel. In practice, full image data are rarely available: individual studies use very different analyses and typically report effect sizes only for a small set of peak activation locations (coordinates in MNI or Talairach space) in published tables. These peak coordinates are the data for **coordinate-based meta-analysis (CBMA)**, either extracted manually from papers or harvested at scale by databases such as Neurosynth, NeuroQuery, and BrainMap. Figure 25.1 shows an example: peak coordinates from 163 studies of emotion, and the map of consistently activated regions estimated from them.
+In an ideal world, meta-analysis would pool full statistical maps from every study, fitting a mixed-effects model to effect sizes at each voxel. In practice, full image data are rarely available: individual studies use very different analyses and typically report effect sizes only for a small set of peak activation locations (coordinates in MNI or Talairach space) in published tables. These peak coordinates are the data for **coordinate-based meta-analysis (CBMA)**, either extracted manually from papers or harvested at scale by databases such as [Neurosynth](https://neurosynth.org), [NeuroQuery](https://neuroquery.org), and [BrainMap](https://brainmap.org). Figure 25.1 shows an example: peak coordinates from 163 studies of emotion, and the map of consistently activated regions estimated from them.
 
 :::{figure} images/ch25_fig1_emotion_meta_analysis.png
 :alt: Left, peak activation coordinates from 163 emotion studies plotted on a brain surface; right, consistently activated regions from an MKDA analysis of those peaks
 :width: 90%
+:class: book-figure
 
-A meta-analysis of emotion. (Left) Peak activation coordinates from 163 studies of emotion. (Right) A summary of consistently activated regions computed using MKDA analysis with the peak coordinates on the left as input. *(Figure 25.1 from the book.)*
+A meta-analysis of emotion. (Left) Peak activation coordinates from 163 studies of emotion. (Right) A summary of consistently activated regions computed using MKDA analysis with the peak coordinates on the left as input. *(Figure 25.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 When effect sizes *are* available, the classical meta-analytic machinery applies. Each study $i$ contributes an effect estimate $y_i$ with sampling variance $v_i$. A **fixed-effects** analysis assumes one common true effect and weights each study by its precision, $w_i = 1/v_i$:
 
+::::{div}
+:class: eq-tip
 $$
 \hat{\theta}_{FE} = \frac{\sum_i w_i\, y_i}{\sum_i w_i}
 $$
+:::{div}
+:class: eq-tip-text
+θ̂_FE — fixed-effects pooled effect · y_i — effect size from study i · w_i = 1/v_i — precision weight · v_i — sampling variance of study i
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\hat{\theta}_{FE}$ *is the fixed-effects pooled effect estimate,* $y_i$ *the observed effect size from study* $i$, $v_i$ *its sampling variance, and* $w_i = 1/v_i$ *its precision weight.*
+:::
 
 A **random-effects** analysis instead assumes true effects vary across studies with between-study variance $\tau^2$, and uses weights $w_i^* = 1/(v_i + \tau^2)$. Heterogeneity is quantified with Cochran's $Q = \sum_i w_i (y_i - \hat{\theta}_{FE})^2$ and summarized by $I^2$, the proportion of total variation attributable to between-study differences. The distinction matters enormously: fixed-effects conclusions apply only to the studies in hand, while random-effects conclusions generalize to the population of studies — and only random-effects models keep a single large (or peak-rich) study from dominating. **Publication bias** — significant results being more likely to be published — is diagnosed with funnel plots (effect size against precision), where selective publication of significant small-sample results produces a telltale asymmetry and inflates pooled estimates.
 
@@ -54,13 +66,14 @@ The most popular CBMA approaches are **kernel-based methods**: kernel density ap
 :::{figure} images/ch25_fig2_kda_pipeline.png
 :alt: Pipeline of a KDA meta-analysis, from peak coordinates across studies, through convolution with a spherical density kernel, to a peak density map and thresholded significant results
 :width: 95%
+:class: book-figure
 
-Example of meta-analysis using KDA. Peaks are combined across studies and the resulting map is smoothed with a spherical kernel. The resulting peak density map is thresholded, yielding a map of significant results. *(Figure 25.2 from the book.)*
+Example of meta-analysis using KDA. Peaks are combined across studies and the resulting map is smoothed with a spherical kernel. The resulting peak density map is thresholded, yielding a map of significant results. *(Figure 25.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Original KDA and ALE share a critical flaw: the *peak* is the unit of analysis, so they summarize consistency across peaks rather than across studies. A significant result may be driven entirely by a single study that reports many peaks, and inter-study variability is not modeled at all — the meta-analytic equivalent of a fixed-effects analysis (Chapter 21), and the reason these original versions should not be used. **MKDA** (multilevel kernel density analysis) and **modALE** fix this by nesting peaks within study-level contrast maps. In MKDA, each study's peaks are convolved with a spherical kernel *within that study's map*, producing a binary indicator (1 = a peak within $r$ mm of this voxel). These indicator maps are then weighted — by sample size ($\sqrt{n}$) and study quality, downweighting fixed-effects studies — and averaged, so each voxel's statistic is the **weighted proportion of studies** activating near it. No single peak-rich study can dominate, and the results generalize beyond the studies analyzed. The Monte Carlo null is refined too: instead of scattering independent peaks, MKDA holds each study's contiguous activation "blobs" intact and randomizes their locations within gray matter, preserving within-study spatial clustering, with the maximum statistic across iterations providing FWER control. Comparisons between task types use the same machinery on difference maps, and absolute activation differences can be tested with a nonparametric chi-square test on the study-level maps.
 
-User-friendly software makes all of this accessible: **GingerALE** (BrainMap) for ALE analyses; **Neurosynth**, which text-mines coordinates from ~14,000 studies and serves forward-inference maps ($P(\text{activation}\,|\,\text{term})$) and reverse-inference maps ($P(\text{term}\,|\,\text{activation})$) online; and the CANlab **MKDA toolbox** for MATLAB (canlab.github.io). Looking forward, meta-analysis is powering brain-based psychological ontologies, meta-analytic classifiers that predict psychological states from activation, Bayesian spatial models, and priors for multivariate pattern analysis.
+User-friendly software makes all of this accessible: **GingerALE** (BrainMap) for ALE analyses; **Neurosynth**, which text-mines coordinates from ~14,000 studies and serves forward-inference maps ($P(\text{activation}\,|\,\text{term})$) and reverse-inference maps ($P(\text{term}\,|\,\text{activation})$) online; and the CANlab **MKDA toolbox** for MATLAB ([canlab.github.io](https://canlab.github.io)). Looking forward, meta-analysis is powering brain-based psychological ontologies, meta-analytic classifiers that predict psychological states from activation, Bayesian spatial models, and priors for multivariate pattern analysis.
 
 ## Hands-on tutorial
 
@@ -77,8 +90,8 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 :sync: matlab
 
 ```matlab
-rng(7);
-k     = 25;
+rng(7);                                  % fix random seed for reproducibility
+k     = 25;                              % k = number of studies in the literature
 n     = randi([10 80], k, 1);            % per-study sample sizes
 theta = 0.3 + 0.2 * randn(k, 1);         % true study effects (tau = 0.2)
 d     = theta + randn(k, 1) ./ sqrt(n);  % observed effect sizes
@@ -102,9 +115,9 @@ fprintf('FE = %.3f  RE = %.3f  tau2 = %.3f  I2 = %.0f%%\n', fe, re, tau2, 100 * 
 
 ```python
 import numpy as np
-rng = np.random.default_rng(7)
+rng = np.random.default_rng(7)                   # fix random seed for reproducibility
 
-k     = 25
+k     = 25                                       # k = number of studies in the literature
 n     = rng.integers(10, 81, k)                  # per-study sample sizes
 theta = 0.3 + 0.2 * rng.standard_normal(k)       # true study effects (tau = 0.2)
 d     = theta + rng.standard_normal(k) / np.sqrt(n)  # observed effect sizes
@@ -125,6 +138,14 @@ print(f"FE = {fe:.3f}  RE = {re:.3f}  tau2 = {tau2:.3f}  I2 = {100 * I2:.0f}%")
 :::
 ::::
 
+**Example output:**
+
+```text
+FE = 0.218  RE = 0.208  tau2 = 0.024  I2 = 53%
+```
+
+With $I^2 = 53\%$, over half the variation between studies reflects genuine differences in true effects — and the random-effects estimate accordingly differs from (and generalizes beyond) the fixed-effects one.
+
 **Step 2 — An MKDA-style density map from peak coordinates.** Working on a 2D "axial slice" for speed, each study's peaks become a binary indicator map (1 within $r = 10$ mm of any peak), and the MKDA statistic is the weighted proportion of study maps active at each location. The full labs contrast this with peak-level KDA — showing how one peak-rich study can hijack a fixed-effects map — and add the Monte Carlo max-statistic threshold.
 
 ::::{tab-set}
@@ -139,8 +160,8 @@ r = 10;                                        % kernel radius (mm)
 [xx, yy] = meshgrid(-90:2:90, -126:2:90);      % 2 mm grid, MNI-like slice
 grid_xy = [xx(:) yy(:)];
 
-k = numel(peaks_by_study);
-maps = zeros(k, size(grid_xy, 1));
+k = numel(peaks_by_study);                     % k = number of studies
+maps = zeros(k, size(grid_xy, 1));             % one indicator map per study
 for i = 1:k
     pk = peaks_by_study{i};                    % squared distance to each peak
     d2 = (grid_xy(:, 1) - pk(:, 1)').^2 + (grid_xy(:, 2) - pk(:, 2)').^2;
@@ -178,7 +199,7 @@ def study_indicator(peaks):
     d2 = ((grid_xy[:, None, :] - peaks[None, :, :]) ** 2).sum(axis=-1)
     return (d2.min(axis=1) <= r ** 2).astype(float)
 
-maps = np.array([study_indicator(p) for p in peaks_by_study])
+maps = np.array([study_indicator(p) for p in peaks_by_study])   # one map per study
 
 w = np.sqrt(n); w = w / w.sum()                 # sqrt(N) study weights
 mkda = w @ maps                                 # weighted proportion of studies
@@ -187,6 +208,15 @@ plt.imshow(mkda_map, origin="lower", extent=[-90, 90, -126, 90]); plt.colorbar()
 ```
 :::
 ::::
+
+**Example output:**
+
+:::{figure} images/ch25_step2_output.png
+:alt: MKDA-style map on a simulated 2D slice; a bright hotspot at the true region near (-40, 24) mm stands out against faint single-study blobs
+:width: 65%
+
+With 20 simulated studies, the weighted proportion of studies with a peak within 10 mm reaches 0.87 at the true region near $(-40, 24)$ mm, while isolated single-study peaks appear only faintly — the consistency signal meta-analysis is designed to isolate.
+:::
 
 :::{card} **Go deeper**
 Open the full Python lab notebook [→](./labs/ch25-lab-python.ipynb) or download the [MATLAB live script](./labs/ch25_lab_matlab.m), which mirrors it and points to the CANlab MKDA toolbox for real 3D analyses. Both labs simulate a literature with a publication filter, compare fixed- and random-effects pooling with forest plots, diagnose bias with funnel plots, and build an FWER-thresholded MKDA-style map.

@@ -18,6 +18,8 @@
 % Toolbox tutorials.
 %
 % Runtime: under a minute. All data are simulated.
+%
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part5/ch26-experiments-observation-and-causality
 
 %% 1. Observation vs. experiment: the HRT story in numbers
 % Observational studies found HRT associated with LOWER heart disease risk;
@@ -28,8 +30,8 @@
 % We simulate one population where treatment is truly HARMFUL (+0.3 on a
 % disease-risk score), then analyze it two ways.
 
-rng(26);
-n = 5000;
+rng(26);                             % seed, for reproducible random numbers
+n = 5000;                            % number of simulated people
 b_true = 0.3;                        % TRUE causal effect of treatment: harmful
 
 H = randn(n, 1);                     % latent "general health" (unmeasured!)
@@ -66,7 +68,7 @@ fprintf('Randomized trial estimate:                       %+.2f  <-- correct\n',
 % past zero to the wrong sign. Adjusting for C recovers b. We repeat the
 % experiment 500 times to see the whole sampling distribution.
 
-n = 500; n_reps = 500;
+n = 500; n_reps = 500;               % n = sample size per replication; n_reps = replications
 a = 0.7; b = 0.4; c = -1.2;          % C->X, X->Y (true), C->Y paths
 
 est = zeros(n_reps, 2);              % columns: naive, adjusted
@@ -139,9 +141,9 @@ legend({'Naive (correct)', 'Adjusted for collider S', 'True effect (0)'});
 % observations with high S (keeping only "clean, high-performance" trials
 % or participants) conditions on it just the same.
 
-X = randn(2000, 1);
+X = randn(2000, 1);                  % 2,000 simulated observations
 Y = randn(2000, 1);                  % truly unrelated
-S = X + Y + randn(2000, 1);
+S = X + Y + randn(2000, 1);          % collider ("inclusion score")
 keep = S > median(S);                % post-hoc selection on the collider
 
 r_all = corr(X, Y);
@@ -184,8 +186,8 @@ xlabel('X'); axis square
 % We simulate a painful-heat experiment: randomized stimulus intensity X,
 % a brain response M, and reported pain Y.
 
-n = 200;
-a_true = 0.6; b_true = 0.5; cprime_true = 0.2;
+n = 200;                             % participants
+a_true = 0.6; b_true = 0.5; cprime_true = 0.2;   % true a, b, c' paths
 
 X = [zeros(n/2, 1); ones(n/2, 1)];
 X = X(randperm(n));                              % randomized low/high intensity
@@ -213,7 +215,7 @@ fprintf('a*b (indirect effect):    %+.3f = c - c'' = %+.3f\n', ...
 % skewed; the standard test uses the bootstrap: resample participants with
 % replacement and read the confidence interval off the a*b distribution.
 
-n_boot = 2000;
+n_boot = 2000;                       % bootstrap resamples; ~5,000-10,000 for published CIs
 ab_boot = zeros(n_boot, 1);
 for i = 1:n_boot
     idx = randi(n, n, 1);            % resample participants

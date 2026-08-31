@@ -2,8 +2,8 @@
 % Effect size <-> accuracy <-> AUC <-> NNT conversions, the winner's curse,
 % and diagnostic testing with base rates.
 %
-% Companion to the chapter page "41. Biomarkers and Translational
-% Neuroscience". Mirrors the Python lab notebook.
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part7/ch41-biomarkers-and-translational-neuroscience
+% Mirrors the Python lab notebook.
 %
 % Adapted from CANlab FMRI_simulations (github.com/canlab):
 %   effect_size_formulas.m, effect_size_vs_classification_accuracy.m,
@@ -40,7 +40,7 @@ fprintf('d required for 90%% accuracy, forced choice:   %3.2f\n', sqrt(2) * norm
 % single-interval classification (deciding about one draw alone), so the
 % same d yields higher accuracy.
 
-d = 0:0.05:3;
+d = 0:0.05:3;                   % effect sizes to plot, 0 to 3
 
 figure('Color', 'w'); hold on
 h1 = plot(d, d2acc_forc(d), 'LineWidth', 3);
@@ -61,9 +61,9 @@ title('Accuracy by effect size')
 % Simulate controls ~ N(0,1) and patients ~ N(d,1) and measure accuracy
 % empirically.
 
-rng(1)
-d_true = 0.8;
-n = 100000;
+rng(1)                          % seed for reproducibility
+d_true = 0.8;                   % true standardized group separation
+n = 100000;                     % draws per group; large n gives stable estimates
 x1 = randn(n, 1);            % controls
 x2 = d_true + randn(n, 1);   % patients
 
@@ -72,7 +72,7 @@ emp_forced = mean(x2 > x1);
 
 % Single interval: classify one observation against the optimal cutpoint,
 % which is midway between the means when variances are equal
-cut = d_true / 2;
+cut = d_true / 2;               % optimal cutpoint: midway between the means
 emp_single = mean([x2 > cut; x1 <= cut]);
 
 fprintf('Forced choice:  theory %5.3f, simulated %5.3f\n', d2acc_forc(d_true), emp_forced);
@@ -85,7 +85,7 @@ fprintf('Single interval: theory %5.3f, simulated %5.3f\n', d2acc_sing(d_true), 
 
 % Verify Furukawa's formula by simulation: treatment ~ N(d,1),
 % control ~ N(0,1), response = value above threshold thr
-d_true = 0.5;
+d_true = 0.5;                            % treatment effect size
 thr = 0;                                 % response threshold on the scale
 cer = 1 - normcdf(thr);                  % control event rate = 0.5
 x_ctrl  = randn(n, 1);
@@ -102,8 +102,8 @@ fprintf('Kraemer & Kupfer (threshold-free): NNT = %.1f\n', auc2nnt(d2acc_forc(d_
 % For a fixed d, a stringent response criterion (low CER) implies a much
 % larger NNT than a lenient one. Clinical claims must state the criterion.
 
-d_vals = [0.2 0.5 0.8 1.2];
-cer_vals = 0.02:0.01:0.90;
+d_vals = [0.2 0.5 0.8 1.2];     % effect sizes to compare
+cer_vals = 0.02:0.01:0.90;      % response criteria, from stringent to lenient
 
 figure('Color', 'w'); hold on
 for i = 1:length(d_vals)
@@ -120,7 +120,7 @@ title('NNT as a function of d and response criterion')
 % "discovery" study with many voxels, keep the significant ones, and
 % re-measure the same voxels in a "replication" study.
 
-rng(42)
+rng(42)                        % seed for reproducibility
 n_vox  = 5000;                 % independent tests (e.g., voxels)
 n_sub  = 20;                   % subjects per study
 d_true = 0.5;                  % same true effect everywhere
@@ -155,10 +155,10 @@ title('Winner''s curse: selected effects shrink on replication')
 % sample sizes: what pure selection can produce even with NO true effect.
 % Adapted from expected_effect_size_inflation_curve.m
 
-n_tests = round(logspace(0, 5, 30));
-n_vals  = [10 20 30 100];
+n_tests = round(logspace(0, 5, 30));   % number of tests: 1 to 100,000
+n_vals  = [10 20 30 100];              % sample sizes to compare
 
-nsim = 2000;
+nsim = 2000;                           % simulations per point; more gives smoother curves
 d_max = zeros(length(n_tests), length(n_vals));
 for v = 1:length(n_tests)
     z_max = max(randn(nsim, n_tests(v)), [], 2);   % max across tests
@@ -191,13 +191,13 @@ fprintf('sens 98%%, spec 98%%, prev  1%%:  PPV = %.2f\n', calc_ppv(.98, .98, .01
 fprintf('sens 98%%, spec 99.9%%, prev 0.1%%: PPV = %.2f\n', calc_ppv(.98, .999, .001));
 
 %% PPV curves
-prev_lines = [.5 .2 .1 .05 .01];
+prev_lines = [.5 .2 .1 .05 .01];       % prevalence (base rate) levels to plot
 
 figure('Color', 'w');
 
 % PPV by sensitivity (specificity fixed)
 subplot(1, 3, 1); hold on
-sens_vals = .8:.005:1;
+sens_vals = .8:.005:1;                 % sensitivity range to sweep
 for j = 1:length(prev_lines)
     plot(sens_vals, calc_ppv(sens_vals, .98, prev_lines(j)), 'LineWidth', 3);
 end
@@ -206,7 +206,7 @@ legend(cellstr(num2str(100 * prev_lines', 'Prev %2.0f%%')), 'Location', 'southea
 
 % PPV by specificity (sensitivity fixed)
 subplot(1, 3, 2); hold on
-spec_vals = .8:.005:1;
+spec_vals = .8:.005:1;                 % specificity range to sweep
 for j = 1:length(prev_lines)
     plot(spec_vals, calc_ppv(.98, spec_vals, prev_lines(j)), 'LineWidth', 3);
 end
@@ -214,8 +214,8 @@ xlabel('Specificity'); ylabel('PPV'); title('Sensitivity = 98%')
 
 % PPV by prevalence and specificity (sensitivity fixed at 90%)
 subplot(1, 3, 3)
-prev_vals = .01:.01:.5;
-spec_vals = .8:.005:1;
+prev_vals = .01:.01:.5;                % prevalence range to sweep
+spec_vals = .8:.005:1;                 % specificity range to sweep
 [S, P] = meshgrid(spec_vals, prev_vals);
 contourf(S, P, calc_ppv(.90, S, P), 20)
 xlabel('Specificity'); ylabel('Prevalence'); title('PPV, sensitivity = 90%')
@@ -226,7 +226,7 @@ colorbar
 % against healthy controls. Deployed where 20% of patients have the
 % condition, what does a positive test mean?
 
-sens = .90; spec = .80; prev = .20;
+sens = .90; spec = .80; prev = .20;    % test properties; prev = clinic base rate
 fprintf('Realistic biomarker: PPV = %.2f, NPV = %.2f\n', ...
     calc_ppv(sens, spec, prev), calc_npv(sens, spec, prev));
 

@@ -11,8 +11,8 @@
 %[text] path for `roc_plot` and the optional real-data section at the end.
 %[text] Sections 1-6 otherwise use base MATLAB + Statistics Toolbox only.
 %[text]
-%[text] Companion to the Chapter 40 page of "Elements of fMRI Analysis -
-%[text] Interactive Tutorials". Parts adapted from CANlab tutorial
+%[text] Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part7/ch40-applying-predictive-models-to-fmri
+%[text] Parts adapted from CANlab tutorial
 %[text] canlab_help_9_apply_a_multivariate_pattern_of_interest.m (github.com/canlab).
 
 %% 1. Define a fixed signature weight map
@@ -20,7 +20,7 @@
 % studies: we never re-fit it to the test data below. Here it lives on a
 % 40 x 40 "brain slice" with two positive regions and one negative region.
 
-side = 40;
+side = 40;                                 % image grid: side x side "voxels" (1,600 total)
 [xx, yy] = meshgrid(1:side, 1:side);
 blob = @(cx, cy, sd) exp(-((xx - cx).^2 + (yy - cy).^2) ./ (2 * sd^2));
 
@@ -40,15 +40,15 @@ colorbar; title('Fixed signature weight map w');
 % Each subject also has a baseline (global) offset shared by all conditions,
 % and independent voxel noise -- like real condition images.
 
-rng(2026);
-n_sub = 30;
+rng(2026);                                 % seed, for reproducibility
+n_sub = 30;                                % number of new test subjects
 
-amp_pain  = 1.0 + 0.4 * randn(n_sub, 1);
-amp_sound = 0.3 + 0.2 * randn(n_sub, 1);
-amp_warm  = zeros(n_sub, 1);
+amp_pain  = 1.0 + 0.4 * randn(n_sub, 1);   % target: strong expression (mean 1.0, SD 0.4)
+amp_sound = 0.3 + 0.2 * randn(n_sub, 1);   % confusable control: weak expression
+amp_warm  = zeros(n_sub, 1);               % neutral control: no expression
 
 offset   = 0.3 * randn(n_sub, 1);          % subject baseline differences
-noise_sd = 4;
+noise_sd = 4;                              % independent voxel noise SD
 
 make_images = @(amp) amp * w' + offset * ones(1, n_vox) + noise_sd * randn(n_sub, n_vox);
 img_pain  = make_images(amp_pain);         % subjects x voxels
@@ -123,7 +123,7 @@ fprintf('Forced-choice:   accuracy = %3.2f\n', ROC2.accuracy);
 %   correlation  -- invariant to gain and uniform offset
 % (canlab_pattern_similarity implements these for fmri_data-style matrices.)
 
-gain = 1.8; shift = 5;
+gain = 1.8; shift = 5;                     % Scanner B: multiplicative gain, additive offset
 img_pain_B = gain * img_pain + shift;
 
 metrics = @(X) deal( ...

@@ -1,4 +1,6 @@
 %% Chapter 30 Lab: Introduction to Brain Connectivity (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part6/ch30-introduction-to-brain-connectivity
+%
 % This lab accompanies Chapter 30, "Introduction to Brain Connectivity".
 % Using simulated data with known ground truth, you will build the core
 % objects of functional connectivity analysis:
@@ -28,7 +30,7 @@ rng(30);                     % reproducible
 n_t     = 240;               % volumes (e.g., 8 min at TR = 2 s)
 n_net   = 3;                 % number of networks
 roi_per = 4;                 % ROIs per network
-n_roi   = n_net * roi_per;
+n_roi   = n_net * roi_per;   % total ROIs (12)
 
 latent = randn(n_t, n_net);                       % one latent signal per network
 for k = 1:6
@@ -37,9 +39,10 @@ end
 latent = zscore(latent);
 
 net_assign = kron((1:n_net)', ones(roi_per, 1));  % network label for each ROI
-Y = 0.8 * kron(latent, ones(1, roi_per)) + randn(n_t, n_roi);
+Y = 0.8 * kron(latent, ones(1, roi_per)) + randn(n_t, n_roi);   % 0.8 = network-signal strength vs. unit noise
 
-TR = 2; t = (0:n_t - 1)' * TR;
+TR = 2;                      % repetition time (s)
+t = (0:n_t - 1)' * TR;       % time axis in seconds
 
 create_figure_or_figure('ROI time series');
 plot(t, Y(:, 1) + 6, 'b-'); hold on;              % two ROIs in network 1
@@ -73,7 +76,7 @@ fprintf('Mean between-network r: %.3f\n', mean(R(~within)));
 % The seed is the latent signal of network 1 -- as if extracted by averaging
 % a seed ROI. Voxels in network-1 blobs light up in the map.
 
-nx = 48;
+nx = 48;                                          % grid size: nx-by-nx voxel "slice"
 [cx, cy] = meshgrid(1:nx, 1:nx);
 centers = [12 12; 34 14; 22 36];                  % blob centers (one per network)
 vox_net = zeros(nx);                              % 0 = background
@@ -106,9 +109,9 @@ title('Seed correlation map (seed = network 1)'); colorbar;
 % zero, because B links them. Partial correlation, controlling for B,
 % removes the indirect path.
 
-a = zscore(conv(randn(n_t, 1), ones(5, 1) / 5, 'same'));
-b = zscore(0.9 * a + 0.5 * randn(n_t, 1));
-c = zscore(0.9 * b + 0.5 * randn(n_t, 1));
+a = zscore(conv(randn(n_t, 1), ones(5, 1) / 5, 'same'));   % source region (smoothed noise)
+b = zscore(0.9 * a + 0.5 * randn(n_t, 1));   % 0.9 = path strength A->B; 0.5 = noise level
+c = zscore(0.9 * b + 0.5 * randn(n_t, 1));   % 0.9 = path strength B->C; 0.5 = noise level
 ABC = [a b c];
 
 R_full = corr(ABC);
@@ -127,8 +130,8 @@ disp('Partial correlation (A, B, C):'); disp(round(R_part, 2));
 % ROI and compare FC before contamination, after contamination, and after
 % nuisance regression.
 
-g = zscore(conv(randn(n_t, 1), ones(20, 1) / 20, 'same'));   % nuisance signal
-Y_bad = Y + 1.2 * g * ones(1, n_roi);                        % hits every ROI
+g = zscore(conv(randn(n_t, 1), ones(20, 1) / 20, 'same'));   % smooth over 20 volumes -> slow nuisance signal
+Y_bad = Y + 1.2 * g * ones(1, n_roi);                        % 1.2 = artifact amplitude; hits every ROI
 
 % Residualize each ROI's time series on [nuisance, intercept]
 Xn = [g, ones(n_t, 1)];
@@ -157,12 +160,12 @@ fprintf('Mean between-network r: true %.3f | contaminated %.3f | cleaned %.3f\n'
 % the number of volumes used? This split-session correlation of vectorized
 % FC matrices is a simple reliability index.
 
-n_long = 1200;
+n_long = 1200;                % volumes per session (40 min at TR = 2 s)
 make_session = @(seed_val) simulate_session(seed_val, n_long, n_net, roi_per);
 Y1 = make_session(101);
 Y2 = make_session(202);
 
-lens = [60 120 240 480 1200];
+lens = [60 120 240 480 1200];   % scan lengths (volumes) to evaluate
 rel = zeros(size(lens));
 mask_ut = triu(true(n_roi), 1);                   % unique edges
 for i = 1:numel(lens)

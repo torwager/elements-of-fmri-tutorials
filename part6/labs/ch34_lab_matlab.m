@@ -1,5 +1,6 @@
 %% Chapter 34 Lab: Structural Equation and Path Models (MATLAB)
 % This lab accompanies Chapter 34, "Structural Equation and Path Models".
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part6/ch34-structural-equation-and-path-models
 % You will simulate a brain-as-mediator dataset, estimate the mediation
 % paths a, b, c', and c with the CANlab Mediation Toolbox, bootstrap the
 % indirect effect a*b, see how an unmodeled confounder of the M-Y
@@ -26,9 +27,9 @@
 % with true paths a = 0.6, b = 0.5, c' = 0.2.
 % Implied total effect: c = c' + a*b = 0.50.
 
-rng(42);
-n = 200;
-a_true = 0.6; b_true = 0.5; cp_true = 0.2;
+rng(42);                                     % fix the random seed for reproducibility
+n = 200;                                     % n = participants (one observation each)
+a_true = 0.6; b_true = 0.5; cp_true = 0.2;   % true paths: a (X->M), b (M->Y|X), c' (direct)
 
 X = randn(n, 1);                             % exposure (stressor intensity)
 M = a_true .* X + randn(n, 1);               % mediator (ACC activity)
@@ -110,8 +111,8 @@ fprintf('ADJUSTED: a*b = %3.3f, p = %3.4f  <- no mediation (correct)\n', ...
 % Note the mediation model above is exactly this graph with
 % ROI1 = X, ROI2 = M, ROI3 = Y.
 
-T = 300;
-b12_true = 0.8; b13_true = 0.4; b23_true = 0.5;
+T = 300;                                     % T = time points in the simulated series
+b12_true = 0.8; b13_true = 0.4; b23_true = 0.5;  % true path coefficients for the three edges
 
 z  = randn(T, 3);                        % independent errors, unit variance
 y1 = z(:, 1);

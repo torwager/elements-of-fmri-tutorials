@@ -9,14 +9,16 @@
 % (With CANlab Core tools on your path you can also use FDR.m; see below.)
 % Adapted in part from fdr_sims_playground.m in the FMRI_simulations
 % repository (Tor Wager, github.com/canlab/FMRI_simulations).
+%
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch22-multiple-comparisons
 
 %% Part 1 — The multiple comparisons problem: 10,000 null tests
 % A "brain" of 10,000 voxels in which nothing is truly active: 30 subjects
 % of pure noise, one-sample t-test at every voxel. How many reach p < .05?
 
-rng(42);
-n = 30;          % subjects
-k = 10000;       % tests (voxels)
+rng(42);         % seed the random-number generator for reproducibility
+n = 30;          % n = subjects
+k = 10000;       % k = number of tests (voxels)
 
 dat = randn(n, k);            % pure noise: the null is true everywhere
 [~, p] = ttest(dat);          % one-sample t-test at each voxel
@@ -48,7 +50,7 @@ set(gca, 'XTick', [], 'YTick', []);
 % largest rank r with p(r) <= (r/m)*q, rejecting all tests with p <= p(r).
 % Under the global null, both should find (almost) nothing.
 
-alpha = 0.05;
+alpha = 0.05;    % error-rate level: FWER alpha for Bonferroni, FDR level q for BH
 
 n_unc  = sum(p < alpha);
 n_bonf = sum(p < alpha / k);
@@ -66,9 +68,9 @@ fprintf('  FDR (BH)            : %5d significant\n', n_fdr);
 % subjects, and score each method against ground truth:
 %   TPR (sensitivity), FPR, and the observed false discovery rate.
 
-rng(7);
-n = 50;  k = 10000;  d = 0.5;
-numtrue = k / 10;                       % 1,000 truly active tests
+rng(7);                                 % seed for reproducibility
+n = 50;  k = 10000;  d = 0.5;           % n = subjects, k = tests, d = true effect size (Cohen's d)
+numtrue = k / 10;                       % 1,000 truly active tests (10% of k)
 istrue = (1:k) <= numtrue;
 mu = [d * ones(1, numtrue), zeros(1, k - numtrue)];
 
@@ -120,7 +122,7 @@ fprintf('Bonferroni threshold: p <= %.2e\n', alpha / k);
 % FDR control is a statement about expectations across experiments; a
 % single study's observed FDR can be higher or lower. Replicate 20 times.
 
-niter = 20;
+niter = 20;      % number of simulated experiments (replications)
 tpr = zeros(niter, 3); fdr_obs = zeros(niter, 3);
 
 for i = 1:niter
@@ -154,9 +156,9 @@ title('Observed FDR');
 % data it adapts to the effective number of independent tests, where
 % Bonferroni cannot. (This is the idea behind FSL randomise and PALM.)
 
-rng(11);
-n = 25;  k = 4000;
-smooth_fwhm = 7;                        % spatial smoothing kernel (voxels)
+rng(11);                                % seed for reproducibility
+n = 25;  k = 4000;                      % n = participants, k = number of tests
+smooth_fwhm = 7;                        % spatial smoothing window (voxels; creates spatial correlation)
 
 % smooth, unit-variance spatial noise; true signal d = 0.8 in a 200-voxel region
 istrue = false(1, k); istrue(1801:2000) = true;
@@ -169,7 +171,7 @@ dat = mu + noise;
 tstat = @(X) mean(X) ./ (std(X) ./ sqrt(size(X, 1)));
 t_obs = tstat(dat);
 
-nperm = 500;
+nperm = 500;     % number of permutations; use ~5,000 for stable inference at the tails
 maxt = zeros(nperm, 1);
 for i = 1:nperm
     signs = sign(rand(n, 1) - .5);

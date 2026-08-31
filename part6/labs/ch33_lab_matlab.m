@@ -1,4 +1,5 @@
 %% Chapter 33 Lab: Dynamic Connectivity (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part6/ch33-dynamic-connectivity
 % This lab accompanies Chapter 33, "Dynamic Connectivity". You will:
 %   1. Compute sliding-window correlations on data with NO true dynamics and
 %      watch convincing "dynamics" appear out of pure sampling variability
@@ -28,7 +29,7 @@ T = 600;                 % number of time points (TRs)
 r_true = 0.4;            % true, constant correlation
 w = 30;                  % sliding-window length (TRs)
 
-Sigma = [1 r_true; r_true 1];
+Sigma = [1 r_true; r_true 1];              % 2x2 correlation matrix of the generating process
 dat_static = mvnrnd([0 0], Sigma, T);      % correlation NEVER changes
 
 % With the Dynamic Correlation Toolbox on your path you could instead call:
@@ -60,7 +61,7 @@ fprintf('Windowed r ranges from %.2f to %.2f with NO true dynamics.\n', ...
 % low-pass filter with cutoff ~ 1/w, which is why a common rule of thumb
 % sets w to the reciprocal of the lowest frequency in the signal.
 
-windows = [15 30 60 120];
+windows = [15 30 60 120];   % window lengths to compare (TRs)
 figure;
 for i = 1:numel(windows)
     wi = windows(i);
@@ -89,15 +90,15 @@ sgtitle('Same static data, four window lengths');
 % the data by maximum likelihood -- no window length to choose. With the
 % toolbox on your path, try:  Ct = DCC(dat_dyn);
 
-r_t = 0.7 * ones(T, 1);
-r_t(mod(floor((0:T-1)' / 150), 2) == 1) = -0.3;   % true correlation path
+r_t = 0.7 * ones(T, 1);                           % ground-truth correlation path
+r_t(mod(floor((0:T-1)' / 150), 2) == 1) = -0.3;   % flip to -0.3 in alternating 150-TR blocks
 
 z = randn(T, 2);
 dat_dyn = [z(:,1), r_t .* z(:,1) + sqrt(1 - r_t.^2) .* z(:,2)];
 
 rho30 = slidecorr(dat_dyn, 30);
 rho90 = slidecorr(dat_dyn, 90);
-rho_ew = ewmacorr(dat_dyn, 0.94);
+rho_ew = ewmacorr(dat_dyn, 0.94);   % 0.94 = forgetting factor lambda (weight on past evidence)
 
 figure;
 stairs(r_t, 'k', 'LineWidth', 2); hold on;
@@ -130,7 +131,7 @@ end
 % (static correlation), but the surrogate is stationary by construction:
 % any true correlation dynamics are destroyed.
 
-nsur = 200;
+nsur = 200;   % number of surrogates; use ~1,000 for publication-grade p-values
 [obs_s, p_s] = stationaritytest(dat_static, w, nsur);
 [obs_d, p_d] = stationaritytest(dat_dyn, w, nsur);
 
@@ -178,8 +179,8 @@ function [obs, p] = stationaritytest(dat, w, nsur)
 T = size(dat, 1);
 rho = slidecorr(dat, w);
 obs = std(rho, 'omitnan');
-F = fft(dat);
-half = 2:ceil(T/2);
+F = fft(dat);                               % Fourier coefficients of both series
+half = 2:ceil(T/2);                        % positive-frequency bins (excluding DC)
 nullsd = zeros(nsur, 1);
 for s = 1:nsur
     ph = zeros(T, 1);

@@ -6,6 +6,8 @@
 % and compare a "modulation" model against a "no-modulation" model using
 % BIC as a simple stand-in for log model evidence.
 %
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part6/ch35-dynamic-causal-models
+%
 % Requirements: base MATLAB plus the Statistics and Machine Learning
 % Toolbox (for gampdf). No SPM or DCM toolbox is needed — everything is
 % simulated. Real DCM analyses use SPM (spm_dcm_*), which performs full
@@ -63,16 +65,16 @@ xlabel('Time (s)');
 % HRF, sample every TR = 2 s, and add measurement noise.
 
 hrf_t = (0:dt:30)';                                  % 30-s HRF support
-hrf   = gampdf(hrf_t, 6, 1) - gampdf(hrf_t, 16, 1) / 6;
+hrf   = gampdf(hrf_t, 6, 1) - gampdf(hrf_t, 16, 1) / 6;   % canonical double-gamma HRF (peak - undershoot/6)
 
-step  = round(2 / dt);                               % samples per TR
+step  = round(2 / dt);                               % fine samples per TR (TR = 2 s)
 TR_t  = t(1:step:end);                               % acquisition times
 
 y1_clean = conv(z(:, 1), hrf) * dt;  y1_clean = y1_clean(1:step:n);
 y2_clean = conv(z(:, 2), hrf) * dt;  y2_clean = y2_clean(1:step:n);
 
-rng(35);
-noise_sd = 0.05;
+rng(35);                                             % seed for reproducible noise
+noise_sd = 0.05;                                     % measurement noise SD (a.u.)
 y1 = y1_clean + noise_sd * randn(size(y1_clean));
 y2 = y2_clean + noise_sd * randn(size(y2_clean));
 
@@ -90,14 +92,14 @@ xlabel('Time (s)'); title('Observed BOLD (TR = 2 s), modulation ON at 60-120 s a
 % hold the simulated z1 fixed and refit only region 2's dynamics — a cheap
 % least-squares stand-in for DCM's Bayesian (EM) inversion.
 
-z1_true = z(:, 1);
-a22 = -0.4;   % self-decay, treated as known here
+z1_true = z(:, 1);   % simulated z1, held fixed (no z2 -> z1 connection)
+a22 = -0.4;          % region-2 self-decay, treated as known here
 
 obj_mod   = @(th) dcm_rss(th(1), th(2), z1_true, u2, y2, hrf, dt, step, a22, n);
 obj_nomod = @(th) dcm_rss(th(1), 0,     z1_true, u2, y2, hrf, dt, step, a22, n);
 
-theta1 = fminsearch(obj_mod,   [0.2 0.2]);   rss1 = obj_mod(theta1);    k1 = 2;
-theta0 = fminsearch(obj_nomod, 0.2);         rss0 = obj_nomod(theta0);  k0 = 1;
+theta1 = fminsearch(obj_mod,   [0.2 0.2]);   rss1 = obj_mod(theta1);    k1 = 2;   % [a21 b21] start; k = free params
+theta0 = fminsearch(obj_nomod, 0.2);         rss0 = obj_nomod(theta0);  k0 = 1;   % a21 start
 
 fprintf('Modulation model:    a21 = %.3f, b21 = %.3f (truth: 0.30, 0.50), RSS = %.3f\n', ...
     theta1(1), theta1(2), rss1);
@@ -142,8 +144,8 @@ y2_null = y2_null_clean(1:step:n) + noise_sd * randn(n_obs, 1);
 obj_mod_n   = @(th) dcm_rss(th(1), th(2), z1_true, u2, y2_null, hrf, dt, step, a22, n);
 obj_nomod_n = @(th) dcm_rss(th(1), 0,     z1_true, u2, y2_null, hrf, dt, step, a22, n);
 
-th1n = fminsearch(obj_mod_n,   [0.2 0.2]);  rss1n = obj_mod_n(th1n);
-th0n = fminsearch(obj_nomod_n, 0.2);        rss0n = obj_nomod_n(th0n);
+th1n = fminsearch(obj_mod_n,   [0.2 0.2]);  rss1n = obj_mod_n(th1n);   % [a21 b21] start
+th0n = fminsearch(obj_nomod_n, 0.2);        rss0n = obj_nomod_n(th0n); % a21 start
 
 bic1n = n_obs * log(rss1n / n_obs) + 2 * log(n_obs);
 bic0n = n_obs * log(rss0n / n_obs) + 1 * log(n_obs);

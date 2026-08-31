@@ -1,5 +1,6 @@
 %% Chapter 28 Lab: Resting-State and Ecological Designs (MATLAB)
 % This lab accompanies Chapter 28, "Resting-State and Ecological Designs".
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part5/ch28-resting-state-and-ecological-designs
 % You will simulate resting-state multi-ROI time series and compute
 % functional connectivity, simulate a shared naturalistic ("movie")
 % stimulus and compute inter-subject correlation (ISC), and see how motion
@@ -21,10 +22,10 @@
 % BOLD is dominated by low frequencies (< ~0.1 Hz), so we low-pass white
 % noise with a smoothing kernel.
 
-rng(28);
-TR    = 2;
+rng(28);                              % seed for reproducibility
+TR    = 2;                            % repetition time (s)
 n_t   = 300;                          % 10-minute "scan"
-n_roi = 8;
+n_roi = 8;                            % regions, 4 per network
 network   = [1 1 1 1 2 2 2 2];        % network membership for each ROI
 roi_names = arrayfun(@(i) sprintf('N%d-roi%d', network(i), ...
     mod(i - 1, 4) + 1), 1:n_roi, 'UniformOutput', false);
@@ -94,7 +95,7 @@ fprintf('Mean between-network r: %3.2f\n', mean_offdiag(FC_rest, ~same_net));
 % Leave-one-out ISC correlates each subject with the mean of the others.
 % No event onsets and no HRF model -- the other brains ARE the model.
 
-n_sub = 10;
+n_sub = 10;                           % number of subjects
 movie_sig = smoothz(randn(n_t, 1));   % shared stimulus-driven time course
 a = 0.6;                              % stimulus-driven signal fraction
 
@@ -132,7 +133,7 @@ fprintf('Mean ISC: movie = %3.2f, rest = %3.2f\n', ...
 % "scrub" (drop) the spike volumes, as flagged in practice by framewise
 % displacement and outlier detection.
 
-n_spikes  = 8;
+n_spikes  = 8;                        % motion spikes (< 3% of volumes)
 spike_idx = randperm(n_t, n_spikes);
 Y_motion  = Y_rest;
 for k = 1:n_spikes
@@ -166,7 +167,7 @@ end
 % two groups with IDENTICAL network structure; the "drowsy" group also has
 % a global arousal signal added to every ROI.
 
-n_per_group = 12;
+n_per_group = 12;                     % subjects per group
 sim_subject = @(global_amp) sim_rest_subject(global_amp, n_t, n_roi, ...
     network, w, smoothz);
 

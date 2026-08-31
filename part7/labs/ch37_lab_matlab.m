@@ -6,6 +6,8 @@
 % decoder weights are not a localization map (and how the Haufe transform
 % recovers the encoding pattern).
 %
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part7/ch37-multivariate-brain-analysis-from-maps
+%
 % Requirements: Statistics and Machine Learning Toolbox (for fitcsvm).
 % The optional final section uses CanlabCore (https://github.com/canlab).
 % Code adapted from CANlab tutorials (github.com/canlab and
@@ -19,7 +21,7 @@
 % Crucially, the noise is strongly SHARED between the voxels (r = 0.98),
 % as if both ride on a common global fluctuation.
 
-rng(7);
+rng(7);                                   % seed, for reproducibility
 n = 100;                                  % trials per condition
 
 mu_A = [-0.1  0.1];                       % condition A mean
@@ -59,6 +61,7 @@ fprintf('Pattern (v1 - v2): t = %5.2f, p = %.2e\n', std_.tstat, pd);
 X2 = [XA; XB];
 y2 = [ones(n,1); -ones(n,1)];
 
+% Linear SVMs (default box constraint C = 1), 5-fold cross-validation
 cv1 = crossval(fitcsvm(X2(:,1), y2, 'KernelFunction', 'linear'), 'KFold', 5);
 cvb = crossval(fitcsvm(X2,      y2, 'KernelFunction', 'linear'), 'KFold', 5);
 fprintf('CV accuracy, voxel 1 alone: %3.0f%%\n', 100 * (1 - kfoldLoss(cv1)));
@@ -73,7 +76,7 @@ fprintf('CV accuracy, both voxels:   %3.0f%%\n', 100 * (1 - kfoldLoss(cvb)));
 % global noise source (SD 1, shared across the whole "brain") plus smaller
 % independent noise (SD 0.35) -- like arousal/respiration/scanner effects.
 
-n_tr = 200; V = 120; n_signal = 60;
+n_tr = 200; V = 120; n_signal = 60;       % trials, voxels, signal voxels
 y = repmat([1; -1], n_tr/2, 1);           % +1 = condition A, -1 = B
 
 a = 0.1;                                  % per-voxel signal amplitude
@@ -87,7 +90,8 @@ g = randn(n_tr, 1);
 g(y == 1)  = g(y == 1)  - mean(g(y == 1));
 g(y == -1) = g(y == -1) - mean(g(y == -1));
 
-X = signal + repmat(g, 1, V) + 0.35 * randn(n_tr, V);
+X = signal + repmat(g, 1, V) ...
+    + 0.35 * randn(n_tr, V);              % 0.35 = independent voxel noise SD
 
 fprintf('Data: %d trials x %d voxels; signal voxels = 1..%d\n', n_tr, V, n_signal);
 
@@ -116,8 +120,8 @@ set(gca, 'XTick', [], 'YTick', []);
 % label. Train a linear SVM, evaluate with 5-fold cross-validation, and
 % compare against the best single voxel under the same test.
 
-mdl = fitcsvm(X, y, 'KernelFunction', 'linear');
-cvm = crossval(mdl, 'KFold', 5);
+mdl = fitcsvm(X, y, 'KernelFunction', 'linear');   % linear SVM (box constraint C = 1)
+cvm = crossval(mdl, 'KFold', 5);          % 5-fold cross-validation
 acc_pattern = 1 - kfoldLoss(cvm);
 fprintf('Whole-pattern decoder accuracy: %5.1f%%\n', 100 * acc_pattern);
 

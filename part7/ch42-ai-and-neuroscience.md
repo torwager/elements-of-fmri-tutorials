@@ -41,21 +41,44 @@ The logic of that third use is to treat an ANN as a simplified, testable model o
 :::{figure} images/ch42_fig3_ann_brain_models.png
 :alt: A CNN processing an image alongside the primate ventral visual hierarchy, bar plots showing model layers explaining variance in monkey V4 and IT neurons, and representational dissimilarity matrices for V4, IT, and the top model layer
 :width: 95%
+:class: book-figure
 
-Artificial neural networks as models of brain function. (a) A CNN trained to recognize images can be compared, layer by layer, to the primate ventral visual hierarchy. (b) In a top-performing model, intermediate layers track macaque V4 neurons while the top layer tracks IT neurons. (c) Representational dissimilarity matrices across image categories: the model's top layer reproduces the category structure seen in IT, but not V4. *(Figure 42.3 from the book.)*
+Artificial neural networks as models of brain function. (a) A CNN trained to recognize images can be compared, layer by layer, to the primate ventral visual hierarchy. (b) In a top-performing model, intermediate layers track macaque V4 neurons while the top layer tracks IT neurons. (c) Representational dissimilarity matrices across image categories: the model's top layer reproduces the category structure seen in IT, but not V4. *(Figure 42.3 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Error-driven learning is another bridge between artificial and biological networks — and one you can hold in your hand mathematically. The Rescorla–Wagner model updates a value estimate $V$ from a **prediction error**, the mismatch between the reward received and the reward expected:
 
+::::{div}
+:class: eq-tip
 $$
 V_{t+1} = V_t + \alpha\,\delta_t, \qquad \delta_t = R_t - V_t
 $$
+:::{div}
+:class: eq-tip-text
+Vₜ — value (expected reward) on trial t · Rₜ — reward received on trial t (1 or 0) · δₜ — prediction error · α — learning rate (0–1)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $V_t$ *is the value (expected reward) on trial* $t$*,* $R_t$ *the reward received (1 or 0),* $\delta_t$ *the prediction error, and* $\alpha$ *the learning rate — how far each error moves the estimate.*
+:::
 
-where $\alpha$ is a learning rate. Temporal difference (TD) learning generalizes this to sequences of states, where the error compares each moment's prediction with the reward received plus the (discounted) prediction one step later:
+Temporal difference (TD) learning generalizes this to sequences of states $s_t$ (the situation occupied at time step $t$ within a trial), where the error compares each moment's prediction with the reward received plus the (discounted) prediction one step later:
 
+::::{div}
+:class: eq-tip
 $$
 \delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)
 $$
+:::{div}
+:class: eq-tip-text
+δₜ — TD prediction error at time step t · rₜ — reward delivered at step t · V(sₜ) — value of the state occupied at step t · γ — temporal discount factor (0–1)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $r_t$ *is the reward delivered at time step* $t$*,* $V(s_t)$ *the value of the state occupied at step* $t$*,* $V(s_{t+1})$ *the value of the next state, and* $\gamma$ *the temporal discount factor that down-weights value one step in the future.*
+:::
 
 Phasic firing of midbrain dopamine neurons behaves strikingly like $\delta_t$: unexpected rewards evoke bursts, fully predicted rewards evoke little response (the signal transfers to the earliest predictive cue), and omitted rewards produce dips below baseline. This correspondence — one of computational neuroscience's success stories — underlies model-based fMRI, in which trial-by-trial model quantities like $\delta_t$ become parametric regressors (Chapter 20), and computational psychiatry, in which fitted parameters like $\alpha$ characterize individuals and disorders. The same error-driven principle, scaled up, powers deep networks: reinforcement learning added to large language models trained on word prediction was a key ingredient of modern conversational AI.
 
@@ -78,7 +101,9 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % Rescorla-Wagner learning
 % Adapted from CANlab Computational Foundations course (github.com/canlab)
-rng(0); alpha = 0.15; n_trials = 120;
+rng(0);                                % seed for reproducibility
+alpha = 0.15;                          % alpha = learning rate (0-1)
+n_trials = 120;                        % 80 acquisition + 40 extinction trials
 r = double(rand(n_trials, 1) < 0.8);   % cue -> reward on 80% of trials
 r(81:end) = 0;                         % extinction after trial 80
 
@@ -100,8 +125,8 @@ subplot(1,2,2); plot(pe); title('Prediction error \delta'); xlabel('Trial');
 import numpy as np
 import matplotlib.pyplot as plt
 
-rng = np.random.default_rng(0)
-alpha, n_trials = 0.15, 120
+rng = np.random.default_rng(0)                  # seed for reproducibility
+alpha, n_trials = 0.15, 120                     # alpha = learning rate; 80 acquisition + 40 extinction trials
 r = (rng.random(n_trials) < 0.8).astype(float)  # cue -> reward on 80% of trials
 r[80:] = 0.0                                    # extinction after trial 80
 
@@ -118,6 +143,15 @@ ax[1].plot(pe); ax[1].set(title="Prediction error $\\delta$", xlabel="Trial")
 :::
 ::::
 
+**Example output:**
+
+:::{figure} images/ch42_step1_output.png
+:alt: Two line plots. Left, learned value V rises toward 0.8 during acquisition and decays to zero after trial 80. Right, prediction errors are large and positive early, shrink as learning proceeds, and turn negative at extinction.
+:width: 90%
+
+Value $V$ climbs toward the true reward rate (0.8), then extinguishes after trial 80; prediction errors are large early in acquisition, shrink as learning proceeds, and dip negative when expected reward is omitted.
+:::
+
 **Step 2 — Toy representational similarity analysis.** We create stimuli from four categories, pass them through a network layer, simulate a category-coding "brain region," and ask whether the two share representational geometry by correlating their representational dissimilarity matrices (RDMs) — the same logic as Figure 42.3c.
 
 ::::{tab-set}
@@ -126,9 +160,9 @@ ax[1].plot(pe); ax[1].set(title="Prediction error $\\delta$", xlabel="Trial")
 
 ```matlab
 % Toy RSA: does a model layer's geometry match a brain region's?
-n_stim = 32; n_feat = 20;
+n_stim = 32; n_feat = 20;                       % 32 stimuli, 20 features each
 categ = repelem(1:4, 8)';                       % 4 categories x 8 exemplars
-protos = randn(4, n_feat);
+protos = randn(4, n_feat);                      % category prototype patterns
 X = protos(categ, :) + 0.8 * randn(n_stim, n_feat);   % stimulus features
 
 layer = max(X * randn(n_feat, 10), 0);          % random ReLU layer
@@ -148,10 +182,10 @@ fprintf('Model-brain RDM correlation: rho = %.2f\n', rho);
 ```python
 from scipy.stats import spearmanr
 
-n_stim, n_feat = 32, 20
+n_stim, n_feat = 32, 20                         # 32 stimuli, 20 features each
 categ = np.repeat(np.arange(4), 8)              # 4 categories x 8 exemplars
-protos = rng.standard_normal((4, n_feat))
-X = protos[categ] + 0.8 * rng.standard_normal((n_stim, n_feat))
+protos = rng.standard_normal((4, n_feat))       # category prototype patterns
+X = protos[categ] + 0.8 * rng.standard_normal((n_stim, n_feat))  # prototype + exemplar noise
 
 layer = np.maximum(X @ rng.standard_normal((n_feat, 10)), 0)  # random ReLU layer
 brain = (protos[categ] @ rng.standard_normal((n_feat, 50))
@@ -166,6 +200,14 @@ print(f"Model-brain RDM correlation: rho = {rho:.2f}")
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+Model-brain RDM correlation: rho = 0.34
+```
+
+Even this random (untrained) ReLU layer shares some geometry with the category-coding region, because the category signal in the stimuli leaks through the projection — the labs show how *training* strengthens this correspondence, and how an untrained layer instead best matches an early sensory region.
 
 The full labs go further: temporal difference learning that reproduces the *transfer* of the dopamine burst from reward to cue (and the omission dip), the effect of the learning rate on value trajectories, and — for RSA — a tiny multilayer network trained by backpropagation in pure numpy/MATLAB, showing that *training for a task* is what makes a layer's geometry brain-like, exactly the logic of the Yamins experiment.
 

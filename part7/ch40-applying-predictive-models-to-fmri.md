@@ -33,8 +33,9 @@ Previous chapters covered the algorithms used in predictive modeling (Chapter 38
 :::{figure} images/ch40_fig1_model_varieties.png
 :alt: Four panels showing choices in predictive modeling: outcomes and sources of variation, types of brain data, model flexibility and spatial scope, and model structure
 :width: 100%
+:class: book-figure
 
-Varieties of predictive models using MRI and fMRI data. Key choices include (a) the outcome(s) and sources of variation modeled — within-person and/or between-person, continuous or categorical; (b) the type of brain data used; (c) the model's flexibility and spatial scope, from individualized to population-level and from local to whole-brain; and (d) model construction and feature embedding. *(Figure 40.1 from the book.)*
+Varieties of predictive models using MRI and fMRI data. Key choices include (a) the outcome(s) and sources of variation modeled — within-person and/or between-person, continuous or categorical; (b) the type of brain data used; (c) the model's flexibility and spatial scope, from individualized to population-level and from local to whole-brain; and (d) model construction and feature embedding. *(Figure 40.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 A first choice is the **outcome and the sources of variation** it reflects. Within-person predictions — decoding which stimulus was shown on a trial, or how much pain a person felt from moment to moment — are typically much stronger than between-person predictions of individual differences, because mind–brain relationships within an individual carry far fewer sources of error. Between-person models must contend with individual differences in head movement, vascular health, and medication on the brain side, and with rating-scale usage, decision biases, and outcome unreliability on the psychological side. Within-person models also make a weaker measurement demand: they require only that a person's reports be self-consistent (a "6" hurts more than their own "5"), not that scales be calibrated across people. Outcomes can be continuous or categorical, and although two-class classification has been the most common approach, artificially binarizing continuous scores (especially by median split) introduces error and bias, and two-class designs carry minimal information about outcome variation — making them particularly vulnerable to confounds.
@@ -44,8 +45,9 @@ That vulnerability arises because machine learning models are "greedy": they exp
 :::{figure} images/ch40_fig2_sample_design.png
 :alt: Sample design panels showing two-condition classification vulnerable to confounds, a diverse training design with multiple pain types and control conditions, and a regression version across an intensity continuum
 :width: 85%
+:class: book-figure
 
-Sample design. (a) Two-class classification with only two task conditions is especially subject to confounding by attention, arousal, and other correlated processes. (b) Including more diverse "control" examples increases specificity to the target construct, and including diverse examples of the construct increases generalizability. (c) A regression version in which target and control conditions vary along an intensity continuum. *(Figure 40.2 from the book.)*
+Sample design. (a) Two-class classification with only two task conditions is especially subject to confounding by attention, arousal, and other correlated processes. (b) Including more diverse "control" examples increases specificity to the target construct, and including diverse examples of the construct increases generalizability. (c) A regression version in which target and control conditions vary along an intensity continuum. *(Figure 40.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 The **type of brain data** matters too. Structural measures (gray matter volume, cortical thickness) are highly reliable (often > 0.9) and suited to stable traits that change slowly; task fMRI is suited to states that vary within person across seconds. Reliability of resting-state connectivity in individual regions is low (generally < 0.4), though multivariate patterns can be far more reliable (> 0.8) with enough data per person. Beyond reliability, predictive power requires a strong true brain–outcome link: brain structure predicts outcomes with gross anatomical consequences (dementia, age) well, but appears to be a poor predictor of many cognitive and mental-health phenotypes. Brain data predict best when they are both *reliable* and *directly relevant* to the outcome.
@@ -57,19 +59,31 @@ The **level of analysis** is a choice between individualized models — trained 
 :::{figure} images/ch40_fig3_searchlight_vs_wholebrain.png
 :alt: Searchlight analysis testing many local multivariate models versus a single whole-brain integrated predictive model
 :width: 80%
+:class: book-figure
 
-Two spatial scopes for multivariate analysis. A searchlight analysis (left) tests thousands of local predictive models to map areas that predict above chance. A whole-brain predictive map (right) builds one integrated model across regions, which can be tested prospectively on new datasets. *(Figure 40.3 from the book.)*
+Two spatial scopes for multivariate analysis. A searchlight analysis (left) tests thousands of local predictive models to map areas that predict above chance. A whole-brain predictive map (right) builds one integrated model across regions, which can be tested prospectively on new datasets. *(Figure 40.3 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Finally, **model structure and feature embedding** determine what the model's inputs mean. Feature engineering, rescaling, and dimension reduction (e.g., PCA) can be viewed as intermediate *layers* between input data and predicted outcomes — a framing that connects classical machine learning to deep networks (Chapter 42). Embedding brain activity in feature spaces defined by receptive-field properties, action concepts, or language models enables encoding–decoding models that can reconstruct seen images, predict responses to novel words, and even decode dream content. For neuroscientific inference, *linear* mappings between psychological features and brain responses are key: if features can be read out only through a complex nonlinear function, the brain cannot really be said to represent them.
 
 **From model to measure.** Once a population-level model is trained, applying it to new data is remarkably simple. The model is a *fixed* weight map $\mathbf{w}$ (a "signature"), and its response to a new brain image $\mathbf{x}$ is a weighted average — the dot product:
 
+::::{div}
+:class: eq-tip
 $$
 r \;=\; \mathbf{w}^\top \mathbf{x} \;=\; \sum_{v=1}^{V} w_v\, x_v
 $$
+:::{div}
+:class: eq-tip-text
+r — pattern response (signature score for one image) · w — fixed signature weights (voxels × 1) · x — new brain image as a vector (voxels × 1) · wᵥ, xᵥ — weight and image value at voxel v · V — number of voxels
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $r$ *is the pattern response (the signature's score for the image),* $\mathbf{w}$ *the fixed vector of signature weights (one per voxel),* $\mathbf{x}$ *the new brain image arranged as a vector,* $w_v$ *and* $x_v$ *their values at voxel* $v$*, and* $V$ *the number of voxels.*
+:::
 
-This generalizes the region-of-interest average: an ROI mask of 1's and 0's yields the average signal (up to scaling), whereas a pattern weights each voxel by its trained contribution. Scale-free variants divide out image magnitude: **cosine similarity**, $\cos\theta = \mathbf{w}^\top\mathbf{x} / (\lVert\mathbf{w}\rVert\,\lVert\mathbf{x}\rVert)$, is invariant to multiplicative rescaling of the image, and **Pearson correlation** — cosine similarity after mean-centering both vectors — is additionally invariant to uniform additive shifts. These invariances matter for calibration when images come from different scanners or protocols: raw dot products can shift dramatically with scanner gain, while within-person comparisons and correlation-based metrics are far more stable. Performance on new data is then quantified with paired **forced-choice tests** (which condition has the higher response, within person — baseline differences cancel), and with **ROC curves**, sensitivity, and specificity for single-interval classification. This machinery — fixed weights, pattern responses, forced-choice and ROC tests — is exactly how signatures such as the Neurologic Pain Signature are applied and validated, and it sets up the treatment of neuromarkers in Chapter 41.
+This generalizes the region-of-interest average: an ROI mask of 1's and 0's yields the average signal (up to scaling), whereas a pattern weights each voxel by its trained contribution. Scale-free variants divide out image magnitude: **cosine similarity**, $\cos\theta = \mathbf{w}^\top\mathbf{x} / (\lVert\mathbf{w}\rVert\,\lVert\mathbf{x}\rVert)$ — where $\theta$ is the angle between the weight and image vectors and $\lVert\cdot\rVert$ the vector norm (overall magnitude) — is invariant to multiplicative rescaling of the image, and **Pearson correlation** — cosine similarity after mean-centering both vectors — is additionally invariant to uniform additive shifts. These invariances matter for calibration when images come from different scanners or protocols: raw dot products can shift dramatically with scanner gain, while within-person comparisons and correlation-based metrics are far more stable. Performance on new data is then quantified with paired **forced-choice tests** (which condition has the higher response, within person — baseline differences cancel), and with **ROC curves**, sensitivity, and specificity for single-interval classification. This machinery — fixed weights, pattern responses, forced-choice and ROC tests — is exactly how signatures such as the Neurologic Pain Signature are applied and validated, and it sets up the treatment of neuromarkers in Chapter 41.
 
 ## Hands-on tutorial
 
@@ -89,7 +103,7 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 % Requires CanlabCore + Neuroimaging_Pattern_Masks + SPM12 on your path
 % Adapted from CANlab tutorial canlab_help_9 (github.com/canlab)
 test_data = load_image_set('emotionreg');       % 30 subjects, [regulate - look]
-[pats, patnames] = load_image_set('pain_cog_emo');
+[pats, patnames] = load_image_set('pain_cog_emo');  % library of published pain/cognition/emotion patterns
 sig = get_wh_image(pats, 8);                    % whole-brain pain pattern (Kragel 2018)
 
 % Pattern response = weighted sum (dot product) of image values and weights
@@ -105,24 +119,49 @@ pexp_cos = apply_mask(test_data, sig, 'pattern_expression', 'ignore_missing', 'c
 
 ```python
 import numpy as np
-rng = np.random.default_rng(0)
+import matplotlib.pyplot as plt
+rng = np.random.default_rng(0)                    # seed, for reproducibility
 
-n_vox, n_sub = 2000, 30
-w = rng.standard_normal(n_vox) * (rng.random(n_vox) < 0.10)  # FIXED signature weights
+n_vox, n_sub = 2000, 30                           # n_vox = "voxels", n_sub = new test subjects
+w = rng.standard_normal(n_vox) * (rng.random(n_vox) < 0.10)  # FIXED signature weights (~10% of voxels nonzero)
 
 # New subjects' condition images: the target condition expresses the signature
-amp   = rng.normal(1.0, 0.4, n_sub)                          # per-subject expression
-pain  = amp[:, None] * w + 3 * rng.standard_normal((n_sub, n_vox))
-warm  = 3 * rng.standard_normal((n_sub, n_vox))              # control condition
+amp   = rng.normal(1.0, 0.4, n_sub)               # per-subject expression strength (mean 1.0, SD 0.4)
+pain  = amp[:, None] * w + 3 * rng.standard_normal((n_sub, n_vox))  # 3 = voxel noise SD
+warm  = 3 * rng.standard_normal((n_sub, n_vox))   # control condition: noise only, no signature
 
-resp_pain, resp_warm = pain @ w, warm @ w                    # pattern response = dot product
+resp_pain, resp_warm = pain @ w, warm @ w         # pattern response = dot product
 
-def corr_with_pattern(X, w):                                 # scale-free alternative
+def corr_with_pattern(X, w):                      # scale-free alternative (Pearson r)
     Xc, wc = X - X.mean(1, keepdims=True), w - w.mean()
     return (Xc @ wc) / (np.linalg.norm(Xc, axis=1) * np.linalg.norm(wc))
+
+print(f"mean pattern response: pain = {resp_pain.mean():.1f}, warmth = {resp_warm.mean():.1f}")
+print(f"mean correlation with pattern: pain = {corr_with_pattern(pain, w).mean():.2f}, "
+      f"warmth = {corr_with_pattern(warm, w).mean():.2f}")
+
+plt.figure(figsize=(4.6, 3.4))                    # paired responses, one line per subject
+plt.plot([0, 1], np.c_[resp_pain, resp_warm].T, "-o", color="gray", alpha=0.4)
+plt.xticks([0, 1], ["pain", "warmth"]); plt.ylabel(r"pattern response $w^\top x$")
+plt.title("Signature responses on new subjects")
+plt.tight_layout()
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+mean pattern response: pain = 171.2, warmth = -1.5
+mean correlation with pattern: pain = 0.09, warmth = -0.00
+```
+
+:::{figure} images/ch40_step1_output.png
+:alt: Paired pattern responses for 30 simulated subjects, with pain responses well above warmth responses for nearly every subject
+:width: 55%
+
+Pattern responses on 30 new subjects: the pain condition expresses the signature strongly for nearly every subject, while the warmth control hovers near zero. Note the small mean *correlation* (≈ 0.09): with 2,000 noisy voxels, even a strongly expressed signature explains a small fraction of image variance — the response is reliable because it pools over many voxels.
+:::
 
 **Step 2 — Test performance: forced choice and ROC.** In a paired forced-choice test we ask, for each subject, which condition produced the larger response — subject-level baseline shifts cancel. ROC analysis characterizes single-interval classification across thresholds.
 
@@ -132,7 +171,7 @@ def corr_with_pattern(X, w):                                 # scale-free altern
 
 ```matlab
 % Simulated paired responses for 30 subjects (or use pexp values from real data)
-rng(1); n = 30;
+rng(1); n = 30;                           % seed, for reproducibility; n = subjects
 resp_pain = 1.0 + 0.5 * randn(n, 1);      % signature response, target condition
 resp_warm = 0.0 + 0.5 * randn(n, 1);      % signature response, control condition
 
@@ -151,15 +190,34 @@ from sklearn.metrics import roc_curve, roc_auc_score
 
 acc_fc = np.mean(resp_pain > resp_warm)            # paired forced-choice accuracy
 
-y   = np.r_[np.ones(n_sub), np.zeros(n_sub)]       # single-interval ROC
-val = np.r_[resp_pain, resp_warm]
+y   = np.r_[np.ones(n_sub), np.zeros(n_sub)]       # labels: 1 = pain, 0 = warmth
+val = np.r_[resp_pain, resp_warm]                  # one threshold across all images
 fpr, tpr, thr = roc_curve(y, val)
-j = np.argmax(tpr - fpr)                           # best balanced threshold
+j = np.argmax(tpr - fpr)                           # Youden's J: best balanced threshold
 print(f"forced-choice acc = {acc_fc:.2f}, AUC = {roc_auc_score(y, val):.2f}, "
       f"sensitivity = {tpr[j]:.2f}, specificity = {1 - fpr[j]:.2f}")
+
+plt.figure(figsize=(3.8, 3.6))                     # single-interval ROC curve
+plt.plot(fpr, tpr, "-", color="tab:blue"); plt.plot([0, 1], [0, 1], "k:", lw=1)
+plt.plot(fpr[j], tpr[j], "o", color="tab:blue")    # marks the best balanced threshold
+plt.xlabel("1 - specificity"); plt.ylabel("sensitivity"); plt.title("Single-interval ROC")
+plt.tight_layout()
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+forced-choice acc = 0.93, AUC = 0.98, sensitivity = 0.93, specificity = 0.97
+```
+
+:::{figure} images/ch40_step2_output.png
+:alt: Single-interval ROC curve rising steeply to an AUC of 0.98, with the best balanced threshold marked near sensitivity 0.93 and specificity 0.97
+:width: 45%
+
+The single-interval ROC curve (AUC = 0.98). The dot marks the best balanced threshold (Youden's J): sensitivity 0.93, specificity 0.97. Forced-choice accuracy (0.93) needs no threshold at all — each subject's baseline cancels in the paired comparison.
+:::
 
 The full labs go further: they build a signature with spatially structured weights, apply it to three conditions (target, confusable control, and neutral control) to probe *specificity*, and show how scanner gain and offset distort raw dot products but not correlation-based metrics or within-person forced-choice tests.
 

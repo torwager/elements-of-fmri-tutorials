@@ -33,39 +33,84 @@ Network analysis represents the brain as a set of interconnected **nodes** (brai
 A network is represented mathematically as a **graph** $G(V, E)$: a set of vertices $V$ and pairwise edges $E$ among them. Numerically, a graph is an $N \times N$ matrix, where $N$ is the number of nodes and each element represents an edge. In a **connectivity matrix** the elements are continuous ("weighted") values representing connection strength; in an **adjacency matrix** they are binarized to 1 (connected) or 0 (unconnected). Graphs may also be **undirected** (a symmetric matrix — the edge from $i$ to $j$ equals the edge from $j$ to $i$) or **directed** (asymmetric, with rows conventionally denoting sources and columns targets). Functional connectivity matrices are symmetric, implying undirected networks; effective connectivity methods such as Dynamic Causal Modeling or Granger causality (Chapters 35–36) yield directed ones.
 
 :::{figure} images/ch32_fig2_graph_adjacency.png
-:alt: A four-node example graph and its corresponding binary adjacency matrix
+:alt: A four-node example graph, its binary adjacency matrix, and the computed clustering coefficients and shortest path lengths
 :width: 70%
+:class: book-figure
 
-A simple graph and its numerical representation. Four nodes (A–D) are linked by four undirected edges; the corresponding adjacency matrix contains a 1 for each connected pair and 0 otherwise, and is symmetric. From these ingredients we can compute each node's clustering coefficient (network average $C = 0.42$) and the shortest path length between every pair of nodes (characteristic path length $L = 1.33$). *(Figure 32.2 from the book.)*
+A simple graph and its numerical representation. Four nodes (A–D) are linked by four undirected edges; the corresponding adjacency matrix contains a 1 for each connected pair and 0 otherwise, and is symmetric. From these ingredients we can compute each node's clustering coefficient (bottom left; network average $C = 0.42$) and the shortest path length between every pair of nodes (bottom right; characteristic path length $L = 1.33$). *(Figure 32.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 **Constructing** a brain network means filling in the entries of that matrix. In fMRI the matrix is typically a functional connectome (Chapter 30): correlations between the time series of all node pairs, using Pearson or Spearman correlations, partial correlations, coherence, or mutual information. Because many graph metrics require relatively sparse graphs, the next step is usually to **threshold** the matrix — removing weak connections — and often to binarize it into an adjacency matrix. Thresholds may be a fixed value, a fixed percentage of retained connections, or a statistical significance level (which raises a multiple comparisons problem across the $N(N-1)/2$ edge tests, analogous to mass-univariate GLM analysis). The **connection density** — surviving edges divided by possible edges — measures the resulting sparsity. Thresholding removes weak, potentially spurious connections, sharpens topological structure, and eases computation, but it has real disadvantages: the "right" threshold is rarely obvious, multiplicity grows rapidly with $N$, and — critically — subjects who differ in overall connectivity strength end up with different densities at a fixed threshold, which by itself changes every metric computed downstream. The standard fix is to vary the threshold per subject so that the number of edges (or the density) is held fixed.
 
 Once built, a network can be **characterized** at several topological scales. *Local* measures describe individual nodes. A node's **degree** counts its neighbors,
 
+::::{div}
+:class: eq-tip
 $$
 k_i = \sum_{j \neq i} a_{ij},
 $$
+:::{div}
+:class: eq-tip-text
+kᵢ — degree (number of neighbors) of node i · a_ij — adjacency-matrix entry: 1 if nodes i and j are connected, 0 otherwise
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $k_i$ *is the degree of node* $i$ *and* $a_{ij}$ *the adjacency-matrix entry — 1 if nodes* $i$ *and* $j$ *are connected and 0 otherwise.*
+:::
 
-and is the most common index of *centrality* — a node's importance for information transfer — and hence of "hub status" (with **strength** as the weighted analog). A node's **clustering coefficient** asks how many of its neighbors are also neighbors of each other: if nodes $i$, $j$, and $h$ are all interconnected they form a closed triangle, and with $t_i$ the number of triangles around node $i$,
+Degree is the most common index of *centrality* — a node's importance for information transfer — and hence of "hub status" (with **strength** as the weighted analog). A node's **clustering coefficient** asks how many of its neighbors are also neighbors of each other: if nodes $i$, $j$, and $h$ are all interconnected they form a closed triangle, and with $t_i$ the number of triangles around node $i$,
 
+::::{div}
+:class: eq-tip
 $$
 C_i = \frac{2\, t_i}{k_i (k_i - 1)}, \qquad C = \frac{1}{N} \sum_i C_i,
 $$
+:::{div}
+:class: eq-tip-text
+Cᵢ — clustering coefficient of node i · tᵢ — closed triangles containing node i · kᵢ — degree of node i · C — network-average clustering coefficient · N — number of nodes
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $C_i$ *is the clustering coefficient of node* $i$*,* $t_i$ *the number of closed triangles containing node* $i$*,* $k_i$ *its degree,* $N$ *the number of nodes, and* $C$ *the clustering coefficient of the whole network.*
+:::
 
-where $C$ is the clustering coefficient of the whole network — a measure of *functional segregation*: specialized processing within densely interconnected groups. High clustering implies redundant connections, so losing one node matters less. **Betweenness centrality** counts the fraction of shortest paths between all node pairs that pass through a node, and the **participation coefficient** measures how evenly a node's edges are spread across communities — distinguishing *provincial hubs* (well connected within their own module) from *connector hubs* (linking different modules). *Global* measures summarize the whole network. The **shortest path length** $d_{ij}$ is the minimum number of edges (or minimum total weight) needed to travel between two nodes, and the **characteristic path length**
+The network clustering coefficient is a measure of *functional segregation*: specialized processing within densely interconnected groups. High clustering implies redundant connections, so losing one node matters less. **Betweenness centrality** counts the fraction of shortest paths between all node pairs that pass through a node, and the **participation coefficient** measures how evenly a node's edges are spread across communities — distinguishing *provincial hubs* (well connected within their own module) from *connector hubs* (linking different modules). *Global* measures summarize the whole network. The **shortest path length** $d_{ij}$ is the minimum number of edges (or minimum total weight) needed to travel between two nodes, and the **characteristic path length**
 
+::::{div}
+:class: eq-tip
 $$
 L = \frac{1}{N} \sum_i L_i
 $$
+:::{div}
+:class: eq-tip-text
+L — characteristic path length of the network · N — number of nodes · Lᵢ — average shortest-path distance from node i to all other nodes
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $L$ *is the characteristic path length,* $N$ *the number of nodes, and* $L_i$ *the average shortest-path distance from node* $i$ *to all other nodes.*
+:::
 
-(where $L_i$ is the average distance from node $i$ to all others) indexes *functional integration*: short paths mean information can be combined rapidly across the network. Related global measures include global efficiency, assortativity (the tendency of high-degree nodes to connect to each other, forming densely interconnected "rich clubs"), and resilience — the ability to keep functioning as nodes and edges are removed. In between sit *mesoscale* properties: **communities** (modules) detected by algorithms such as Louvain, Girvan–Newman, or Clauset–Newman–Moore modularity optimization, hierarchical or spectral clustering, and stochastic block models; and, in multilayer networks spanning time points or data types, **recruitment** and **integration** of nodes across layers.
+The characteristic path length indexes *functional integration*: short paths mean information can be combined rapidly across the network. Related global measures include global efficiency, assortativity (the tendency of high-degree nodes to connect to each other, forming densely interconnected "rich clubs"), and resilience — the ability to keep functioning as nodes and edges are removed. In between sit *mesoscale* properties: **communities** (modules) detected by algorithms such as Louvain, Girvan–Newman, or Clauset–Newman–Moore modularity optimization, hierarchical or spectral clustering, and stochastic block models; and, in multilayer networks spanning time points or data types, **recruitment** and **integration** of nodes across layers.
 
 These metrics define characteristic **types of networks**. In a *regular* network (a lattice or ring) every node has the same degree: clustering $C$ is high but so is path length $L$ — redundant local communities, inefficient global transmission. In a *random* (Erdős–Rényi) network every node pair connects with equal probability $p$: both $C$ and $L$ are low — information travels easily, but the structure is vulnerable and unclustered. A **small-world** network resembles an ordered network with a few randomly rewired links: high $C$ *and* low $L$, making it simultaneously resilient and efficient. Since Watts and Strogatz's seminal observation that many social, biological, and technological networks share this property, the brain too has been argued to be small-world — maximizing segregation and integration while minimizing wiring cost. Small-worldness is quantified against a null network:
 
+::::{div}
+:class: eq-tip
 $$
 \sigma = \frac{C / C_{rand}}{L / L_{rand}},
 $$
+:::{div}
+:class: eq-tip-text
+σ — small-worldness index · C, L — clustering coefficient and characteristic path length of the observed network · C_rand, L_rand — the same metrics averaged over matched random null networks
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $C$ *and* $L$ *are the clustering coefficient and characteristic path length of the network of interest, and* $C_{rand}$ *and* $L_{rand}$ *the same quantities for a matched random null network.*
+:::
 
 with $\sigma > 1$ commonly taken as the cutoff. Other overall structures include core–periphery organization and disassortative networks, in which high-degree nodes preferentially connect to low-degree ones.
 
@@ -87,15 +132,16 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 
 ```matlab
 % Base MATLAB graph objects; CanlabCore on path for the fuller lab
-rng(7);
-n = 30; T = 200;
+rng(7);                                      % fix the random seed for reproducibility
+n = 30; T = 200;                             % n = nodes (regions), T = time points
 module  = repelem(1:3, 10)';                 % 3 modules of 10 nodes
 g       = randn(1, T);                       % shared global signal
 signals = randn(3, T);                       % one latent signal per module
+% 0.8 = global-signal weight, 1.2 = noise SD
 ts = 0.8 * repmat(g, n, 1) + signals(module, :) + 1.2 * randn(n, T);
 
 R = corr(ts');                               % 30 x 30 functional connectome
-A = double(R > 0.3);  A(1:n+1:end) = 0;      % threshold + binarize
+A = double(R > 0.3);  A(1:n+1:end) = 0;      % threshold at r > 0.3 + binarize
 G = graph(A);
 
 density = numedges(G) / nchoosek(n, 2)       % connection density
@@ -117,15 +163,16 @@ L    = mean(Dcc(Dcc > 0))                    % characteristic path length
 ```python
 import numpy as np, networkx as nx
 
-rng = np.random.default_rng(7)
-n, T = 30, 200
+rng = np.random.default_rng(7)                # fix the random seed for reproducibility
+n, T = 30, 200                                # n = nodes (regions), T = time points
 module  = np.repeat([0, 1, 2], 10)            # 3 modules of 10 nodes
 g       = rng.standard_normal(T)              # shared global signal
 signals = rng.standard_normal((3, T))         # one latent signal per module
+# 0.8 = global-signal weight, 1.2 = noise SD
 ts = 0.8 * g + signals[module] + 1.2 * rng.standard_normal((n, T))
 
 R = np.corrcoef(ts)                           # 30 x 30 functional connectome
-A = (R > 0.3).astype(int)                     # threshold + binarize
+A = (R > 0.3).astype(int)                     # threshold at r > 0.3 + binarize
 np.fill_diagonal(A, 0)
 G = nx.from_numpy_array(A)
 
@@ -140,6 +187,14 @@ print(f"density={density:.2f}  C={C:.2f}  L={L:.2f}")
 :::
 ::::
 
+**Example output:**
+
+```text
+density=0.31  C=0.99  L=1.95
+```
+
+At $r > 0.3$, roughly a third of all possible edges survive. Each 10-node module is almost fully interconnected — hence the near-ceiling clustering coefficient — while the sparser between-module links keep the characteristic path length just under 2.
+
 **Step 2 — The threshold changes everything.** Sweep the threshold and watch density, clustering, and path length co-vary — none of these metrics is interpretable without knowing the density it was computed at.
 
 ::::{tab-set}
@@ -147,7 +202,7 @@ print(f"density={density:.2f}  C={C:.2f}  L={L:.2f}")
 :sync: matlab
 
 ```matlab
-thr = 0.10:0.05:0.50;
+thr = 0.10:0.05:0.50;                    % thresholds to sweep, lenient -> strict
 [dens, Cs, Ls] = deal(zeros(size(thr)));
 for i = 1:numel(thr)
     A = double(R > thr(i));  A(1:n+1:end) = 0;
@@ -170,7 +225,7 @@ xlabel('Correlation threshold');
 ```python
 import matplotlib.pyplot as plt
 
-thresholds = np.arange(0.10, 0.51, 0.05)
+thresholds = np.arange(0.10, 0.51, 0.05)      # thresholds to sweep, lenient -> strict
 dens, Cs, Ls = [], [], []
 for thr in thresholds:
     A = (R > thr).astype(int); np.fill_diagonal(A, 0)
@@ -187,6 +242,15 @@ plt.xlabel("Correlation threshold"); plt.legend()
 ```
 :::
 ::::
+
+**Example output:**
+
+:::{figure} images/ch32_step2_output.png
+:alt: Density, clustering coefficient, and scaled path length all change together as the correlation threshold is swept from 0.10 to 0.50
+:width: 80%
+
+Density and clustering fall as the threshold rises, while the (scaled) characteristic path length climbs as the graph grows sparser and eventually fragments.
+:::
 
 Every curve moves together: a "group difference in clustering" at a fixed threshold may be nothing more than a group difference in density. The full labs push further: they plant a **connector hub** in the network and find it with degree and betweenness centrality, detect communities with **greedy modularity optimization** and score them against the ground-truth modules, test **small-worldness** ($\sigma$) against density-matched random graphs, and demonstrate that comparing two "subjects" with different overall connectivity strength is confounded at a fixed threshold but fair after **density matching**.
 

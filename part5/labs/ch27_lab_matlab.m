@@ -1,5 +1,6 @@
 %% Chapter 27 Lab: Experimental Design and Task fMRI (MATLAB)
 % This lab accompanies Chapter 27, "Experimental Design and Task fMRI".
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part5/ch27-experimental-design-and-task-fmri
 % You will build blocked, dense event-related, and sparse jittered
 % event-related designs, score their efficiency for a target contrast,
 % diagnose collinearity with variance inflation factors (VIFs), and map
@@ -53,7 +54,7 @@ fprintf('Overall efficiency (A-optimality): block %3.1f, dense %3.1f, sparse %3.
 % inverse:  e_c = 1 / (c * inv(X'X) * c').
 % We use pinv(X) * pinv(X)' as a numerically stable form of inv(X'X).
 
-c_diff = [1 -1 0];      % A - B: do the conditions differ?
+c_diff = [1 -1 0];      % contrast: A minus B -- do the conditions differ?
 c_base = [1  0 0];      % A vs. implicit baseline: does A activate at all?
 
 eff = @(X, c) 1 ./ (c * pinv(X) * pinv(X)' * c');
@@ -162,14 +163,14 @@ xlabel('Time (TRs)');
 % the blocked design, on both criteria -- a home-made Figure 27.4.
 
 n_lags = 16;            % FIR: estimate response at lags 0..15 s
-nT = scanLength / TR;
+nT = scanLength / TR;   % number of time points (volumes) in the run
 
 % Build an FIR design matrix from onset times (in sec) by shifting a
 % stick function; intercept is the last column.
 fir_design = @(onsets_cell) local_fir(onsets_cell, nT, TR, n_lags);
 
-rest_props = [0 .125 .25 .375 .5 .625];
-n_reps = 8;
+rest_props = [0 .125 .25 .375 .5 .625];   % proportion of rest slots (jitter) to test
+n_reps = 8;                               % random designs scored per rest level
 [det_eff, est_eff, jit] = deal([]);
 
 for i = 1:numel(rest_props)

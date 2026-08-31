@@ -1,5 +1,6 @@
 %% Chapter 39 Lab: Training and Testing Predictive Models (MATLAB)
 % This lab accompanies Chapter 39, "Training and Testing Predictive Models".
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part7/ch39-training-and-testing-predictive-models
 % Using simulated data where the ground truth is known, you will:
 %
 % 1. See how randomly splitting IMAGES (instead of SUBJECTS) across
@@ -110,22 +111,22 @@ fprintf('Cross-validated effect size (Cohen''s d) for null labels: %.2f\n', d_nu
 % training data only) selects k; the OUTER loop evaluates the whole
 % procedure on untouched subjects.
 
-n_sub2 = 25;  n_img2 = 4;  n_obs2 = n_sub2 * n_img2;
-subject_id2 = repelem((1:n_sub2)', n_img2);
+n_sub2 = 25;  n_img2 = 4;  n_obs2 = n_sub2 * n_img2;   % subjects, images per subject, total images
+subject_id2 = repelem((1:n_sub2)', n_img2);       % subject ID for each image
 
 w_true = randn(n_vox, 1) ./ sqrt(n_vox);          % true predictive pattern
 X2 = randn(n_obs2, n_vox);
 subj_intercept = 2 .* randn(n_sub2, 1);           % subject random intercepts
-Y2 = 1.5 .* (X2 * w_true) + subj_intercept(subject_id2) + 2 .* randn(n_obs2, 1);
+Y2 = 1.5 .* (X2 * w_true) + subj_intercept(subject_id2) + 2 .* randn(n_obs2, 1);   % signal + subject offsets + noise
 
 obj2     = fmri_data;
 obj2.dat = X2';
 obj2.Y   = Y2;
 
-fold_of_subject2 = repmat(1:5, 1, n_sub2 / 5);
+fold_of_subject2 = repmat(1:5, 1, n_sub2 / 5);    % subject -> outer fold (1..5)
 wh_folds2 = fold_of_subject2(subject_id2)';       % grouped outer folds
 
-ks = [1 2 5 10 20];                               % candidate n. of components
+ks = [1 2 5 10 20];                               % candidate numbers of PCR components (the hyperparameter)
 
 % --- Non-nested (biased) approach first, for comparison:
 cverr_all = zeros(size(ks));
@@ -189,7 +190,7 @@ fprintf('Nested-CV MSE = %.2f (honest estimate for the full pipeline)\n', mse_ne
 %       partially overlaps (e.g., a new site/population)   generalization gap
 
 w_class = randn(n_vox, 1) ./ sqrt(n_vox);         % true discriminative pattern
-n_per_class = 40;
+n_per_class = 40;                                 % images per class in each cohort
 
 make_cohort = @(pattern) [randn(n_per_class, n_vox) + 1.0 .* repmat(pattern', n_per_class, 1); ...
                           randn(n_per_class, n_vox) - 1.0 .* repmat(pattern', n_per_class, 1)];
@@ -199,8 +200,8 @@ y_class = [ones(n_per_class, 1); -ones(n_per_class, 1)];
 Xtrain = make_cohort(w_class);                    % training cohort
 
 % Shifted cohort: the true pattern only ~60% preserved
-u = randn(n_vox, 1) ./ sqrt(n_vox);
-w_shifted = 0.6 .* w_class + 0.8 .* u;
+u = randn(n_vox, 1) ./ sqrt(n_vox);               % random direction for the pattern shift
+w_shifted = 0.6 .* w_class + 0.8 .* u;            % ~60% overlap with the true pattern
 Xshift = make_cohort(w_shifted);
 
 train_obj    = fmri_data;  train_obj.dat = Xtrain';  train_obj.Y = y_class;

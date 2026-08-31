@@ -43,30 +43,43 @@ A single split wastes data: less for training means worse models, less for testi
 :::{figure} images/ch39_fig1_crossval_prospective.png
 :alt: Top, five-fold cross-validation with brains assigned to training and testing sets in each fold; bottom, prospective testing applying a fixed signature to a new sample
 :width: 85%
+:class: book-figure
 
-Two stages of model testing. Top: five-fold cross-validation — in each fold a model is trained on 80% of the data and tested on the remaining 20%. Bottom: the trained model is then applied prospectively to new samples, further validating performance and establishing generalizability and boundary conditions. *(Figure 39.1 from the book.)*
+Two stages of model testing. Top: five-fold cross-validation — in each fold a model is trained on 80% of the data and tested on the remaining 20%. Bottom: the trained model is then applied prospectively to new samples, further validating performance and establishing generalizability and boundary conditions. *(Figure 39.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 The rule that makes cross-validation honest is simple to state and easy to violate: **every operation applied to the data must happen inside the cross-validation loop.** Feature selection, scaling, dimensionality reduction, and — critically — the choice of hyperparameters (an L1/L2 penalty, the number of components) all add flexibility, and if that flexibility touches the test data the accuracy estimate is inflated. Choosing hyperparameters by "run cross-validation for each setting, report the best" is itself overfitting — of the selection procedure rather than the weights. The remedy is **nested cross-validation**: an *inner* loop, run within each training set, compares hyperparameter settings and picks a winner; an *outer* loop evaluates the complete procedure (selection included) on data it has never seen. Even so, final models should ultimately be tested on independent hold-out samples — and then on a widening set of samples differing in population, design, and setting, which maps out the model's **boundary conditions**: which characteristics matter for performance and which are ignorable.
 
-How performance is quantified depends on the type of prediction. For **classifiers**, the confusion matrix tabulates true/false positives and negatives, from which flow sensitivity (TPR, recall), specificity, positive and negative predictive value (PPV is precision), accuracy, and the F1 score $= 2 \cdot \frac{PPV \cdot TPR}{PPV + TPR}$. Always inspect per-class accuracy — overall accuracy can be dominated by the majority class — or report *balanced accuracy*, the mean of per-class accuracies. The **ROC curve** plots TPR against FPR across decision thresholds, separating discriminability from the threshold choice; the **area under the curve (AUC)** is the probability that a random positive case outranks a random negative one, equals 0.5 at chance *even with imbalanced classes*, and is generally preferred to raw accuracy. Discriminability can equivalently be expressed as $d'$, the separation between class score distributions in standard deviation units, related to AUC by $AUC = \Phi\!\left(d'/\sqrt{2}\right)$.
+How performance is quantified depends on the type of prediction. For **classifiers**, the confusion matrix tabulates true/false positives and negatives, from which flow sensitivity (TPR, recall), specificity, positive and negative predictive value (PPV is precision), accuracy, and the F1 score $= 2 \cdot \frac{PPV \cdot TPR}{PPV + TPR}$. Always inspect per-class accuracy — overall accuracy can be dominated by the majority class — or report *balanced accuracy*, the mean of per-class accuracies. The **ROC curve** plots TPR against FPR across decision thresholds, separating discriminability from the threshold choice; the **area under the curve (AUC)** is the probability that a random positive case outranks a random negative one, equals 0.5 at chance *even with imbalanced classes*, and is generally preferred to raw accuracy. Discriminability can equivalently be expressed as $d'$, the separation between class score distributions in standard deviation units, related to AUC by $AUC = \Phi\!\left(d'/\sqrt{2}\right)$, where $\Phi$ is the standard normal cumulative distribution function.
 
 :::{figure} images/ch39_fig2_confusion_roc.png
 :alt: Confusion matrix defining TPR, FPR, PPV, NPV, accuracy and F1, next to a receiver operating characteristic curve plotting sensitivity against 1 minus specificity
 :width: 90%
+:class: book-figure
 
-Evaluating classification accuracy. A confusion matrix breaks down true and false positives and negatives, yielding sensitivity (TPR), 1 − specificity (FPR), precision (PPV), NPV, accuracy, and F1. The ROC curve plots TPR against FPR across decision thresholds; the area under it (AUC) measures discriminability independent of threshold. *(Figure 39.2 from the book.)*
+Evaluating classification accuracy. A confusion matrix breaks down true and false positives and negatives, yielding sensitivity (TPR), 1 − specificity (FPR), precision (PPV), NPV, accuracy, and F1. The ROC curve plots TPR against FPR across decision thresholds; the area under it (AUC) measures discriminability independent of threshold. *(Figure 39.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 For **regression** on continuous outcomes, prefer error-based metrics: mean squared error, RMSE, mean or median absolute error. When predictions come from a model trained without the observation in question, the sum of squared errors is the PRESS, and a particularly interpretable summary is the **out-of-sample $R^2$**, which compares the model's errors to those of simply guessing the training-sample mean $\bar{y}_{train}$:
 
+::::{div}
+:class: eq-tip
 $$
 R^2_{oos} \;=\; 1 - \frac{\sum_i \left(y_i - \hat{y}_i\right)^2}{\sum_i \left(y_i - \bar{y}_{train}\right)^2}
 $$
+:::{div}
+:class: eq-tip-text
+R²_oos — out-of-sample R² (1 = perfect, 0 = no better than the mean, negative = worse than the mean) · y_i — observed outcome for test observation i · ŷ_i — prediction from a model trained without that observation · ȳ_train — mean outcome in the training sample
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $y_i$ *is the observed outcome for test observation* $i$*,* $\hat{y}_i$ *the prediction from a model trained without that observation, and* $\bar{y}_{train}$ *the mean outcome of the training sample.*
+:::
 
 Unlike in-sample $R^2$, this can be *negative* — the model predicts worse than the mean — and it is zero when the model adds nothing. Pearson's $r$ between predicted and observed values, though popular, is biased in complex ways (negatively under cross-validation, optimistically because it re-fits offset and scale to the test data) and should not stand alone.
 
-Finally, many performance measures are, or convert to, **effect sizes** — $d'$, AUC, $r$, Cohen's $d$ — which enable benchmarking across studies (e.g., $d = 2r/\sqrt{1-r^2}$). This matters in fMRI: single-region brain–phenotype associations rarely exceed $r \approx 0.1$–0.2, while optimized distributed models reach several-fold larger effects, and within-person task-state prediction can reach very large $d$. Effect sizes computed from continuous model scores (e.g., Cohen's $d$ on SVM distances from the hyperplane) are also more sensitive than thresholded accuracy in small samples. To **compare models**, apply each to the same independent test observations and compare their errors with the Wilcoxon signed-rank test (two models) or Friedman's rank sum test (several) — valid even for non-nested models of different complexity, and a practical alternative to AIC/BIC. Inference on cross-validated performance is trickier because training sets overlap across folds; corrections (e.g., Nadeau–Bengio) and permutation tests help, but such inferences should be treated as approximate.
+Finally, many performance measures are, or convert to, **effect sizes** — $d'$, AUC, $r$, Cohen's $d$ — which enable benchmarking across studies (e.g., Pearson's $r$ converts to Cohen's $d$ via $d = 2r/\sqrt{1-r^2}$). This matters in fMRI: single-region brain–phenotype associations rarely exceed $r \approx 0.1$–0.2, while optimized distributed models reach several-fold larger effects, and within-person task-state prediction can reach very large $d$. Effect sizes computed from continuous model scores (e.g., Cohen's $d$ on SVM distances from the hyperplane) are also more sensitive than thresholded accuracy in small samples. To **compare models**, apply each to the same independent test observations and compare their errors with the Wilcoxon signed-rank test (two models) or Friedman's rank sum test (several) — valid even for non-nested models of different complexity, and a practical alternative to AIC/BIC. Inference on cross-validated performance is trickier because training sets overlap across folds; corrections (e.g., Nadeau–Bengio) and permutation tests help, but such inferences should be treated as approximate.
 
 ## Hands-on tutorial
 
@@ -109,7 +122,7 @@ from sklearn.model_selection import cross_val_score, KFold, GroupKFold
 from sklearn.svm import SVC
 
 # X: (240, 100) images; y: subject-level labels; groups: subject ID per image
-clf = SVC(kernel="linear")
+clf = SVC(kernel="linear")          # linear SVM, the fMRI workhorse classifier
 
 acc_rand = cross_val_score(clf, X, y, n_jobs=1,
                            cv=KFold(5, shuffle=True, random_state=0))
@@ -122,6 +135,20 @@ print(f"Accuracy -- grouped:      {acc_grp.mean():.2f}")   # ~chance (honest)
 :::
 ::::
 
+**Example output:**
+
+```text
+Accuracy -- random split: 0.98
+Accuracy -- grouped:      0.48
+```
+
+:::{figure} images/ch39_step1_output.png
+:alt: Bar chart comparing cross-validated accuracy near 0.98 for a random split of images against accuracy near chance for grouped subject-level folds, with per-fold accuracies as dots and a dashed line at the chance level of 0.5
+:width: 65%
+
+With labels that are pure noise, the random image split reports near-perfect accuracy by memorizing each subject's fingerprint; grouped folds give the honest answer — chance.
+:::
+
 **Step 2 — Nested cross-validation for hyperparameters.** Choosing a hyperparameter by "run CV for every setting, report the best score" evaluates the winner on the same folds that chose it. Nesting an outer loop around the selection procedure scores the *whole pipeline* on untouched data.
 
 ::::{tab-set}
@@ -131,7 +158,7 @@ print(f"Accuracy -- grouped:      {acc_grp.mean():.2f}")   # ~chance (honest)
 ```matlab
 % Hyperparameter: number of PCR components. Outer loop = evaluation;
 % inner loop (grouped CV within training data only) = selection.
-ks = [1 2 5 10 20];
+ks = [1 2 5 10 20];   % candidate numbers of PCR components (the hyperparameter)
 for f = 1:5
     te = (wh_folds == f);  tr = ~te;
     train_obj = get_wh_image(obj, find(tr));
@@ -153,20 +180,37 @@ end
 :sync: python
 
 ```python
+import numpy as np
 from sklearn.model_selection import GridSearchCV, cross_val_score
 from sklearn.svm import SVC
 
-grid  = {"C": [0.1, 1, 10, 100], "gamma": [1e-3, 1e-2, 1e-1, 1]}
-inner = GridSearchCV(SVC(kernel="rbf"), grid, cv=3, n_jobs=1)
+rng = np.random.default_rng(6)      # seed, for reproducibility
+n, p = 40, 50                       # n = observations, p = features
+X = rng.standard_normal((n, p))     # pure-noise features
+y = rng.integers(0, 2, n)           # coin-flip labels -> true accuracy is 0.50
+
+grid  = {"C": [0.1, 1, 10, 100],    # C = SVM regularization strength
+         "gamma": [1e-3, 1e-2, 1e-1, 1]}  # gamma = RBF kernel width; 4 x 4 = 16 settings
+inner = GridSearchCV(SVC(kernel="rbf"), grid, cv=3, n_jobs=1)  # inner 3-fold selection loop
 
 # NON-NESTED: the same folds pick the hyperparameters AND score the model
 score_biased = inner.fit(X, y).best_score_          # optimistic
 
 # NESTED: an outer loop scores the whole selection procedure on new folds
 score_nested = cross_val_score(inner, X, y, cv=5, n_jobs=1).mean()
+
+print(f"Non-nested (biased) estimate: {score_biased:.2f}")
+print(f"Nested (honest) estimate:     {score_nested:.2f}")
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+Non-nested (biased) estimate: 0.55
+Nested (honest) estimate:     0.50
+```
 
 On null data the non-nested score sits reliably above chance while the nested score hovers at 50% — the gap is pure selection bias. The full labs quantify that gap over repeated simulations, visualize leakage fold by fold, and track how effect sizes shrink from in-sample fits to cross-validation to an independent, distribution-shifted cohort.
 

@@ -11,6 +11,8 @@
 % Code adapted from CANlab tutorials (github.com/canlab and
 % CANlab_help_examples, canlab_meta_analysis_walkthrough1/2).
 %
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch25-neuroimaging-meta-analysis
+%
 % Runtime: about a minute. All data are simulated.
 
 %% 1. Simulate a literature of studies
@@ -19,8 +21,8 @@
 % scanners, task variants, populations. Observed effect = true effect +
 % sampling noise with variance v_i = 1/n_i (one-sample design).
 
-rng(7);
-k   = 25;
+rng(7);                                  % fix random seed for reproducibility
+k   = 25;                                % k = number of studies in the literature
 n   = randi([10 80], k, 1);              % per-study sample sizes
 mu_true  = 0.3;                          % grand mean effect
 tau_true = 0.2;                          % between-study SD
@@ -87,8 +89,8 @@ xlabel('Standardized effect size'); title('Forest plot: 25 simulated studies');
 % funnel plot (effect vs standard error, precise studies on top) shows the
 % missing lower-left corner, and the pooled estimate is inflated.
 
-k_all   = 80;
-n_all   = randi([10 100], k_all, 1);
+k_all   = 80;                            % number of attempted studies
+n_all   = randi([10 100], k_all, 1);     % per-study sample sizes
 v_all   = 1 ./ n_all;
 th_all  = mu_true + tau_true * randn(k_all, 1);
 d_all   = th_all + sqrt(v_all) .* randn(k_all, 1);
@@ -137,7 +139,7 @@ gx = xx(in_brain); gy = yy(in_brain);                % brain grid points
 focus_T = [-40 22];                                  % true region
 focus_R = [45 -60];                                  % rogue study's region
 
-n_studies = 21;
+n_studies = 21;                                      % 20 honest + 1 rogue study
 peaks_by_study = cell(n_studies, 1);
 n_subj = zeros(n_studies, 1);
 
@@ -177,7 +179,7 @@ legend([h_hon h_rog h_T], {'honest studies', 'rogue study (40 peaks)', ...
 %       studies activating near each voxel. One peak-rich study can no
 %       longer dominate.
 
-r = 10;
+r = 10;                                              % kernel radius (mm)
 
 % KDA: peak density
 kda = zeros(size(gx));
@@ -207,7 +209,7 @@ imagesc_brain(mkda, in_brain, xx, yy); title('MKDA: weighted prop. of studies');
 % study's number of peaks fixed. (Real MKDA randomizes each study's
 % contiguous blobs, preserving within-study peak clustering.) Save the MAX
 % weighted proportion per iteration -> FWER-controlling threshold.
-n_iter = 200;                            % use >= 10,000 for a real analysis
+n_iter = 200;                            % Monte Carlo iterations; use >= 10,000 for a real analysis
 max_stat = zeros(n_iter, 1);
 n_peaks = cellfun(@(p) size(p, 1), peaks_by_study);
 

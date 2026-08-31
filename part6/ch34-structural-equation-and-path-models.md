@@ -32,50 +32,95 @@ Structural equation modeling is a family of techniques for modeling relationship
 
 Applied to fMRI, SEM is a classic tool for *effective connectivity*: a set of brain regions is chosen a priori, along with a hypothesized set of directed connections among them. The strength of each connection is a **path coefficient** — the expected change in activity in one region per unit change in a region that influences it. Writing $y$ for the vector of regional activities at one time point, the path model is
 
+::::{div}
+:class: eq-tip
 $$
 y = B\,y + \zeta
 $$
+:::{div}
+:class: eq-tip-text
+y — vector of regional activities at one time point · B — matrix of directed path coefficients (zeros on the diagonal and for absent connections) · ζ — vector of independent errors
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $y$ *is the vector of regional activities at one time point,* $B$ *the matrix of directed path coefficients (with zeros on the diagonal and wherever no connection is hypothesized), and* $\zeta$ *a vector of independent errors.*
+:::
 
-where $B$ holds the directed paths (with zeros on the diagonal and wherever no connection is hypothesized) and $\zeta$ is a vector of independent errors. Rearranging so $y$ appears on only one side, $y = (I - B)^{-1}\zeta$, implies a model covariance matrix
+Rearranging so $y$ appears on only one side, $y = (I - B)^{-1}\zeta$, implies a model covariance matrix
 
+::::{div}
+:class: eq-tip
 $$
 \Sigma(\theta) = (I - B)^{-1}\,\Psi\,(I - B)^{-T}
 $$
+:::{div}
+:class: eq-tip-text
+Σ(θ) — model-implied covariance · θ — free parameters (paths and error variances) · B — path matrix · Ψ — error covariance · I — identity matrix
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\Sigma(\theta)$ *is the covariance matrix implied by the free parameters* $\theta$ *(the paths and error variances),* $B$ *the path matrix,* $\Psi$ *the covariance of the errors* $\zeta$*, and* $I$ *the identity matrix.*
+:::
 
-where $\Psi$ is the error covariance. Estimation minimizes the discrepancy between this model-implied covariance and the sample covariance, typically by maximum likelihood. Model fit is assessed with a $\chi^2$ test comparing the two covariance matrices — and, importantly, the logic is reversed from ordinary hypothesis testing: a *nonsignificant* result means the model is adequate (we cannot reject it), not that it is true or best. Specific edges are tested by comparing nested models with and without the connection using likelihood ratio tests.
+Estimation minimizes the discrepancy between this model-implied covariance and the sample covariance, typically by maximum likelihood. Model fit is assessed with a $\chi^2$ test comparing the two covariance matrices — and, importantly, the logic is reversed from ordinary hypothesis testing: a *nonsignificant* result means the model is adequate (we cannot reject it), not that it is true or best. Specific edges are tested by comparing nested models with and without the connection using likelihood ratio tests.
 
 :::{figure} images/ch34_fig1_three_roi_sem.png
 :alt: Three regions of interest with directed paths b12, b13, b23, and the matrix equation y = By + zeta
 :width: 70%
+:class: book-figure
 
-A simple recursive three-variable SEM. ROI 1 influences ROIs 2 and 3, and ROI 2 influences ROI 3; the path coefficients between the three nodes appear as elements of the matrix $B$. *(Figure 34.1 from the book.)*
+A simple recursive three-variable SEM. ROI 1 influences ROIs 2 and 3, and ROI 2 influences ROI 3; the path coefficients between the three nodes appear as elements of the matrix $B$. *(Figure 34.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Standard SEM has known limitations for fMRI time series: it assumes observations are independent across time (ignoring temporal autocorrelation, which distorts standard errors), it handles dynamics inflexibly, and it does not incorporate experimental inputs. Extensions such as the *unified SEM*, which couples a path model with a vector autoregressive model, and the *extended unified SEM*, which adds experimental inputs, address these gaps. Group analysis is another subtlety: naively concatenating subjects can yield results inconsistent with single-subject analyses, motivating stacked or multilevel SEMs — or simply t-tests across subject-level path estimates, the familiar summary-statistics approach.
 
 **Mediation analysis** asks whether the effect of an exposure $X$ on an outcome $Y$ is at least partially transmitted through an intervening mediator $M$. The full model is a pair of regressions,
 
+::::{div}
+:class: eq-tip
 $$
 M_i = i_1 + a\,X_i + e_{M,i}
 $$
-
 $$
 Y_i = i_2 + c'\,X_i + b\,M_i + e_{Y,i}
 $$
+:::{div}
+:class: eq-tip-text
+Xᵢ, Mᵢ, Yᵢ — exposure, mediator, outcome for participant i · a — X→M path · b — M→Y path controlling for X · c′ — direct effect of X on Y · i₁, i₂ — intercepts · e — residual errors
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $X_i$*,* $M_i$*, and* $Y_i$ *are the exposure, mediator, and outcome for participant* $i$*;* $a$*,* $b$*, and* $c'$ *the path coefficients;* $i_1$ *and* $i_2$ *the intercepts; and* $e_{M,i}$*,* $e_{Y,i}$ *the residual errors.*
+:::
 
-and the reduced model, without the mediator, is $Y_i = i_3 + c\,X_i + e_i$. Path $a$ is the effect of exposure on mediator, path $b$ the effect of mediator on outcome controlling for exposure, and $c'$ the **direct effect** — what remains of the $X \to Y$ relationship once $M$ is accounted for. The total effect decomposes exactly:
+and the reduced model, without the mediator, is $Y_i = i_3 + c\,X_i + e_i$, where $i_3$ is its intercept and $c$ the total effect. Path $a$ is the effect of exposure on mediator, path $b$ the effect of mediator on outcome controlling for exposure, and $c'$ the **direct effect** — what remains of the $X \to Y$ relationship once $M$ is accounted for. The total effect decomposes exactly:
 
+::::{div}
+:class: eq-tip
 $$
 c = c' + a b
 $$
+:::{div}
+:class: eq-tip-text
+c — total effect of X on Y · c′ — direct effect (X→Y controlling for M) · ab — indirect effect transmitted through M
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $c$ *is the total effect of* $X$ *on* $Y$*,* $c'$ *the direct effect, and* $ab$ *the indirect effect transmitted through the mediator* $M$*.*
+:::
 
 so the **indirect (mediated) effect** is the product $a \times b$, and testing mediation means testing $H_0\!: ab = 0$ (equivalently, $c - c' = 0$). The classical Sobel test uses a large-sample normal approximation for the standard error of $\widehat{ab}$, but it is overconservative; modern practice uses **bootstrap tests** — resampling cases, re-estimating $ab$ thousands of times, and forming confidence intervals and P values from the bootstrap distribution.
 
 :::{figure} images/ch34_fig2_mediation_moderation.png
 :alt: Panel A shows x to m to y mediation triangle; panel B shows m pointing at the x-to-y arrow, moderation
 :width: 80%
+:class: book-figure
 
-Mediation and moderation. (A) The three-variable path diagram used in mediation analysis: $m$ partially explains the relationship between $x$ and $y$. (B) Moderation: the value (level) of $m$ changes the strength of the $x$–$y$ relationship. *(Figure 34.2 from the book.)*
+Mediation and moderation. (A) The three-variable path diagram used in mediation analysis: $m$ partially explains the relationship between $x$ and $y$. (B) Moderation: the value (level) of $m$ changes the strength of the $x$–$y$ relationship. *(Figure 34.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Mediation is a natural fit for fMRI because it links experiment, brain, and behavior in one model. A canonical **brain-as-mediator** design: participants are randomized to a stressful or innocuous challenge ($X$), task-evoked activity in an anterior cingulate cortex (ACC) region is the mediator ($M$), and stressor-evoked heart rate increase is the outcome ($Y$). Mediation holds when stress shifts ACC activity (path $a$) and ACC activity tracks heart rate within groups (path $b$) strongly enough that the direct effect $c'$ shrinks relative to $c$. Variables can be organized in other ways too — a brain region mediating the effect of another region on behavior, or one region mediating the link between two other regions. With trial-by-trial data, **multilevel mediation** estimates paths within person and lets path strengths vary (and be moderated) across people, and **mediation effect parametric mapping** searches the whole brain for voxels that act as mediators, analogous to a seed analysis.
@@ -83,13 +128,14 @@ Mediation is a natural fit for fMRI because it links experiment, brain, and beha
 :::{figure} images/ch34_fig3_brain_mediation.png
 :alt: Stressor to ACC to heart rate path diagram above two scatterplots contrasting mediation and no mediation
 :width: 85%
+:class: book-figure
 
-Brain-based mediation. Left: ACC activity mediates the stressor–heart rate relationship — the $a$ and $b$ effects account for the group difference, so $c - c' > 0$ and the parallel fit lines nearly coincide. Right: significant $a$ and $b$ effects but little mediation, because $ab$ is small relative to the total effect and a large direct effect $c'$ remains. *(Figure 34.3 from the book.)*
+Brain-based mediation. Left: ACC activity mediates the stressor–heart rate relationship — the $a$ and $b$ effects account for the group difference, so $c - c' > 0$ and the parallel fit lines nearly coincide. Right: significant $a$ and $b$ effects but little mediation, because $ab$ is small relative to the total effect and a large direct effect $c'$ remains. *(Figure 34.3 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 These models are transparent and flexible, but their assumptions deserve respect. The causal reading of $a \times b$ requires, among other things, **no unmodeled confounding** of the mediator–outcome relationship: even when $X$ is randomized, $M$ is merely observed, so any third variable that drives both $M$ and $Y$ (arousal, attention, global signal) can manufacture a spurious "indirect effect." These assumptions are easy to state but hard to verify and often violated, which is why mediation in neuroimaging is best framed as *pathway discovery and description* rather than definitive causal inference — you will create exactly this failure mode in the lab.
 
-Finally, **moderation** asks a different question: does the $X$–$Y$ relationship change with the level of a third variable $M$? It is tested with an interaction term in a standard regression, $Y_i = b_0 + b_1 X_i + b_2 M_i + b_3 (X_i \times M_i) + e_i$, where rejecting $H_0\!: b_3 = 0$ establishes moderation. The time-series version is the widely used **psychophysiological interaction (PPI)** analysis: a seed region's time course, a task variable, and their interaction enter a first-level GLM at every voxel, testing where connectivity with the seed depends on task context. Implementations differ on whether to deconvolve the HRF to form the interaction at the "neural" level (SPM) or interact the convolved signals directly (FSL) — deconvolution is only exact when the HRF is known and the system is linear — and generalized PPI (gPPI) models all task conditions with separate interaction terms for greater power in complex designs.
+Finally, **moderation** asks a different question: does the $X$–$Y$ relationship change with the level of a third variable $M$? It is tested with an interaction term in a standard regression, $Y_i = b_0 + b_1 X_i + b_2 M_i + b_3 (X_i \times M_i) + e_i$, where $b_0$ is the intercept, $b_1$ and $b_2$ the main effects of exposure and moderator, and $b_3$ the interaction coefficient — rejecting $H_0\!: b_3 = 0$ establishes moderation. The time-series version is the widely used **psychophysiological interaction (PPI)** analysis: a seed region's time course, a task variable, and their interaction enter a first-level GLM at every voxel, testing where connectivity with the seed depends on task context. Implementations differ on whether to deconvolve the HRF to form the interaction at the "neural" level ([SPM](https://www.fil.ion.ucl.ac.uk/spm/)) or interact the convolved signals directly (FSL) — deconvolution is only exact when the HRF is known and the system is linear — and generalized PPI (gPPI) models all task conditions with separate interaction terms for greater power in complex designs.
 
 ## Hands-on tutorial
 
@@ -108,13 +154,14 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % Requires CanlabCore + MediationToolbox on your MATLAB path
 % Adapted from CANlab mediation tutorials (github.com/canlab/MediationToolbox)
-rng(42);
-n = 200;
+rng(42);                               % fix the random seed for reproducibility
+n = 200;                               % n = participants (one observation each)
 X = randn(n, 1);                       % exposure (e.g., stressor intensity)
 M = 0.6 * X + randn(n, 1);             % mediator (e.g., ACC activity), true a = 0.6
 Y = 0.2 * X + 0.5 * M + randn(n, 1);   % outcome (e.g., heart rate), b = 0.5, c' = 0.2
 
-% Estimate paths; 'boot' bootstraps the indirect effect for inference
+% Estimate paths; 'boot' = bootstrap the indirect effect for inference
+% (10,000 samples; use at least ~5,000 for stable tails)
 [paths, stats] = mediation(X, Y, M, 'boot', 'verbose', 'bootsamples', 10000, ...
     'names', {'Stressor' 'Heart rate' 'ACC'});
 
@@ -128,8 +175,8 @@ mediation_path_diagram(stats);         % path diagram with coefficients and star
 ```python
 import numpy as np
 
-rng = np.random.default_rng(42)
-n = 200
+rng = np.random.default_rng(42)                 # fix the random seed for reproducibility
+n = 200                                         # n = participants (one observation each)
 X = rng.standard_normal(n)                      # exposure (e.g., stressor intensity)
 M = 0.6 * X + rng.standard_normal(n)            # mediator (e.g., ACC), true a = 0.6
 Y = 0.2 * X + 0.5 * M + rng.standard_normal(n)  # outcome, true b = 0.5, c' = 0.2
@@ -147,6 +194,15 @@ print(f"indirect a*b={a * b:.3f}  check c - c'={c - cp:.3f}")   # identical
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+a=0.519  b=0.531  c'=0.130  c=0.406
+indirect a*b=0.275  check c - c'=0.275
+```
+
+The estimates land near the true values ($a = 0.6$, $b = 0.5$, $c' = 0.2$), and $\widehat{c} - \widehat{c'} = \widehat{a}\widehat{b}$ exactly — the decomposition is an algebraic identity for OLS.
 
 **Step 2 — Bootstrap inference for the indirect effect.** The sampling distribution of $\widehat{ab}$ is skewed, so we resample cases with replacement, re-estimate $a \times b$ each time, and read the 95% confidence interval off the bootstrap distribution. `mediation.m` does this automatically with the `'boot'` option; in Python we write the loop ourselves.
 
@@ -167,7 +223,7 @@ fprintf('a*b = %3.3f, bootstrap p = %3.4f\n', stats.mean(5), stats.p(5));
 :sync: python
 
 ```python
-n_boot = 5000
+n_boot = 5000                                   # bootstrap samples; ~5,000+ for stable CI tails
 boot_ab = np.empty(n_boot)
 for i in range(n_boot):
     idx = rng.integers(0, n, n)                 # resample cases with replacement
@@ -181,6 +237,14 @@ print(f"a*b = {a * b:.3f}, 95% bootstrap CI [{lo:.3f}, {hi:.3f}], p = {p_boot:.4
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+a*b = 0.275, 95% bootstrap CI [0.176, 0.386], p = 0.0000
+```
+
+(None of the 5,000 bootstrap samples crossed zero, so the two-sided P value prints as 0 — report it as $p < 0.001$.)
 
 The interval should exclude zero decisively — the data were built with real mediation. The full labs push further: they show how an **unmodeled confounder** of the $M$–$Y$ relationship produces a significant "indirect effect" when the true $b$ path is zero (and how adjusting for the confounder repairs it), and they fit the three-ROI path model of Figure 34.1 by regression equations, testing an individual edge by model comparison.
 

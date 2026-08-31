@@ -30,22 +30,40 @@ subject: "Part 4: Signal Processing and Analysis"
 
 Group analyses (and sometimes single-subject analyses) yield thresholded maps of brain areas significantly related to a stimulus type, task, or behavior. Interpreting those maps — turning colored blobs into claims about the brain — is one of the most important and challenging parts of functional neuroimaging. Deriving meaning is a cumulative enterprise across many studies: what it means to activate a particular patch of dorsolateral prefrontal cortex (dlPFC) during emotion regulation depends on which other tasks engage that patch, which networks it participates in, and what lesions and stimulation there do. Localizing findings against established **brain atlases** is the key step that makes this integration possible.
 
-An atlas is a standard brain labeled with regions and the boundaries between them, based on histology, structural landmarks, patterns of structural and functional connectivity, neurochemistry, prior neuroimaging findings, and more. Atlases play a role similar to the definition of genes in genetics: they provide uniform labels and precisely defined units of analysis, so that findings from different studies can be compared directly. Without one, two studies may both report "dlPFC" activation while their clusters do not even overlap. Atlases can be built from a single brain or from group averages of co-registered brains, and they can supply either fixed labels (each voxel assigned to one structure) or **probabilistic** maps (the likelihood that each voxel belongs to each structure, estimated from a set of labeled brains). In a typical workflow, study images are registered to the template associated with an atlas via nonlinear warping, and the atlas labels are then assumed to apply. Beyond classical anatomical labels, results can now be annotated by similarity to meta-analyses of prior studies, resting-state networks, receptor and transporter maps, gene expression, and large-sample phenotype associations — and viewers and toolkits (FSLeyes, AFNI, Connectome Workbench, Neurosynth, Neuroquery, neuromaps, CANlab tools) increasingly build this in.
+An atlas is a standard brain labeled with regions and the boundaries between them, based on histology, structural landmarks, patterns of structural and functional connectivity, neurochemistry, prior neuroimaging findings, and more. Atlases play a role similar to the definition of genes in genetics: they provide uniform labels and precisely defined units of analysis, so that findings from different studies can be compared directly. Without one, two studies may both report "dlPFC" activation while their clusters do not even overlap. Atlases can be built from a single brain or from group averages of co-registered brains, and they can supply either fixed labels (each voxel assigned to one structure) or **probabilistic** maps (the likelihood that each voxel belongs to each structure, estimated from a set of labeled brains). In a typical workflow, study images are registered to the template associated with an atlas via nonlinear warping, and the atlas labels are then assumed to apply. Beyond classical anatomical labels, results can now be annotated by similarity to meta-analyses of prior studies, resting-state networks, receptor and transporter maps, gene expression, and large-sample phenotype associations — and viewers and toolkits (FSLeyes, AFNI, Connectome Workbench, [Neurosynth](https://neurosynth.org), Neuroquery, neuromaps, CANlab tools) increasingly build this in.
 
-**Histology-based atlases** are the oldest family. Cortical areas can be demarcated by laminar structure — primary visual cortex has a very thick input Layer IV, primary motor cortex a thick output Layer VI, and older "allocortex" (medial temporal lobe, ventral insula) has only three or four layers. In 1909 Korbinian Brodmann demarcated 52 cortical regions from post-mortem cellular morphology; his areas are still cited today. The hand-drawn Talairach–Tournoux atlas (1988), based on one hemisphere of a single brain, served as the field's standard for the first 15 years of fMRI. The modern gold standard is the **Jülich Brain**, an openly available probabilistic atlas built from decades of post-mortem histology, registered to MNI space and distributed in the SPM Anatomy Toolbox among other places.
+**Histology-based atlases** are the oldest family. Cortical areas can be demarcated by laminar structure — primary visual cortex has a very thick input Layer IV, primary motor cortex a thick output Layer VI, and older "allocortex" (medial temporal lobe, ventral insula) has only three or four layers. In 1909 Korbinian Brodmann demarcated 52 cortical regions from post-mortem cellular morphology; his areas are still cited today. The hand-drawn Talairach–Tournoux atlas (1988), based on one hemisphere of a single brain, served as the field's standard for the first 15 years of fMRI. The modern gold standard is the **Jülich Brain**, an openly available probabilistic atlas built from decades of post-mortem histology, registered to MNI space and distributed in the [SPM](https://www.fil.ion.ucl.ac.uk/spm/) Anatomy Toolbox among other places.
 
 **Structural templates define the standard spaces we report coordinates in.** To overcome the idiosyncrasies of a single-subject template, the Montreal Neurological Institute averaged T1 images from 305 young adults mapped to the Talairach template, creating the MNI-305 — the origin of "MNI space" and its stereotaxic $(x, y, z)$ coordinates. Successors include the single-subject Colin-27 (27 averaged scans of one person), the MNI-152 (better contrast and coverage), and the ICBM-452. These are *volumetric* templates that register 3-D brain volumes. **Surface-based templates** (PALS-B12, FreeSurfer's fsaverage, and the bilaterally symmetric fs_LR) instead inflate or flatten the cortical sheet and align brains by landmarks and continuous contours; when a clean cortical surface can be extracted, surface alignment is appreciably more accurate in cortex than volume registration, which is why projecting results onto an inflated surface is now common for both alignment and display. Finally, template–population match matters: most templates come from young healthy adults, and templates now exist for fetuses through advanced age and for disease groups. Population-specific templates reduce registration error, though comparing groups with different gross anatomy always carries some ambiguity about whether a coordinate or label is the "same area" in both.
 
-Newer atlas families exploit other measurements. **Functional connectivity-based parcellations** group voxels that fluctuate together at rest or during tasks: the widely used Yeo–Buckner atlas identified 7 and 17 cortex-spanning networks from 1,000 adults, refined by the Schaefer, Power, Craddock, and Shen parcellations. **Diffusion-based atlases** recover white-matter organization invisible to conventional MRI and histology: the ICBM-DTI-81 atlas labels 48 tracts, the XTRACT and Pandora atlases identify tracts in thousands of Human Connectome Project (HCP) participants, and a 7T-tractography "disconnectome" predicts which tracts a given lesion disrupts; tractography also underlies gray-matter parcellations such as the Brainnetome atlas. **Meta-analysis-based atlases** (Neurosynth, Neuroquery) parcellate the brain by patterns of activation and co-activation across thousands of published studies and their topics. And **multi-modal atlases** combine sources: Glasser and colleagues parcellated each hemisphere into 180 areas using cortical folding, myelin maps, resting-state connectivity, and task maps from the HCP — characterizing 97 previously undescribed areas.
+Newer atlas families exploit other measurements. **Functional connectivity-based parcellations** group voxels that fluctuate together at rest or during tasks: the widely used Yeo–Buckner atlas identified 7 and 17 cortex-spanning networks from 1,000 adults, refined by the Schaefer, Power, Craddock, and Shen parcellations. **Diffusion-based atlases** recover white-matter organization invisible to conventional MRI and histology: the ICBM-DTI-81 atlas labels 48 tracts, the XTRACT and Pandora atlases identify tracts in thousands of [Human Connectome Project (HCP)](https://www.humanconnectome.org) participants, and a 7T-tractography "disconnectome" predicts which tracts a given lesion disrupts; tractography also underlies gray-matter parcellations such as the Brainnetome atlas. **Meta-analysis-based atlases** (Neurosynth, Neuroquery) parcellate the brain by patterns of activation and co-activation across thousands of published studies and their topics. And **multi-modal atlases** combine sources: Glasser and colleagues parcellated each hemisphere into 180 areas using cortical folding, myelin maps, resting-state connectivity, and task maps from the HCP — characterizing 97 previously undescribed areas.
 
 :::{figure} images/ch23_fig1_atlas_comparison.png
 :alt: Five brain atlases displayed on the same MNI152 slices, from the SPM Anatomy Toolbox to the CIT168 subcortical atlas
 :width: 95%
+:class: book-figure
 
-Examples of five different brain atlases, each constructed from specific brain properties. From top to bottom: the Jülich Brain / SPM Anatomy Toolbox (histology-based); the Brainnetome atlas (diffusion tractography-based); the Human Connectome Project multi-modal cortical atlas; the SUIT histology-based cerebellar atlas; and the CIT168 "reinforcement learning" atlas of selected subcortical regions. *(Figure 23.1 from the book.)*
+Examples of five different brain atlases, each constructed from specific brain properties. From top to bottom: the Jülich Brain / SPM Anatomy Toolbox (histology-based); the Brainnetome atlas (diffusion tractography-based); the Human Connectome Project multi-modal cortical atlas; the SUIT histology-based cerebellar atlas; and the CIT168 "reinforcement learning" atlas of selected subcortical regions. *(Figure 23.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
-Atlases are also the principled way to define **regions of interest (ROIs)**. Averaging the signal over the voxels in a parcel, $\bar{y}_j = \frac{1}{|R_j|}\sum_{v \in R_j} y_v$, boosts signal-to-noise and shrinks the multiple-comparisons problem from ~100,000 voxels to a handful of tests. But *how the ROI is chosen* determines whether the analysis is valid. An **a priori** ROI — chosen from an atlas, an independent dataset, or an independent contrast *before* looking at the data being tested — yields unbiased estimates and honest P values. A **post hoc** ROI selected because it showed the strongest effect in the *same* data is **circular** (non-independent): selection by the maximum guarantees inflated effect sizes and can manufacture "significant" effects from pure noise. The hands-on lab makes this bias visible by simulation.
+Atlases are also the principled way to define **regions of interest (ROIs)**. An ROI analysis averages the signal over the voxels in each parcel:
+
+::::{div}
+:class: eq-tip
+$$
+\bar{y}_j = \frac{1}{|R_j|}\sum_{v \in R_j} y_v
+$$
+:::{div}
+:class: eq-tip-text
+ȳⱼ — average signal in region j · Rⱼ — set of voxels in region j · |Rⱼ| — number of voxels in the region · yᵥ — data value at voxel v
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\bar{y}_j$ *is the average signal in region* $j$*,* $R_j$ *the set of voxels belonging to that region,* $|R_j|$ *the number of voxels it contains, and* $y_v$ *the data value at voxel* $v$*.*
+:::
+
+Averaging boosts signal-to-noise and shrinks the multiple-comparisons problem from ~100,000 voxel tests to a handful of region tests. But *how the ROI is chosen* determines whether the analysis is valid. An **a priori** ROI — chosen from an atlas, an independent dataset, or an independent contrast *before* looking at the data being tested — yields unbiased estimates and honest P values. A **post hoc** ROI selected because it showed the strongest effect in the *same* data is **circular** (non-independent): selection by the maximum guarantees inflated effect sizes and can manufacture "significant" effects from pure noise. The hands-on lab makes this bias visible by simulation.
 
 Even with a good atlas, localization has limits. The anatomical underlay may not match the functional data — the two are subject to different distortions, and distortions differ across studies — so rather than overlaying results on the single-subject Colin brain or the MNI-152, a better practice is to register your own participants' T1 images to the reference space and build a *group-average anatomical underlay from the study sample*. This gives a closer match and reveals alignment precision: poor alignment shows up as blur or "ghosting" (multiple brain edges). Finally, activations cannot be definitively localized to small structures — the habenula, locus coeruleus, ventral tegmental area, and other small nuclei — at standard field strengths, because of physiological noise, differential distortion, and the intrinsic blurriness of BOLD. Localizing small structures is aided by high-field (7T+) imaging, structure-specific inter-subject registration (e.g., of the brainstem or cerebellum), and localization based on high-resolution functional rather than anatomical images. One need not refuse to interpret small nuclei at 1.5T or 3T, but strong claims should be avoided.
 
@@ -86,21 +104,30 @@ from nilearn.datasets import load_mni152_template
 from nilearn import plotting
 from scipy.ndimage import gaussian_filter
 
-template = load_mni152_template(resolution=2)   # bundled: no download
+template = load_mni152_template(resolution=2)   # resolution = 2 mm voxels; bundled with nilearn, no download
 plotting.plot_anat(template, title="MNI152 template")
 
 # Simulated "activation" at right anterior insula, MNI (38, 22, -2)
 ijk = np.linalg.inv(template.affine) @ [38, 22, -2, 1]   # mm -> voxel
 stat = np.zeros(template.shape)
 stat[tuple(np.round(ijk[:3]).astype(int))] = 1.0
-stat = gaussian_filter(stat, sigma=2.5)
-stat_img = nib.Nifti1Image(6 * stat / stat.max(), template.affine)
+stat = gaussian_filter(stat, sigma=2.5)   # sigma = 2.5 voxels (~5 mm): spread the focus like a smoothed blob
+stat_img = nib.Nifti1Image(6 * stat / stat.max(), template.affine)   # rescale so the peak "t" = 6
 
-plotting.plot_stat_map(stat_img, bg_img=template, threshold=2.0,
+plotting.plot_stat_map(stat_img, bg_img=template, threshold=2.0,   # threshold = 2.0: hide sub-threshold voxels
                        cut_coords=(38, 22, -2), title="Simulated result")
 ```
 :::
 ::::
+
+**Example output:** (Python)
+
+:::{figure} images/ch23_step1_output.png
+:alt: Simulated activation focus at MNI coordinate (38, 22, -2) shown on orthogonal slices of the MNI152 template
+:width: 90%
+
+The simulated "activation" overlaid on the MNI152 template. The crosshairs sit at MNI $(38, 22, -2)$ — exactly the millimeter coordinate we specified, converted to voxel indices through the image affine.
+:::
 
 **Step 2 — Extract ROI averages and test them.** ROI analysis averages the data over each region's voxels, then runs one test per region. The key rule: choose the regions *a priori* — from an atlas or independent data — not because they "lit up" in the data you are about to test.
 
@@ -129,10 +156,10 @@ xlabel('Thalamic region'); ylabel('Contrast value');
 
 ```python
 from scipy import stats
-rng = np.random.default_rng(0)
+rng = np.random.default_rng(0)   # seed = 0 so the result is reproducible
 
 # Parcel averages for 20 subjects x 6 parcels, with NO true effect anywhere
-n_sub, n_parcels = 20, 6
+n_sub, n_parcels = 20, 6   # n_sub = subjects; n_parcels = a priori regions tested
 roi_avgs = rng.standard_normal((n_sub, n_parcels))
 t, p = stats.ttest_1samp(roi_avgs, 0)      # one test per parcel
 
@@ -146,6 +173,13 @@ print(f"circular ROI  (parcel {best + 1}): t = {t[best]:+.2f}, p = {p[best]:.3f}
 ```
 :::
 ::::
+
+**Example output:** (Python)
+
+```text
+a priori ROI  (parcel 1): t = -0.06, p = 0.955
+circular ROI  (parcel 6): t = +3.02, p = 0.007  <- selected BECAUSE it is the maximum
+```
 
 In the Python data there is no signal at all, yet the "winning" parcel returns $t = +3.02$, $p = .007$ — a publishable-looking effect conjured from noise, while the a priori parcel behaves honestly ($t = -0.06$, $p = .96$). Selection and estimation must be independent.
 

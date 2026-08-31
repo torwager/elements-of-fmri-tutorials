@@ -51,11 +51,22 @@ flowchart LR
 
 In the observational world, the raw HRT–disease association blends the true causal path $b$ (harmful) with a spurious path through the latent confounder — healthy people both take HRT (path $a$) and avoid heart disease (path $c$) — and the spurious component dominates, flipping the sign. Randomization severs every arrow *into* the treatment, leaving only $b$. Measured proxies for the confounder (education, medication adherence) can be entered as covariates, and they help exactly to the extent that they capture the latent "healthy user" construct — which they rarely do completely. *(This diagram is redrawn after Figure 26.1 from the book.)*
 
-The diagram language generalizes, and it repays learning because **covariate adjustment is not always benign**. Consider the simple linear system $X = aC + u$ and $Y = bX + cC + e$. Regressing $Y$ on $X$ alone yields a biased estimate of the causal effect:
+The diagram language generalizes, and it repays learning because **covariate adjustment is not always benign**. Consider the simple linear system $X = aC + u$ and $Y = bX + cC + e$, where $a$ is the effect of the confounder $C$ on the exposure $X$, $b$ the true causal effect of $X$ on the outcome $Y$, $c$ the effect of $C$ on $Y$, and $u$ and $e$ are independent noise terms. Regressing $Y$ on $X$ alone yields a biased estimate of the causal effect:
 
+::::{div}
+:class: eq-tip
 $$
 \mathbb{E}\big[\hat{\beta}_X\big] \;=\; b \;+\; ac\,\frac{\mathrm{Var}(C)}{\mathrm{Var}(X)}
 $$
+:::{div}
+:class: eq-tip-text
+𝔼[β̂ₓ] — expected value of the naive slope estimate · b — true causal effect of X on Y · a — effect of C on X · c — effect of C on Y · Var(C), Var(X) — variances of confounder and exposure
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\mathbb{E}[\hat{\beta}_X]$ *is the expected value of the slope from regressing* $Y$ *on* $X$ *alone,* $b$ *the true causal effect of* $X$ *on* $Y$, $a$ *and* $c$ *the effects of the confounder* $C$ *on* $X$ *and on* $Y$*, and* $\mathrm{Var}(C)$ *and* $\mathrm{Var}(X)$ *the variances of the confounder and the exposure.*
+:::
 
 Adjusting for the **confounder** $C$ removes the second term and recovers $b$. But the same operation applied to a different causal structure backfires. A **collider** is a variable caused by *both* X and Y (for example, a composite "data quality" or inclusion score). Conditioning on a collider — whether by entering it as a covariate or by selecting only observations above some threshold — *creates* a spurious X–Y association where none existed. This is why post-hoc selection of trials or participants based on performance, missing data, or head motion deserves real scrutiny. A **mediator** lies on the causal path from X to Y; adjusting for it removes the very effect you may want to measure, converting a *total* effect into a *direct* effect. Same regression, three different structures, three different verdicts:
 
@@ -108,8 +119,8 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 
 ```matlab
 % Adapted from CANlab FMRI_simulations (covariates_in_regression.m)
-rng(26);
-n = 1000;
+rng(26);                            % seed, for reproducible random numbers
+n = 1000;                           % n = number of observations ("participants")
 C = randn(n, 1);                    % confounder ("general health")
 X = 0.7*C + randn(n, 1);            % exposure, influenced by C
 Y = 0.4*X - 1.2*C + randn(n, 1);    % true causal effect of X = +0.40
@@ -127,8 +138,8 @@ fprintf('True effect: 0.40 | naive: %.2f | adjusted: %.2f\n', ...
 ```python
 import numpy as np, statsmodels.api as sm
 
-rng = np.random.default_rng(26)
-n = 1000
+rng = np.random.default_rng(26)                 # seed, for reproducible random numbers
+n = 1000                                        # n = number of observations ("participants")
 C = rng.standard_normal(n)                      # confounder ("general health")
 X = 0.7 * C + rng.standard_normal(n)            # exposure, influenced by C
 Y = 0.4 * X - 1.2 * C + rng.standard_normal(n)  # true causal effect of X = +0.40
@@ -142,6 +153,14 @@ print(f"True effect: 0.40 | naive: {naive.params[1]:.2f} | "
 :::
 ::::
 
+**Example output:**
+
+```text
+True effect: 0.40 | naive: -0.12 | adjusted: 0.41
+```
+
+The naive regression does not just shrink the effect — it flips its sign. One extra covariate restores the truth.
+
 **Step 2 — A collider: adjusting *creates* bias.** Now $X$ and $Y$ are truly unrelated, but both feed into a downstream composite $S$ (think of an inclusion score built from performance and data quality). Left alone, the regression correctly finds nothing; "controlling for" $S$ manufactures a strong spurious effect.
 
 ::::{tab-set}
@@ -149,7 +168,7 @@ print(f"True effect: 0.40 | naive: {naive.params[1]:.2f} | "
 :sync: matlab
 
 ```matlab
-X = randn(n, 1);
+X = randn(n, 1);                    % exposure, unrelated to Y by construction
 Y = randn(n, 1);                    % true causal effect of X = 0
 S = X + Y + randn(n, 1);            % collider: caused by BOTH X and Y
 
@@ -164,7 +183,7 @@ fprintf('True effect: 0.00 | naive: %.2f | adjusted: %.2f\n', ...
 :sync: python
 
 ```python
-X = rng.standard_normal(n)
+X = rng.standard_normal(n)              # exposure, unrelated to Y by construction
 Y = rng.standard_normal(n)              # true causal effect of X = 0
 S = X + Y + rng.standard_normal(n)      # collider: caused by BOTH X and Y
 
@@ -176,6 +195,12 @@ print(f"True effect: 0.00 | naive: {naive.params[1]:.2f} | "
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+True effect: 0.00 | naive: -0.01 | adjusted: -0.51
+```
 
 The naive estimate in Step 2 hovers near zero while the "adjusted" one lands around −0.5 with an impressive t-statistic — a completely spurious finding produced by the adjustment itself. The full labs go on to (1) contrast an observational study with an RCT on the same simulated population, (2) repeat both demonstrations across hundreds of replications, (3) show that *selecting* observations on a collider (as in post-hoc trial exclusion) biases results just like covarying for one, and (4) preview mediation analysis on a simulated task → brain → behavior chain.
 

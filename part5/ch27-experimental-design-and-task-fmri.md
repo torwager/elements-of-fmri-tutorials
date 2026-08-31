@@ -35,56 +35,92 @@ The most basic choice is how to organize events in time. **Block designs** group
 :::{figure} images/ch27_fig1_block_event_efficiency.png
 :alt: Block, dense event-related, and sparse event-related trial arrangements with their regressors, and a bar plot showing detection efficiency for the A minus B contrast is highest for block designs
 :width: 95%
+:class: book-figure
 
-Arranging trials in a simple task fMRI design. (A) Block designs alternate sustained blocks of each condition; dense event-related designs intermix events with little rest; sparse event-related designs add jittered rest periods. Events for conditions A (blue) and B (red) are shown above their corresponding regressors. (B) Detection efficiency for an A − B contrast: block designs induce the most contrast variance and are most efficient; sparse event-related designs are least efficient. *(Figure 27.1 from the book.)*
+Arranging trials in a simple task fMRI design. (A) Block designs alternate sustained blocks of each condition; dense event-related designs intermix events with little rest; sparse event-related designs add jittered rest periods. Events for conditions A (blue) and B (red) are shown above their corresponding regressors. (B) Detection efficiency for an A − B contrast: block designs induce the most contrast variance and are most efficient; sparse event-related designs are least efficient. *(Figure 27.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Timing choices are psychological as well as statistical. The analysis assumes the process of interest is engaged at specific, known times — but participants may ruminate or shift attention during long rests, experience unplanned processes (frustration on "easy" trials, conflict carried over from trial history), or adopt unintended strategies (verbally labeling stimuli in a "spatial" task). Such deviations cost power and can create outright confounds. A good task incentivizes and constrains performance, maximizes time on task and the size of the induced effect, measures whether participants actually did the task, and anticipates side effects such as anticipation, habituation, learning, fatigue, and boredom.
 
 The statistical quality of a design is captured by its **efficiency**: the ability to estimate task effects with low variance, which translates directly into statistical power. Recall that the t-statistic for a parameter divides the estimate by its standard error, and that the standard error factors into a noise term and a term that depends *purely on the design matrix*:
 
+::::{div}
+:class: eq-tip
 $$
 t = \frac{\hat{\beta}_i}{SE(\hat{\beta}_i)}, \qquad
 SE(\hat{\beta}_i) = \sqrt{\hat{\sigma}^2 \left[(X^TX)^{-1}\right]_{ii}}
 $$
+:::{div}
+:class: eq-tip-text
+t — t-statistic for parameter i · β̂ᵢ — estimated parameter · SE — standard error · σ̂² — estimated residual noise variance · X — design matrix (time × predictors) · [(XᵀX)⁻¹]ᵢᵢ — i-th diagonal element: the design-related variance component
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\hat{\beta}_i$ *is the estimated parameter for regressor* $i$*,* $\hat{\sigma}^2$ *the estimated residual noise variance,* $X$ *the design matrix (time points × predictors), and* $\left[(X^TX)^{-1}\right]_{ii}$ *the* $i$*-th diagonal element of* $(X^TX)^{-1}$ *— the component of the variance determined purely by the design.*
+:::
 
 Because the design term is known before any data are collected, we can score candidate designs in advance. Averaging the design-related variance across the $p$ regressors and inverting gives the efficiency, known as **A-optimality** in the experimental design literature:
 
+::::{div}
+:class: eq-tip
 $$
 e = \frac{p}{\sum_{i=1}^{p} \left[(X^TX)^{-1}\right]_{ii}}
 = \frac{p}{\mathrm{trace}\left[(X^TX)^{-1}\right]},
 \qquad
 e_c = \frac{1}{c\,(X^TX)^{-1} c^T}
 $$
+:::{div}
+:class: eq-tip-text
+e — average design efficiency (A-optimality) · p — number of regressors · trace — sum of the diagonal elements · e_c — efficiency of a specific contrast · c — contrast vector (e.g., [1 −1 0] for A − B) · X — design matrix
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $e$ *is the efficiency averaged over the* $p$ *regressors,* $\mathrm{trace}$ *the sum of the diagonal elements,* $e_c$ *the efficiency of a specific contrast, and* $c$ *the contrast vector.*
+:::
 
-where the second form scores a specific contrast vector $c$ (e.g., $[1\; -1\; 0]$ for A − B). Efficiency is maximized when there are many observations, when predictor variance is high (predicted signal swings between extremes rather than hovering near its mean), and when regressors are close to orthogonal. High diagonal elements of $(X^TX)^{-1}$ mean imprecise parameter estimates; high off-diagonal elements mean *confusable* parameter estimates, so that true signal for one regressor can masquerade as activation or deactivation for another.
+The second form scores a specific contrast vector $c$ (e.g., $[1\; -1\; 0]$ for A − B). Efficiency is maximized when there are many observations, when predictor variance is high (predicted signal swings between extremes rather than hovering near its mean), and when regressors are close to orthogonal. High diagonal elements of $(X^TX)^{-1}$ mean imprecise parameter estimates; high off-diagonal elements mean *confusable* parameter estimates, so that true signal for one regressor can masquerade as activation or deactivation for another.
 
 :::{figure} images/ch27_fig2_efficiency_aoptimality.png
 :alt: Four event-related regressors and the inverse of X-transpose-X shown as a heatmap, with the efficiency formula; red boxes mark the diagonal elements that determine parameter standard errors
 :width: 80%
+:class: book-figure
 
-Efficiency in a four-condition event-related design. Top: regressors $X_{.1}$–$X_{.4}$ for the four event types. Bottom: the matrix $(X^TX)^{-1}$ determines the design-related component of the standard errors — higher diagonal values (red boxes) mean higher standard errors and reduced power, and off-diagonal values mean correlated, confusable parameter estimates. *(Figure 27.2 from the book.)*
+Efficiency in a four-condition event-related design. Top: regressors $X_{.1}$–$X_{.4}$ for the four event types. Bottom: the matrix $(X^TX)^{-1}$ determines the design-related component of the standard errors — higher diagonal values (red boxes) mean higher standard errors and reduced power, and off-diagonal values mean correlated, confusable parameter estimates. *(Figure 27.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Two refinements shape practical design choices. First, **nonlinearity**: the BOLD response is roughly linear when events are at least 5 s apart, but responses to stimuli within 1–2 s of a preceding stimulus are substantially reduced and delayed — vascular saturation that the standard linear model ignores. Rapid designs are therefore dramatically less efficient in practice than the linear model predicts, and nonlinear history effects can confound condition comparisons unless trial history is equated across conditions. Second, **jitter**: with variable ISIs, runs of same-type trials let predicted activity build to peaks and fall to valleys, creating the variance needed to compare events to an *implicit resting baseline*. If the only goal is comparing event types (A − B), randomizing order achieves good rise and fall without extra jitter; but jitter is critical for asking whether events activate or deactivate a region relative to baseline. A popular recipe is jittered ISIs of at least 4 s with exponentially decreasing frequencies of longer delays up to ~16 s.
 
 A closely related diagnostic is the **variance inflation factor (VIF)**. Pairwise correlations miss the real danger — a regressor that is predictable from a *combination* of the others — so for each regressor $j$ we regress it on all remaining regressors and compute
 
+::::{div}
+:class: eq-tip
 $$
 \mathrm{VIF}_j = \frac{1}{1 - R_j^2}
 $$
+:::{div}
+:class: eq-tip-text
+VIFⱼ — variance inflation factor for regressor j · Rⱼ² — variance in regressor j explained by all the other regressors together
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $R_j^2$ *is the proportion of variance in regressor* $j$ *explained by regressing it on all the other regressors.*
+:::
 
-the multiplicative increase in that parameter's variance due to the other regressors. A VIF of 1 is perfect (orthogonal); values above ~2 deserve attention, and values of 4–8+ signal serious trouble. In a designed experiment VIFs should be low — that is precisely the advantage of experiments over observational designs. Even when individual regressors are poorly estimable (e.g., two conditions with no rest between them), specific contrasts such as A − B may still be estimated precisely.
+$\mathrm{VIF}_j$ is the multiplicative increase in that parameter's variance due to the other regressors. A VIF of 1 is perfect (orthogonal); values above ~2 deserve attention, and values of 4–8+ signal serious trouble. In a designed experiment VIFs should be low — that is precisely the advantage of experiments over observational designs. Even when individual regressors are poorly estimable (e.g., two conditions with no rest between them), specific contrasts such as A − B may still be estimated precisely.
 
-Beyond the block/event choice, several higher-level design types serve different inferential goals: **subtraction designs** compare conditions matched on all but the process of interest; **parametric variation designs** test whether activity tracks graded manipulations or measured variables (difficulty, reaction time, prediction error); and **factorial designs** cross factors to test main effects and interactions, supporting process association and dissociation. Eight principles summarize the practical tradeoffs: sample size (more subjects always helps, and group power is ultimately limited by $\sqrt{N}$ no matter how efficient the first level is); scan time per subject (30–40 min of functional data is a reasonable target, then spend the budget on subjects); number of conditions (fewer is more powerful, two is optimal for detection); grouping (blocks for detection, events for specific inference); block frequency (16–20 s blocks — longer blocks collide with high-pass filters, which then remove design variance); randomization (randomize per participant to avoid order confounds); nonlinearity (space events by several seconds, stratify randomization); and optimization.
+Beyond the block/event choice, several higher-level design types serve different inferential goals: **subtraction designs** compare conditions matched on all but the process of interest; **parametric variation designs** test whether activity tracks graded manipulations or measured variables (difficulty, reaction time, prediction error); and **factorial designs** cross factors to test main effects and interactions, supporting process association and dissociation. Eight principles summarize the practical tradeoffs: sample size (more subjects always helps, and group power is ultimately limited by $\sqrt{N}$, where $N$ is the number of participants, no matter how efficient the first level is); scan time per subject (30–40 min of functional data is a reasonable target, then spend the budget on subjects); number of conditions (fewer is more powerful, two is optimal for detection); grouping (blocks for detection, events for specific inference); block frequency (16–20 s blocks — longer blocks collide with high-pass filters, which then remove design variance); randomization (randomize per participant to avoid order confounds); nonlinearity (space events by several seconds, stratify randomization); and optimization.
 
 That last principle can be automated. Programs like OptSeq evaluate huge numbers of random designs and keep the best, but the design space vastly exceeds brute-force search. **Genetic algorithms (GAs)** evaluate a population of designs, then recombine pieces of the best designs into "children" across generations — stochastic jumps in the fitness landscape that escape local maxima. A GA can weight multiple goals: which contrasts matter, a desired high-pass filter, counterbalancing, and whether to prioritize **detection efficiency** (precise contrast estimates given an assumed canonical HRF) or **estimation efficiency** (precise estimation of the HRF's shape using a flexible FIR model). These two forms of efficiency strongly trade off: the alternating 16–18 s block design is optimal for detection but poor for shape estimation, **m-sequences** (pseudorandom sequences orthogonal to time-shifted copies of themselves) are optimal for estimation but poor for detection, and random event-related designs are mediocre at both. GA-optimized designs beat random designs on both criteria and approach the theoretical limit.
 
 :::{figure} images/ch27_fig4_detection_estimation_tradeoff.png
 :alt: Scatter plot of contrast detection efficiency versus HRF shape estimation efficiency showing block designs high on detection, m-sequences high on estimation, random event-related designs intermediate on both, and GA-optimized designs approaching the theoretical limit curve
 :width: 75%
+:class: book-figure
 
-Design types compared on contrast detection and HRF shape estimation efficiency. The 16 s on/off block design (top left) is best for detection but poor for shape estimation; m-sequences (bottom right) are the reverse. Random event-related designs (blue) are intermediate on both, and GA-optimized designs (open circles) approach the theoretical limit (curve). *(Figure 27.4 from the book.)*
+Design types compared on contrast detection and HRF shape estimation efficiency. The 16 s on/off block design (top left) is best for detection but poor for shape estimation; m-sequences (bottom right) are the reverse. Random event-related designs (blue) are intermediate on both, and GA-optimized designs (open circles) approach the theoretical limit (curve). *(Figure 27.4 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Efficiency calculations are powerful precisely because they require no data — you can score and optimize a design before ever entering the scanner. But they do not protect against unmodeled confounds or a mis-specified model (assuming linearity where there is none, or the wrong HRF), so those must be addressed on their own terms.
@@ -106,7 +142,10 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % Requires CanlabCore + SPM12 on your MATLAB path
 % Adapted from CANlab tutorials (github.com/canlab)
-TR = 1; scanLength = 480; HP = 128; c = [1 -1 0];   % A - B contrast
+TR = 1;             % repetition time (s)
+scanLength = 480;   % run length (s)
+HP = 128;           % high-pass filter cutoff (s)
+c = [1 -1 0];       % contrast: A minus B (last column = intercept)
 
 % Blocked: 2 conditions, 16-s blocks, alternating
 [Xb, eb] = create_block_design(scanLength, TR, 2, 16, HP, 0);
@@ -132,10 +171,10 @@ fprintf('A-B efficiency: block %3.1f, dense ER %3.1f, sparse ER %3.1f\n', ...
 import numpy as np
 from scipy import stats
 
-rng = np.random.default_rng(27)
-T, dt = 480, 1.0                       # run length (s), sampled at 1 s
-t = np.arange(0, T, dt)
-hrf = stats.gamma.pdf(t[:32], 6) - stats.gamma.pdf(t[:32], 16) / 6
+rng = np.random.default_rng(27)        # seeded RNG so event orderings are reproducible
+T, dt = 480, 1.0                       # T = run length (s); dt = sampling step (s)
+t = np.arange(0, T, dt)                # time grid for the run
+hrf = stats.gamma.pdf(t[:32], 6) - stats.gamma.pdf(t[:32], 16) / 6   # double-gamma HRF, 32-s window
 
 def design(onsets_A, onsets_B, dur=2.0):
     X = np.ones((len(t), 3))           # columns: A, B, intercept
@@ -153,13 +192,21 @@ keep = rng.random(120) < 0.5                          # 50% rest slots
 X_sparse = design(np.arange(0, T, 4)[(lab == 0) & keep],
                   np.arange(0, T, 4)[(lab == 1) & keep])
 
-c = np.array([1., -1., 0.])            # A - B contrast
-eff = lambda X: 1.0 / (c @ np.linalg.pinv(X.T @ X) @ c)
-print({name: round(eff(X), 1) for name, X in
-       [("block", X_block), ("dense ER", X_dense), ("sparse ER", X_sparse)]})
+c = np.array([1., -1., 0.])            # contrast: A minus B (last column = intercept)
+eff = lambda X: 1.0 / (c @ np.linalg.pinv(X.T @ X) @ c)   # e_c = 1 / (c (X'X)^-1 c')
+for name, X in [("block", X_block), ("dense ER", X_dense), ("sparse ER", X_sparse)]:
+    print(f"{name:9s} e(A-B) = {eff(X):5.1f}")
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+block     e(A-B) =  87.8
+dense ER  e(A-B) =  13.8
+sparse ER e(A-B) =   6.7
+```
 
 The block design should win by a wide margin for the A − B contrast, with the sparse jittered design least efficient — exactly the ordering in Figure 27.1B. (The jittered design earns its keep elsewhere: comparing events to baseline and estimating HRF shape.)
 
@@ -180,8 +227,10 @@ end
 % The classic task-programming trap: stimulus always 2 s after its cue
 [~, ~, ons] = create_random_er_design(TR, 4, 2, [.25 .25], HP, 0, ...
                                       'scanLength', scanLength);
-cue = ons{1}(:, 1);  dur = 2 * ones(size(cue));
-lags = [2 6 10];  lag = lags(randi(3, numel(cue), 1))';
+cue = ons{1}(:, 1);                    % cue onsets (s) from the sparse design
+dur = 2 * ones(size(cue));             % 2-s event durations
+lags = [2 6 10];                       % candidate cue->stimulus lags (s)
+lag = lags(randi(3, numel(cue), 1))';  % one random lag per trial (jitter)
 
 Xfix = onsets2fmridesign({[cue dur] [cue + 2   dur]}, TR, scanLength);
 Xjit = onsets2fmridesign({[cue dur] [cue + lag dur]}, TR, scanLength);
@@ -210,15 +259,25 @@ for name, X in [("block", X_block), ("dense ER", X_dense), ("sparse ER", X_spars
           f"   VIF(A) = {vif(X)[0]:6.2f}")
 
 # The classic task-programming trap: stimulus always 2 s after its cue
-cue = np.arange(0, T, 4)[(lab == 0) & keep]
-X_fixed = design(cue, cue + 2.0)                              # fixed 2-s lag
-X_jit   = design(cue, cue + rng.choice([2., 6., 10.], size=len(cue)))
+cue = np.arange(0, T, 4)[(lab == 0) & keep]                   # cue onsets: the sparse design's A events
+X_fixed = design(cue, cue + 2.0)                              # stimulus always 2 s after its cue
+X_jit   = design(cue, cue + rng.choice([2., 6., 10.], size=len(cue)))   # jittered 2/6/10-s lag
 
 for name, X in [("fixed 2-s lag", X_fixed), ("jittered lag ", X_jit)]:
     print(f"cue-stim, {name}: VIF = {vif(X)[0]:5.2f}   e(A-B) = {eff(X):5.1f}")
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+block     corr(A,B) = -0.98   VIF(A) =  29.55
+dense ER  corr(A,B) = -0.98   VIF(A) =  20.61
+sparse ER corr(A,B) = -0.30   VIF(A) =   1.10
+cue-stim, fixed 2-s lag: VIF =  2.87   e(A-B) =   1.0
+cue-stim, jittered lag : VIF =  1.01   e(A-B) =   4.0
+```
 
 Two lessons come out of this. First, the **no-rest trap**: the block and dense designs have enormous VIFs (roughly 20–30 here), because with an event always on, each regressor is nearly perfectly predictable from the other plus the intercept. No individual $\hat{\beta}$ — "does A activate this region relative to rest?" — is well estimated, which is exactly why those designs are poor for baseline comparisons. Yet the A − B contrast is still estimated precisely: VIF is a *per-parameter* diagnostic, and a specific contrast can be precise even when its constituent parameters are not. The sparse jittered design keeps VIFs near 1.
 

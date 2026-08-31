@@ -7,6 +7,8 @@
 % univariate vs. multivariate power in the spirit of the BWAS debate
 % (Marek et al., 2022).
 %
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part5/ch29-statistical-power-and-sample-size
+%
 % Requirements: Statistics and Machine Learning Toolbox (tinv, nctcdf,
 % normcdf, ttest). CanlabCore is not required for this lab.
 % Adapted from the CANlab power utilities (power_calc.m) and the
@@ -33,7 +35,7 @@
 % alpha input is one-tailed.
 
 dvals = [0.2 0.5 0.8];   % Cohen's benchmarks: small, medium, large
-alpha = 0.05;
+alpha = 0.05;            % significance level for the planned test
 
 for i = 1:length(dvals)
     ncrit = n_for_power(@power_1samp, dvals(i), alpha);
@@ -48,8 +50,8 @@ end
 % The classic planning plot: power vs. N for several effect sizes, with
 % the 80% power criterion marked. Drop-lines show the N needed for 80%.
 
-dvals = [0.2 0.3 0.4 0.5 0.8];
-N = 3:250;
+dvals = [0.2 0.3 0.4 0.5 0.8];   % effect sizes (Cohen's d) to plot
+N = 3:250;                       % range of sample sizes to evaluate
 
 figure('Color', 'w'); hold on
 colors = copper(length(dvals) + 2);
@@ -76,8 +78,9 @@ legend('Location', 'southeast'); ylim([0 1.02])
 % can verify the formula by brute force: simulate many experiments with
 % true d = 0.5 and count how often p < .05.
 
-rng(29)
-d_true = 0.5;  n_sims = 2000;
+rng(29)                       % fix the random seed for reproducibility
+d_true = 0.5;                 % true effect size in every simulated experiment
+n_sims = 2000;                % simulated experiments per N; more -> smoother estimates
 
 fprintf('%4s %10s %10s\n', 'N', 'analytic', 'simulated')
 for n = [10 20 34 50 80]
@@ -95,11 +98,11 @@ end
 %   p < 4.26e-6    whole-brain FWER (permutation-based, empirical average)
 % How much do required sample sizes grow?
 
-alphas     = [0.05  0.001  0.05/1000  4.26e-6];
-tails      = [2     1      1          1];
+alphas     = [0.05  0.001  0.05/1000  4.26e-6];   % effective per-test alpha levels
+tails      = [2     1      1          1];          % 2 = planned two-tailed; 1 = directional map threshold
 alphanames = {'p < .05, two-tailed (ROI)', 'p < .001 (~FDR q < .05)', ...
               'Bonferroni, 1000 tests', 'FWER whole brain'};
-d_grid = [0.2 0.3 0.5 0.8];
+d_grid = [0.2 0.3 0.5 0.8];   % effect sizes (Cohen's d) to tabulate
 
 fprintf('\nN for 80%% power, ONE-SAMPLE test\n');
 fprintf('%-26s', 'threshold');
@@ -133,7 +136,7 @@ end
 % atanh(r) is ~normal with SE = 1/sqrt(N-3). Two-group comparisons need
 % roughly 4x the total sample of one-sample tests (power_2samp below).
 
-r_grid = [0.1 0.2 0.3 0.4 0.5];
+r_grid = [0.1 0.2 0.3 0.4 0.5];   % correlation effect sizes, as in Figure 29.2
 
 fprintf('\nN for 80%% power to detect a correlation:\n');
 fprintf('%5s %8s %8s %8s\n', 'r', 'p<.05', 'p<.001', 'FWER');
@@ -155,9 +158,9 @@ end
 % detectable effect size" is an honest summary of a study's sensitivity.
 % (Mirrors power_min_detectable_effect_size.m from FMRI_simulations.)
 
-n_grid = [30 50 100 200 500 1000];
-d_search = 0.05:0.005:3;
-r_search = 0.02:0.002:0.99;
+n_grid   = [30 50 100 200 500 1000];   % affordable sample sizes to evaluate
+d_search = 0.05:0.005:3;               % grid of candidate effect sizes (d) to scan
+r_search = 0.02:0.002:0.99;            % grid of candidate correlations (r) to scan
 
 fprintf('\nMinimum detectable effect with 80%% power:\n');
 fprintf('%6s %10s %10s %10s %10s\n', 'N', 'd, p<.05', 'd, FWER', 'r, p<.05', 'r, FWER');
@@ -181,15 +184,17 @@ end
 % compare post hoc effect sizes in significant voxels with the truth.
 % Concept from effect_size_inflation_example_sim.m (github.com/canlab).
 
-rng(29)
-n_sub = 30;  n_vox = 20000;  d_true = 0.5;
+rng(29)                    % fix the random seed for reproducibility
+n_sub  = 30;               % n_sub = participants per simulated study
+n_vox  = 20000;            % n_vox = number of simulated voxels (tests)
+d_true = 0.5;              % true effect size in EVERY voxel
 
 dat = d_true + randn(n_sub, n_vox);      % subjects x voxels
 [~, ~, ~, st] = ttest(dat);
 p_dir = 1 - tcdf(st.tstat, n_sub - 1);   % directional p, as in mapping
 d_hat = st.tstat ./ sqrt(n_sub);         % observed effect size per voxel
 
-sig = p_dir < .001;
+sig = p_dir < .001;                      % mapping threshold (uncorrected)
 fprintf('\nTrue effect size:                 d = %.2f\n', d_true);
 fprintf('Mean estimate, ALL voxels:        d = %.2f  (unbiased)\n', mean(d_hat));
 fprintf('Mean estimate, significant only:  d = %.2f  (%.0f%% inflated)\n', ...
@@ -198,7 +203,7 @@ fprintf('Voxels significant at p < .001:   %.1f%% (analytic power: %.1f%%)\n', .
     100 * mean(sig), 100 * power_1samp(d_true, n_sub, .001, 1));
 
 figure('Color', 'w'); hold on
-edges = -0.2:0.03:1.4;
+edges = -0.2:0.03:1.4;   % histogram bin edges for estimated effect sizes
 histogram(d_hat, edges, 'FaceColor', [.7 .7 .7], 'DisplayName', 'all voxels');
 histogram(d_hat(sig), edges, 'FaceColor', [.8 .2 .3], 'DisplayName', 'significant (p < .001)');
 plot([d_true d_true], ylim, 'k:', 'LineWidth', 2, 'DisplayName', 'true d = 0.5');
@@ -213,8 +218,8 @@ legend
 % inflated -- so power analyses should never be based on the significant
 % voxels of the same map.
 
-thresholds   = [0.05 0.005 0.001 4.26e-6];
-sample_sizes = [15 30 60 120];
+thresholds   = [0.05 0.005 0.001 4.26e-6];   % per-test alphas, lenient to FWER-level
+sample_sizes = [15 30 60 120];               % participants per simulated study
 
 fprintf('\nMean d-hat in significant voxels (true d = %.1f everywhere):\n', d_true);
 fprintf('%5s', 'N');
@@ -243,11 +248,11 @@ end
 % Compare power curves and required samples for both regimes.
 % (Based on univ_vs_multivar_power_based_on_marek2022.mlx.)
 
-r_effects = [0.095 0.11 0.18 0.39];
+r_effects = [0.095 0.11 0.18 0.39];   % observed effects from Marek et al. 2022 (univariate to multivariate)
 labels = {'best univariate edge (r = 0.095)', 'median multivariate (r = 0.11)', ...
           '75th pct multivariate (r = 0.18)', 'best multivariate (r = 0.39)'};
 
-N = 4:2500;
+N = 4:2500;   % range of sample sizes to evaluate
 figure('Color', 'w'); hold on
 colors = lines(length(r_effects));
 for i = 1:length(r_effects)

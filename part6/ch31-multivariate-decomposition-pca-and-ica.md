@@ -32,39 +32,63 @@ Everything up to this point in the book has been largely *univariate*: a model i
 
 **Principal components analysis** reduces the dimensionality of a set of correlated variables while retaining as much variance as possible. It transforms the original variables into new ones — the principal components — that are uncorrelated and ordered by the variance they explain. Formally, PCA eigen-decomposes the data covariance (or correlation) matrix, $\Sigma = Q \Lambda Q^T$, where the columns of $Q$ are eigenvectors defining linear combinations of voxels and the diagonal of $\Lambda$ holds eigenvalues proportional to each component's share of variance. In practice the components are computed via the singular value decomposition of the mean-centered data:
 
+::::{div}
+:class: eq-tip
 $$
 X = U S V^T
 $$
+:::{div}
+:class: eq-tip-text
+X — mean-centered data (time × voxels) · U — component time courses in columns (T × T, orthonormal) · S — diagonal matrix of singular values, sorted largest to smallest · Vᵀ — eigenimages (spatial maps) in rows (V × V orthonormal)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $X$ *is the mean-centered* $T \times V$ *data matrix,* $U$ ($T \times T$) *and* $V$ ($V \times V$) *are orthonormal matrices, and* $S$ *is diagonal with singular values sorted largest to smallest.*
+:::
 
-where $U$ ($T \times T$) and $V$ ($V \times V$) are orthonormal and $S$ is diagonal with singular values sorted largest to smallest. In fMRI terms, each column of $V$ is an **eigenimage** — a spatial mode capturing covariance structure across voxels — and the corresponding column of $U$ (scaled by its singular value) is that eigenimage's time course. The data are exactly the sum of rank-one layers, $X = \sum_j s_j \mathbf{u}_j \mathbf{v}_j^T$, and truncating the sum after $k$ terms gives the best possible rank-$k$ reconstruction. The proportion of variance explained by component $j$ is $s_j^2 / \sum_i s_i^2$.
+In fMRI terms, each column of $V$ is an **eigenimage** — a spatial mode capturing covariance structure across voxels — and the corresponding column of $U$ (scaled by its singular value) is that eigenimage's time course. The data are exactly the sum of rank-one layers, $X = \sum_j s_j \mathbf{u}_j \mathbf{v}_j^T$ — where $\mathbf{u}_j$ and $\mathbf{v}_j$ are the $j$th columns of $U$ and $V$ and $s_j$ the $j$th singular value — and truncating the sum after $k$ terms gives the best possible rank-$k$ reconstruction. The proportion of variance explained by component $j$ is $s_j^2 / \sum_i s_i^2$, its squared singular value as a share of the total.
 
 :::{figure} images/ch31_fig1_pca_svd_overview.png
 :alt: Panel A shows the SVD X = U S V-transpose with time courses in U and eigenimages in V-transpose; panel B shows the data matrix rebuilt as a sum of rank-one outer products, each pairing a time course with a spatial map
 :width: 85%
+:class: book-figure
 
-Overview of PCA via the singular value decomposition. (A) The time $\times$ voxels data matrix $X$ is factored as $U S V^T$: $V^T$ holds the eigenimages (spatial maps), $U$ their associated time courses, and $S$ the singular values. (B) Equivalently, $X$ is a sum of rank-one components $s_j \mathbf{u}_j \mathbf{v}_j^T$, each the outer product of a time course and a spatial map, weighted by its singular value. *(Figure 31.1 from the book.)*
+Overview of PCA via the singular value decomposition. (A) The time $\times$ voxels data matrix $X$ is factored as $U S V^T$: $V^T$ holds the eigenimages (spatial maps), $U$ their associated time courses, and $S$ the singular values. (B) Equivalently, $X$ is a sum of rank-one components $s_j \mathbf{u}_j \mathbf{v}_j^T$, each the outer product of a time course and a spatial map, weighted by its singular value. *(Figure 31.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Because components are ordered, later ones can often be discarded with little loss, making PCA a natural data-reduction and exploration tool — for spotting outlier volumes in quality control, for finding distributed patterns related to tasks, and as a preprocessing step for ICA and for the predictive models of Part 7. Common rules for choosing how many components to keep: look for an "elbow" where the scree plot of variance explained decelerates; retain enough components to explain a target proportion of variance (e.g., 90%); keep components with eigenvalues greater than 1 (more than one original variable's worth); or compare against decompositions of permuted (randomized) data and keep components that beat chance.
 
 PCA's guarantees come with a catch: the components must be *orthogonal*, and they chase *variance*. Real signal sources — brain networks, physiological artifacts, scanner drift — have no obligation to be orthogonal to one another or to line up with directions of maximal variance. When two sources overlap or correlate, the first PC typically captures a variance-weighted blend of both and later PCs capture orthogonal remainders: the subspace is right, but the axes within it are rotated away from the true sources. **Independent components analysis** addresses exactly this. It models the data as a linear mixture of latent sources,
 
+::::{div}
+:class: eq-tip
 $$
 X = A\,S
 $$
+:::{div}
+:class: eq-tip-text
+X — data (time × voxels, T × V) · A — mixing matrix (T × k), component time courses in columns · S — source matrix (k × V), spatially independent maps in rows · k — number of components
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $X$ *is the* $T \times V$ *data, the mixing matrix* $A$ ($T \times k$) *holds each component's time course in its columns, the source matrix* $S$ ($k \times V$) *holds spatially independent maps in its rows, and* $k$ *is the number of components.*
+:::
 
-where $X$ is $T \times V$, the mixing matrix $A$ ($T \times k$) holds each component's time course in its columns, and the source matrix $S$ ($k \times V$) holds spatially independent maps in its rows. Neither $A$ nor $S$ is observed; ICA seeks an unmixing matrix $W$ such that $\hat{S} = WX$ recovers the sources — blindly, without knowing the mixing process.
+Neither $A$ nor $S$ is observed; ICA seeks an unmixing matrix $W$ such that $\hat{S} = WX$ recovers the sources — blindly, without knowing the mixing process.
 
 :::{figure} images/ch31_fig2_ica_overview.png
 :alt: The data matrix X equals the mixing matrix A times the source matrix S; columns of A are component time courses and rows of S are spatially independent maps
 :width: 85%
+:class: book-figure
 
-Overview of spatial ICA. The time $\times$ voxels data $X$ is modeled as a mixing matrix $A$ — whose columns are component time courses — times a source matrix $S$ whose rows are statistically independent spatial maps. *(Figure 31.2 from the book.)*
+Overview of spatial ICA. The time $\times$ voxels data $X$ is modeled as a mixing matrix $A$ — whose columns are component time courses — times a source matrix $S$ whose rows are statistically independent spatial maps. *(Figure 31.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
-What makes this possible is a stronger criterion than PCA's: statistical **independence**, $p(s_1, s_2) = p(s_1)\,p(s_2)$, based on higher-order properties of the distributions rather than just second moments. Independence implies uncorrelatedness, but the converse holds only for Gaussian signals — uncorrelated non-Gaussian signals can still carry higher-order dependence. ICA exploits two facts: many real-world signals are non-Gaussian, and by the Central Limit Theorem, *mixing* non-Gaussian signals pushes the mixtures toward Gaussianity. So ICA searches for the unmixing that makes the recovered components as non-Gaussian as possible — via algorithms such as infomax (maximizing entropy) or FastICA and JADE (working on kurtosis and related contrasts). At least $k-1$ of the sources must be non-Gaussian; with multiple Gaussian sources the model is identifiable only up to an orthogonal rotation. The flexibility carries costs: components have arbitrary sign, scale, and order, and are not ranked by importance, so researchers must inspect and label them. In fMRI, the standard variant is **spatial ICA** — maximizing independence of the spatial maps, consistent with the idea that different networks involve distinct sets of voxels — rather than temporal ICA, since tasks and artifacts routinely induce correlated time courses. Before ICA, data are typically mean-centered, whitened, and reduced with PCA. Calling ICA components "networks" is something of a misnomer — nothing guarantees that regions loading on a component are interconnected — but the usage is standard, and ICA-derived resting-state networks replicate remarkably well across subjects and sessions. ICA is also widely used for denoising during preprocessing.
+What makes this possible is a stronger criterion than PCA's: statistical **independence**, $p(s_1, s_2) = p(s_1)\,p(s_2)$ — where $s_1$ and $s_2$ are any two component sources and $p(\cdot)$ denotes a probability density — based on higher-order properties of the distributions rather than just second moments. Independence implies uncorrelatedness, but the converse holds only for Gaussian signals — uncorrelated non-Gaussian signals can still carry higher-order dependence. ICA exploits two facts: many real-world signals are non-Gaussian, and by the Central Limit Theorem, *mixing* non-Gaussian signals pushes the mixtures toward Gaussianity. So ICA searches for the unmixing that makes the recovered components as non-Gaussian as possible — via algorithms such as infomax (maximizing entropy) or FastICA and JADE (working on kurtosis and related contrasts). At least $k-1$ of the sources must be non-Gaussian; with multiple Gaussian sources the model is identifiable only up to an orthogonal rotation. The flexibility carries costs: components have arbitrary sign, scale, and order, and are not ranked by importance, so researchers must inspect and label them. In fMRI, the standard variant is **spatial ICA** — maximizing independence of the spatial maps, consistent with the idea that different networks involve distinct sets of voxels — rather than temporal ICA, since tasks and artifacts routinely induce correlated time courses. Before ICA, data are typically mean-centered, whitened, and reduced with PCA. Calling ICA components "networks" is something of a misnomer — nothing guarantees that regions loading on a component are interconnected — but the usage is standard, and ICA-derived resting-state networks replicate remarkably well across subjects and sessions. ICA is also widely used for denoising during preprocessing.
 
-In practice ICA is usually run on a **group** of subjects. The most common approach is *temporal concatenation*: stack each subject's $T \times V$ matrix into an $NT \times V$ matrix $Y$, and fit $Y = AS$, so all subjects share one set of group spatial maps $S$ while each subject's block of $A$ ($A^{(i)}$) provides subject-specific time courses. Subject-specific maps are then recovered by *back-reconstruction*: either invert the model per subject (solve $X^{(i)} = A^{(i)} S^{(i)}$ for $S^{(i)}$), or use the two-stage **dual regression**. In stage 1 (spatial regression), each subject's data are regressed onto the group maps, yielding a time course per component — each map's expression at every time point, controlling for the other maps. In stage 2 (temporal regression), the same subject's data are regressed onto those time courses, yielding subject-specific spatial maps. Group inference follows naturally: t-tests on the subject-level maps identify voxels reliably loading on each component, and the subject-level time courses can serve as dependent variables in GLMs relating components to tasks and behavior. Because ICA solutions can vary across studies (noise sensitivity; sign and scale ambiguity), a popular strategy is to run dual regression against *fixed, labeled* template networks from large-scale resting-state studies — trading within-subject independence for comparability — while newer approaches such as Group Information-guided ICA and the NeuroMark pipeline estimate subject-level components constrained to match high-quality group templates. Popular implementations include MELODIC (FSL) and the GIFT toolbox (MATLAB).
+In practice ICA is usually run on a **group** of subjects. The most common approach is *temporal concatenation*: stack each of the $N$ subjects' $T \times V$ matrices into an $NT \times V$ matrix $Y$, and fit $Y = AS$, so all subjects share one set of group spatial maps $S$ while each subject's block of $A$ ($A^{(i)}$) provides subject-specific time courses. Subject-specific maps are then recovered by *back-reconstruction*: either invert the model per subject (solve $X^{(i)} = A^{(i)} S^{(i)}$ for $S^{(i)}$), or use the two-stage **dual regression**. In stage 1 (spatial regression), each subject's data are regressed onto the group maps, yielding a time course per component — each map's expression at every time point, controlling for the other maps. In stage 2 (temporal regression), the same subject's data are regressed onto those time courses, yielding subject-specific spatial maps. Group inference follows naturally: t-tests on the subject-level maps identify voxels reliably loading on each component, and the subject-level time courses can serve as dependent variables in GLMs relating components to tasks and behavior. Because ICA solutions can vary across studies (noise sensitivity; sign and scale ambiguity), a popular strategy is to run dual regression against *fixed, labeled* template networks from large-scale resting-state studies — trading within-subject independence for comparability — while newer approaches such as Group Information-guided ICA and the NeuroMark pipeline estimate subject-level components constrained to match high-quality group templates. Popular implementations include MELODIC (FSL) and the GIFT toolbox (MATLAB).
 
 ## Hands-on tutorial
 
@@ -83,20 +107,20 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % Requires CanlabCore + SPM12 on your MATLAB path
 % Adapted from CANlab tutorials (github.com/canlab)
-rng(7);
-T = 200; V = 360; TR = 2;
+rng(7);                                        % seed for reproducibility
+T = 200; V = 360; TR = 2;                      % T = time points, V = voxels, TR = repetition time (s)
 
 % Two overlapping spatial maps (non-orthogonal sources)
 s1 = zeros(1, V); s1(1:150)  = 1;              % "network" 1: voxels 1-150
 s2 = zeros(1, V); s2(91:255) = 1;              % "network" 2: voxels 91-255 (overlap!)
-S_true = [s1; s2];
+S_true = [s1; s2];                             % k x V source-map matrix
 
 % Two event-related time courses via the canonical HRF
-a1 = onsets2fmridesign({[20 100 180 260 340]'}, TR, T*TR);
-a2 = onsets2fmridesign({[60 140 220 300 380]'}, TR, T*TR);
-A_true = [a1(:,1) a2(:,1)];
+a1 = onsets2fmridesign({[20 100 180 260 340]'}, TR, T*TR);   % network-1 event onsets (s)
+a2 = onsets2fmridesign({[60 140 220 300 380]'}, TR, T*TR);   % network-2 event onsets (s)
+A_true = [a1(:,1) a2(:,1)];                    % T x k: HRF-convolved regressors (drop intercept column)
 
-X = A_true * S_true + 0.3 * randn(T, V);       % mix + noise
+X = A_true * S_true + 0.3 * randn(T, V);       % mix + Gaussian noise (SD = 0.3)
 s1 * s2' / (norm(s1) * norm(s2))               % cosine ~0.4: maps not orthogonal
 ```
 :::
@@ -107,29 +131,37 @@ s1 * s2' / (norm(s1) * norm(s2))               % cosine ~0.4: maps not orthogona
 import numpy as np
 from scipy.stats import gamma
 
-rng = np.random.default_rng(7)
-T, V, TR = 200, 360, 2.0
+rng = np.random.default_rng(7)                # seed for reproducibility
+T, V, TR = 200, 360, 2.0                      # T = time points, V = voxels, TR = repetition time (s)
 
 # Two overlapping spatial maps (non-orthogonal sources)
 s1 = np.zeros(V); s1[0:150]  = 1              # "network" 1: voxels 1-150
 s2 = np.zeros(V); s2[90:255] = 1              # "network" 2: voxels 91-255 (overlap!)
-S_true = np.vstack([s1, s2])
+S_true = np.vstack([s1, s2])                  # k x V source-map matrix
 
 # Two event-related time courses via a double-gamma HRF
-t = np.arange(0, 32, TR)
-hrf = gamma.pdf(t, 6) - gamma.pdf(t, 16) / 6
+t = np.arange(0, 32, TR)                      # HRF support: 0-32 s, sampled every TR
+hrf = gamma.pdf(t, 6) - gamma.pdf(t, 16) / 6  # peak (~6 s) minus undershoot (~16 s)
+hrf = hrf / hrf.max()                         # normalize to peak 1 -> signal has ~unit amplitude
 def timecourse(onsets_s):
     stick = np.zeros(T); stick[(np.array(onsets_s) / TR).astype(int)] = 1
     return np.convolve(stick, hrf)[:T]
-A_true = np.column_stack([timecourse([20, 100, 180, 260, 340]),
-                          timecourse([60, 140, 220, 300, 380])])
+A_true = np.column_stack([timecourse([20, 100, 180, 260, 340]),   # network-1 event onsets (s)
+                          timecourse([60, 140, 220, 300, 380])])  # network-2 event onsets (s)
 
-X = A_true @ S_true + 0.3 * rng.standard_normal((T, V))   # mix + noise
-print(s1 @ s2 / (np.linalg.norm(s1) * np.linalg.norm(s2)))
+X = A_true @ S_true + 0.3 * rng.standard_normal((T, V))   # mix + Gaussian noise (SD = 0.3)
+cos = s1 @ s2 / (np.linalg.norm(s1) * np.linalg.norm(s2))
+print(f"cosine(map 1, map 2) = {cos:.2f}")
 # cosine ~0.4: the maps overlap, so they are not orthogonal
 ```
 :::
 ::::
+
+**Example output:** the two "network" maps are far from orthogonal — their cosine similarity is well above 0:
+
+```text
+cosine(map 1, map 2) = 0.38
+```
 
 **Step 2 — PCA mixes, ICA unmixes.** PCA (via SVD) captures the right two-dimensional subspace — the scree plot shows two components towering over the noise floor — but its orthogonal axes are rotated blends of the two correlated sources. FastICA, run on the same two-dimensional reduction, recovers maps that match the true sources almost perfectly.
 
@@ -139,10 +171,10 @@ print(s1 @ s2 / (np.linalg.norm(s1) * np.linalg.norm(s2)))
 
 ```matlab
 % PCA via SVD of the mean-centered data
-Xc = X - mean(X);
-[U, Ssv, Vsv] = svd(Xc, 'econ');
-var_explained = 100 * diag(Ssv).^2 / sum(diag(Ssv).^2);
-figure; plot(var_explained(1:10), 'ko-'); title('Scree plot');
+Xc = X - mean(X);                              % mean-center each voxel's time series
+[U, Ssv, Vsv] = svd(Xc, 'econ');               % economy SVD: Xc = U * Ssv * Vsv'
+var_explained = 100 * diag(Ssv).^2 / sum(diag(Ssv).^2);   % squared singular values -> % variance
+figure; plot(var_explained(1:10), 'ko-'); title('Scree plot');   % first 10 components
 
 pc_maps = Vsv(:, 1:2)';                        % eigenimages (rows)
 disp('|corr| between true sources and PCA maps:')
@@ -159,17 +191,23 @@ disp(abs(corr(S_true', pc_maps')))             % PCs blend the sources
 from sklearn.decomposition import FastICA
 
 # PCA via SVD of the mean-centered data
-Xc = X - X.mean(axis=0)
-U, sv, Vt = np.linalg.svd(Xc, full_matrices=False)
-var_explained = 100 * sv**2 / np.sum(sv**2)
+Xc = X - X.mean(axis=0)                       # mean-center each voxel's time series
+U, sv, Vt = np.linalg.svd(Xc, full_matrices=False)   # economy SVD: Xc = U @ diag(sv) @ Vt
+var_explained = 100 * sv**2 / np.sum(sv**2)   # squared singular values -> % variance
 print("Variance explained by PCs 1-4:", var_explained[:4].round(1))
 
-pc_maps = Vt[:2]                              # eigenimages (rows)
+import matplotlib.pyplot as plt
+plt.plot(np.arange(1, 11), var_explained[:10], 'ko-')   # scree plot: first 10 components
+plt.xlabel('component'); plt.ylabel('% variance explained'); plt.title('Scree plot')
+
+pc_maps = Vt[:2]                              # eigenimages (first 2 rows of V^T)
 print("|corr| true sources vs PCA maps:")
 print(np.abs(np.corrcoef(S_true, pc_maps)[:2, 2:]).round(2))  # blended
 
 # Spatial ICA: voxels are the samples, so decompose the transpose
-ica = FastICA(n_components=2, random_state=0, whiten="unit-variance")
+ica = FastICA(n_components=2,                 # k = 2 components (chosen from the scree plot)
+              random_state=0,                 # fixed seed: ICA results vary by initialization
+              whiten="unit-variance")         # whitening = the PCA pre-reduction step
 ic_maps = ica.fit_transform(Xc.T).T           # k x V independent spatial maps
 ic_time = ica.mixing_                         # T x k component time courses
 print("|corr| true sources vs ICA maps:")
@@ -177,6 +215,25 @@ print(np.abs(np.corrcoef(S_true, ic_maps)[:2, 2:]).round(2))  # ~1.0
 ```
 :::
 ::::
+
+**Example output:** two components tower over a flat noise floor in the scree plot, and the correlation matrices tell the story — each PC mixes both sources, while each IC matches exactly one:
+
+:::{figure} images/ch31_step2_output.png
+:alt: Scree plot with components 1 and 2 explaining about 23 and 12 percent of variance and all later components near 1 percent
+:width: 55%
+
+Scree plot of the simulated data: components 1 and 2 stand far above the flat noise floor, and an elbow appears at component 3. The MATLAB tab's plot is analogous.
+:::
+
+```text
+Variance explained by PCs 1-4: [23.4 12.2  1.   1. ]
+|corr| true sources vs PCA maps:
+[[0.58 0.78]
+ [0.73 0.68]]
+|corr| true sources vs ICA maps:
+[[0.98 0.05]
+ [0.05 0.98]]
+```
 
 You should see PCA map–source correlations well below 1 (each PC correlates with *both* sources), while each ICA map correlates near 1.0 with exactly one source. Same subspace, different axes — the independence criterion is what points the axes at the sources. The full labs complete the arc: reconstructing $X$ from rank-one layers, the scree/permutation view of dimensionality, and a mini dual regression that recovers subject-specific time courses and maps from a concatenated "group" dataset.
 

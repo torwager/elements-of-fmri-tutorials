@@ -30,15 +30,28 @@ subject: "Part 6: Brain Connectivity"
 
 Granger causality mapping uses multivariate time series to infer *directed* connectivity from **temporal precedence**: if knowing the past of region $X$ improves prediction of the present of region $Y$ — beyond what $Y$'s own past already provides — we say that $X$ *Granger causes* $Y$. The idea originated in economics, where Clive Granger proposed it as a pragmatic, testable stand-in for causality. Unlike structural equation models (Chapter 34) and dynamic causal models (Chapter 35), Granger causality does not require you to specify a structural model of which regions connect to which in advance. It simply asks, for any pair (or set) of regions, whether one series' history carries predictive information about the other. That makes it more exploratory than confirmatory — potentially most useful in the earlier stages of scientific inquiry, when you do not yet have strong hypotheses about network structure.
 
-The formal machinery is the **vector autoregressive (VAR) model**. Consider two (possibly multivariate) time series $X_t$ and $Y_t$, assumed stationary. First fit each series on its own past, using models of order $p$:
+The formal machinery is the **vector autoregressive (VAR) model**. Consider two (possibly multivariate) time series $X_t$ and $Y_t$, assumed stationary. First fit each series on its own past, using models of order $p$, where $p$ is the number of lags (past time points) included as predictors:
 
+::::{div}
+:class: eq-tip
 $$
 X_t = \sum_{j=1}^{p} A_j X_{t-j} + \epsilon_t, \qquad
 Y_t = \sum_{j=1}^{p} B_j Y_{t-j} + \eta_t
 $$
+:::{div}
+:class: eq-tip-text
+Xₜ, Yₜ — the two time series at time t · p — model order (number of lags) · Aⱼ, Bⱼ — coefficient matrices for self-influence at lag j · εₜ, ηₜ — zero-mean white-noise innovations
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $X_t$ *and* $Y_t$ *are the two (possibly multivariate) time series,* $p$ *is the model order (number of lags),* $A_j$ *and* $B_j$ *are coefficient matrices capturing the strength of self-influence at lag* $j$, *and* $\epsilon_t$ *and* $\eta_t$ *are zero-mean white-noise innovations with covariance matrices* $\Sigma_1$ *and* $\Sigma_2$.
+:::
 
-where $\epsilon_t$ and $\eta_t$ are zero-mean white noise with covariance matrices $\Sigma_1$ and $\Sigma_2$, and the coefficient matrices $A_j$ and $B_j$ capture the strength of self-influence at each lag $j$. Next, stack the two series into $Z_t = (X_t^{\top}, Y_t^{\top})^{\top}$ and fit a joint model:
+These models predict each series from its own history alone. Next, stack the two series into $Z_t = (X_t^{\top}, Y_t^{\top})^{\top}$ and fit a joint model:
 
+::::{div}
+:class: eq-tip
 $$
 Z_t = \sum_{j=1}^{p} C_j Z_{t-j} + \nu_t, \qquad
 \operatorname{Cov}(\nu_t) = \Sigma =
@@ -47,23 +60,54 @@ Z_t = \sum_{j=1}^{p} C_j Z_{t-j} + \nu_t, \qquad
 \Sigma_{yx} & \Sigma_{yy}
 \end{bmatrix}
 $$
+:::{div}
+:class: eq-tip-text
+Zₜ — the stacked series (Xₜ, Yₜ) · Cⱼ — joint coefficient matrix at lag j · νₜ — white-noise innovation vector · Σ — its covariance, with per-series blocks Σₓₓ, Σᵧᵧ and cross-series blocks Σₓᵧ, Σᵧₓ
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $Z_t$ *stacks the two series,* $C_j$ *is the joint coefficient matrix at lag* $j$, *and* $\nu_t$ *is a white-noise innovation vector whose covariance* $\Sigma$ *contains the per-series blocks* $\Sigma_{xx}$ *and* $\Sigma_{yy}$ *and the cross-series blocks* $\Sigma_{xy}$ *and* $\Sigma_{yx}$.
+:::
 
 The joint model lets the current value of each series depend on the past of *both*. If adding the cross-regressive terms significantly improves the fit — that is, if $Y$'s history predicts $X$ after controlling for $X$'s own history, or vice versa — a Granger-causal relationship is inferred. In practice this is a nested-model comparison: an F-test (or likelihood ratio test) of the full model against the restricted one.
 
 Geweke proposed an elegant way to quantify these influences using the innovation covariances. The **total linear dependence** between $X$ and $Y$ decomposes into three parts:
 
+::::{div}
+:class: eq-tip
 $$
 F_{X,Y} = \ln \frac{|\Sigma_1|\,|\Sigma_2|}{|\Sigma|}
         = F_{Y \to X} + F_{X \to Y} + F_{X \cdot Y}
 $$
+:::{div}
+:class: eq-tip-text
+F(X,Y) — total linear dependence between X and Y · |·| — matrix determinant · Σ₁, Σ₂ — innovation covariances of the separate models · Σ — innovation covariance of the joint model · F(Y→X), F(X→Y) — directed influences · F(X·Y) — instantaneous dependence
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $F_{X,Y}$ *is the total linear dependence,* $|\cdot|$ *denotes the matrix determinant,* $\Sigma_1$ *and* $\Sigma_2$ *are the innovation covariances of the separate models,* $\Sigma$ *is the innovation covariance of the joint model, and the three* $F$ *terms on the right are defined below.*
+:::
 
-where
+with the three components defined as
 
+::::{div}
+:class: eq-tip
 $$
 F_{Y \to X} = \ln \frac{|\Sigma_1|}{|\Sigma_{xx}|}, \qquad
 F_{X \to Y} = \ln \frac{|\Sigma_2|}{|\Sigma_{yy}|}, \qquad
 F_{X \cdot Y} = \ln \frac{|\Sigma_{xx}|\,|\Sigma_{yy}|}{|\Sigma|}
 $$
+:::{div}
+:class: eq-tip-text
+F(Y→X) — influence of Y's past on X · F(X→Y) — influence of X's past on Y · F(X·Y) — instantaneous (zero-lag) dependence · Σ₁, Σ₂ — innovation covariances of the separate models · Σₓₓ, Σᵧᵧ — per-series innovation covariances in the joint model · Σ — full joint innovation covariance
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $F_{Y \to X}$ *is the directed influence of* $Y$ *on* $X$, $F_{X \to Y}$ *the directed influence of* $X$ *on* $Y$, *and* $F_{X \cdot Y}$ *the instantaneous (zero-lag) dependence;* $\Sigma_1$ *and* $\Sigma_2$ *come from the separate models, and* $\Sigma_{xx}$, $\Sigma_{yy}$, *and* $\Sigma$ *from the joint model.*
+:::
 
 $F_{Y \to X}$ exceeds zero when past values of $Y$ improve prediction of the current $X$ (the joint model's innovation variance $|\Sigma_{xx}|$ shrinks below the restricted model's $|\Sigma_1|$), and symmetrically for $F_{X \to Y}$. The third term, $F_{X \cdot Y}$, captures *instantaneous* dependence — shared variance at zero lag that neither history explains. A common summary is the **difference** $F_{X \to Y} - F_{Y \to X}$, used to infer which region's history is the more influential.
 
@@ -87,22 +131,23 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 
 ```matlab
 % Simulate VAR(1): X -> Y at lag 1, no reverse influence
-rng(7);
-n = 400;
-A = [0.5 0.0; 0.4 0.5];          % X(t) <- 0.5*X(t-1);  Y(t) <- 0.4*X(t-1) + 0.5*Y(t-1)
-Z = zeros(n, 2);
+rng(7);                          % seed, for reproducibility
+n = 400;                         % time points (think: TRs)
+A = [0.5 0.0; ...                % X(t) <- 0.5*X(t-1)
+     0.4 0.5];                   % Y(t) <- 0.4*X(t-1) + 0.5*Y(t-1)
+Z = zeros(n, 2);                 % columns: X, Y
 for t = 2:n
-    Z(t, :) = (A * Z(t-1, :)')' + randn(1, 2);
+    Z(t, :) = (A * Z(t-1, :)')' + randn(1, 2);   % VAR(1) step + unit-variance noise
 end
 X = Z(:, 1); Y = Z(:, 2);
 
-% Granger test as a nested-model F-test (lag p = 1)
+% Granger test as a nested-model F-test (lag order p = 1)
 % Restricted: Y(t) ~ Y(t-1);  Full: Y(t) ~ Y(t-1) + X(t-1)
-T  = (2:n)';
+T  = (2:n)';                     % usable time points (drop t = 1)
 rr = Y(T) - [ones(size(T)) Y(T-1)] * ([ones(size(T)) Y(T-1)] \ Y(T));
 rf = Y(T) - [ones(size(T)) Y(T-1) X(T-1)] * ...
             ([ones(size(T)) Y(T-1) X(T-1)] \ Y(T));
-F  = ((rr'*rr - rf'*rf) / 1) / ((rf'*rf) / (numel(T) - 3));
+F  = ((rr'*rr - rf'*rf) / 1) / ((rf'*rf) / (numel(T) - 3));   % 1 lag tested; 3 params in full model
 p  = 1 - fcdf(F, 1, numel(T) - 3);
 fprintf('X -> Y:  F = %.1f, p = %.2g\n', F, p);   % large F, tiny p
 % Swap X and Y in the code above to test Y -> X (F near 0)
@@ -115,25 +160,36 @@ fprintf('X -> Y:  F = %.1f, p = %.2g\n', F, p);   % large F, tiny p
 import numpy as np
 from statsmodels.tsa.stattools import grangercausalitytests
 
-rng = np.random.default_rng(7)
-n = 400
-A = np.array([[0.5, 0.0],      # X(t) <- 0.5 X(t-1)
-              [0.4, 0.5]])     # Y(t) <- 0.4 X(t-1) + 0.5 Y(t-1)
-Z = np.zeros((n, 2))
+rng = np.random.default_rng(7)            # seed, for reproducibility
+n = 400                                   # time points (think: TRs)
+A = np.array([[0.5, 0.0],                 # X(t) <- 0.5 X(t-1)
+              [0.4, 0.5]])                # Y(t) <- 0.4 X(t-1) + 0.5 Y(t-1)
+Z = np.zeros((n, 2))                      # columns: X, Y
 for t in range(1, n):
-    Z[t] = A @ Z[t-1] + rng.standard_normal(2)
+    Z[t] = A @ Z[t-1] + rng.standard_normal(2)   # VAR(1) step + unit-variance noise
 X, Y = Z[:, 0], Z[:, 1]
 
 # grangercausalitytests: does column 2 Granger cause column 1?
-res_xy = grangercausalitytests(np.column_stack([Y, X]), maxlag=[1])
-res_yx = grangercausalitytests(np.column_stack([X, Y]), maxlag=[1])
-F_xy, p_xy, *_ = res_xy[1][0]["ssr_ftest"]   # X -> Y: F ~ 92, p ~ 1e-19
-F_yx, p_yx, *_ = res_yx[1][0]["ssr_ftest"]   # Y -> X: F ~ 0,  p ~ 0.99
+res_xy = grangercausalitytests(np.column_stack([Y, X]), maxlag=[1])  # X -> Y
+res_yx = grangercausalitytests(np.column_stack([X, Y]), maxlag=[1])  # Y -> X
+F_xy, p_xy, *_ = res_xy[1][0]["ssr_ftest"]
+F_yx, p_yx, *_ = res_yx[1][0]["ssr_ftest"]
+print(f"X -> Y:  F = {F_xy:7.1f},  p = {p_xy:.2g}   (true influence)")
+print(f"Y -> X:  F = {F_yx:7.4f},  p = {p_yx:.2g}   (no influence)")
 ```
 :::
 ::::
 
-**Step 2 — The HRF confound: equal neural coupling, unequal hemodynamic lags.** Now the neural coupling is perfectly symmetric ($0.3$ in both directions), but region 1's HRF peaks at ~4 s while region 2's peaks at ~7 s. At the BOLD level, Granger analysis confidently reports that the fast-HRF region drives the slow-HRF one — a directed influence that does not exist in the neural dynamics.
+**Example output:**
+
+```text
+X -> Y:  F =    89.9,  p = 2.3e-19   (true influence)
+Y -> X:  F =  0.0001,  p = 0.99   (no influence)
+```
+
+*(Exact values differ slightly between the Python and MATLAB versions because their random-number generators differ.)*
+
+**Step 2 — The HRF confound: equal neural coupling, unequal hemodynamic lags.** Now the neural coupling is perfectly symmetric ($0.3$ in both directions), but region 1's HRF peaks at ~4 s while region 2's peaks at ~7 s. (The MATLAB version generates the two response shapes with [SPM](https://www.fil.ion.ucl.ac.uk/spm/)'s `spm_hrf`.) At the BOLD level, Granger analysis confidently reports that the fast-HRF region drives the slow-HRF one — a directed influence that does not exist in the neural dynamics.
 
 ::::{tab-set}
 :::{tab-item} MATLAB
@@ -141,20 +197,34 @@ F_yx, p_yx, *_ = res_yx[1][0]["ssr_ftest"]   # Y -> X: F ~ 0,  p ~ 0.99
 
 ```matlab
 % Requires SPM12 on the path (for spm_hrf)
-TR = 1; n = 1000;
-As = [0.4 0.3; 0.3 0.4];                    % symmetric neural coupling
+TR = 1;                                     % sampling interval (s)
+n = 1000;                                   % time points
+As = [0.4 0.3; ...                          % symmetric neural coupling:
+      0.3 0.4];                             % 0.3 in BOTH directions
 Z = zeros(n, 2);
 for t = 2:n
-    Z(t, :) = (As * Z(t-1, :)')' + randn(1, 2);
+    Z(t, :) = (As * Z(t-1, :)')' + randn(1, 2);   % VAR(1) step + unit-variance noise
 end
 
-h_fast = spm_hrf(TR, [4 16 1 1 6 0 32]);    % HRF peaking early (~4 s)
+h_fast = spm_hrf(TR, [4 16 1 1 6 0 32]);    % HRF peaking early (~4 s); 1st parameter = delay
 h_slow = spm_hrf(TR, [7 16 1 1 6 0 32]);    % HRF peaking late  (~7 s)
-b1 = conv(Z(:, 1), h_fast); b1 = b1(1:n) + 0.05 * randn(n, 1);
-b2 = conv(Z(:, 2), h_slow); b2 = b2(1:n) + 0.05 * randn(n, 1);
+sd_noise = 0.05;                            % measurement-noise SD
+b1 = conv(Z(:, 1), h_fast); b1 = b1(1:n) + sd_noise * randn(n, 1);
+b2 = conv(Z(:, 2), h_slow); b2 = b2(1:n) + sd_noise * randn(n, 1);
 
-% Re-run the nested F-tests from Step 1 on b1, b2:
-% "fast -> slow" now shows a much larger F than "slow -> fast",
+% Re-run the nested F-test from Step 1 on the BOLD series, both directions
+T = (2:n)';                                 % usable time points
+for dir = 1:2
+    if dir == 1, tgt = b2; drv = b1; lab = 'fast -> slow';
+    else,        tgt = b1; drv = b2; lab = 'slow -> fast'; end
+    Xr = [ones(size(T)) tgt(T-1)];          % restricted: own past only
+    Xf = [Xr drv(T-1)];                     % full: + other region's past
+    rr = tgt(T) - Xr * (Xr \ tgt(T));
+    rf = tgt(T) - Xf * (Xf \ tgt(T));
+    F  = ((rr'*rr - rf'*rf) / 1) / ((rf'*rf) / (numel(T) - 3));
+    fprintf('BOLD %s:  F = %6.1f\n', lab, F);
+end
+% "fast -> slow" shows a much larger F than "slow -> fast",
 % even though the neural coupling is exactly symmetric.
 ```
 :::
@@ -162,28 +232,60 @@ b2 = conv(Z(:, 2), h_slow); b2 = b2(1:n) + 0.05 * randn(n, 1);
 :sync: python
 
 ```python
+import matplotlib.pyplot as plt
 from scipy.stats import gamma
 
-def hrf(t, peak):                            # double-gamma HRF
+def hrf(t, peak):                           # double-gamma HRF, peak-normalized
     h = gamma.pdf(t, peak) - gamma.pdf(t, 16) / 6
     return h / h.max()
 
-t_hrf = np.arange(0, 30, 1.0)               # TR = 1 s
-h_fast, h_slow = hrf(t_hrf, 4.0), hrf(t_hrf, 7.0)
+t_hrf = np.arange(0, 30, 1.0)               # 30-s HRF grid at TR = 1 s
+h_fast, h_slow = hrf(t_hrf, 4.0), hrf(t_hrf, 7.0)   # peaks ~4 s vs ~7 s
 
-As = np.array([[0.4, 0.3], [0.3, 0.4]])     # symmetric neural coupling
-Z = np.zeros((1000, 2))
-for t in range(1, 1000):
-    Z[t] = As @ Z[t-1] + rng.standard_normal(2)
+n2 = 1000                                   # time points (TR = 1 s)
+As = np.array([[0.4, 0.3],                  # symmetric neural coupling:
+               [0.3, 0.4]])                 # 0.3 in BOTH directions
+Zn = np.zeros((n2, 2))
+for t in range(1, n2):
+    Zn[t] = As @ Zn[t-1] + rng.standard_normal(2)   # VAR(1) step + unit-variance noise
 
-b1 = np.convolve(Z[:, 0], h_fast)[:1000] + 0.05 * rng.standard_normal(1000)
-b2 = np.convolve(Z[:, 1], h_slow)[:1000] + 0.05 * rng.standard_normal(1000)
+sd_noise = 0.05                             # measurement-noise SD
+bold1 = np.convolve(Zn[:, 0], h_fast)[:n2] + sd_noise * rng.standard_normal(n2)
+bold2 = np.convolve(Zn[:, 1], h_slow)[:n2] + sd_noise * rng.standard_normal(n2)
 
-grangercausalitytests(np.column_stack([b2, b1]), maxlag=[1])  # fast -> slow: huge F
-grangercausalitytests(np.column_stack([b1, b2]), maxlag=[1])  # slow -> fast: modest F
+zs = lambda v: (v - v.mean()) / v.std()     # z-score, for plotting on one axis
+fig, ax = plt.subplots(figsize=(8, 3))
+ax.plot(zs(bold1)[100:200], label="BOLD region 1 (fast HRF)")
+ax.plot(zs(bold2)[100:200], label="BOLD region 2 (slow HRF)")
+ax.set(xlabel="time (s)", ylabel="z-scored signal",
+       title="Region 1 leads region 2 — for purely vascular reasons")
+ax.legend(frameon=False)
+
+F12, p12, *_ = grangercausalitytests(np.column_stack([bold2, bold1]),
+                                     maxlag=[1])[1][0]["ssr_ftest"]  # fast -> slow
+F21, p21, *_ = grangercausalitytests(np.column_stack([bold1, bold2]),
+                                     maxlag=[1])[1][0]["ssr_ftest"]  # slow -> fast
+print(f"BOLD fast -> slow:  F = {F12:6.1f},  p = {p12:.2g}")
+print(f"BOLD slow -> fast:  F = {F21:6.1f},  p = {p21:.2g}")
 ```
 :::
 ::::
+
+**Example output:**
+
+```{figure} ./images/ch36_step2_output.png
+:alt: Two z-scored BOLD time series in which the fast-HRF region visibly leads the slow-HRF region
+:width: 100%
+
+The two observed BOLD series over a 100-s window. Region 1 (fast HRF) visibly leads region 2 (slow HRF) — for purely vascular reasons: the underlying neural coupling is exactly symmetric.
+```
+
+```text
+BOLD fast -> slow:  F =  306.4,  p = 5.1e-60
+BOLD slow -> fast:  F =   99.4,  p = 2.2e-22
+```
+
+Both directions are "significant" (the symmetric coupling is real), but the fast-HRF region appears to drive the slow-HRF region about three times more strongly than the reverse — an asymmetry that exists only in the measurement, not in the neural dynamics.
 
 The full labs push both steps further: they compute Geweke's directed-influence measures $F_{X \to Y}$ and $F_{Y \to X}$ from restricted-vs-full residual variances, verify that the *neural* series in Step 2 are symmetric while the *BOLD* series are not, and show that deconvolving each region with its own HRF before testing removes the spurious asymmetry (at a real cost in sensitivity).
 

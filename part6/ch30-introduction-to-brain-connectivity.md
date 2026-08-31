@@ -28,15 +28,16 @@ subject: "Part 6: Brain Connectivity"
 
 ## Overview
 
-Most of the methods in earlier parts of this book produce univariate brain maps: at each voxel, we ask whether activity differs across task conditions or people. Those maps speak to *functional specialization* — what local neuronal populations encode. Brain connectivity addresses a complementary question about *functional integration*: how regions are organized into pathways and networks, and how they work together. This shift became dominant with the rise of resting-state fMRI (rs-fMRI), where there is no task and thus no predictors for a GLM — the relationships among regions themselves become the object of study. The units of analysis multiply accordingly: individual connections between nodes (voxels, surface vertices, or ROIs/"parcels"), pathways, components or "modes" with common sources, whole networks, and higher-order network characteristics can all be related to stimuli, behavior, and clinical status. This power comes with a cost: the number of possible connections grows with $p^2$ for $p$ nodes, so connectivity analyses can dramatically increase the number of tests performed, and handling this multiplicity is a central concern.
+Most of the methods in earlier parts of this book produce univariate brain maps: at each voxel, we ask whether activity differs across task conditions or people. Those maps speak to *functional specialization* — what local neuronal populations encode. Brain connectivity addresses a complementary question about *functional integration*: how regions are organized into pathways and networks, and how they work together. This shift became dominant with the rise of resting-state fMRI (rs-fMRI), where there is no task and thus no predictors for a GLM — the relationships among regions themselves become the object of study. The units of analysis multiply accordingly: individual connections between nodes (voxels, surface vertices, or ROIs/"parcels"), pathways, components or "modes" with common sources, whole networks, and higher-order network characteristics can all be related to stimuli, behavior, and clinical status. This power comes with a cost: the number of possible connections grows with $p^2$, where $p$ is the number of nodes, so connectivity analyses can dramatically increase the number of tests performed, and handling this multiplicity is a central concern.
 
 "Connectivity" is an umbrella term, and it is standard to distinguish three flavors. **Structural connectivity** describes how regions are physically wired together by axonal fiber tracts, typically measured with diffusion-weighted MRI and tractography. **Functional connectivity** is defined as the *undirected* statistical association between two or more fMRI time series — it makes statements about the structure of relationships among regions without assuming a direction of influence. **Effective connectivity** is the *directed* influence of one region on the physiological activity recorded in another; it is inherently model-dependent and aims at causal claims.
 
 :::{figure} images/ch30_fig1_connectivity_types.png
 :alt: Three panels illustrating structural connectivity via tractography, functional connectivity via a graphical model, and effective connectivity via a directed dynamic causal model
 :width: 95%
+:class: book-figure
 
-Three varieties of brain connectivity. Structural connectivity (left) describes physical wiring, here from diffusion MRI tractography. Functional connectivity (center) describes undirected statistical associations among regions, here as a graphical model. Effective connectivity (right) describes directed influences among a small set of regions, here from a dynamic causal model. *(Figure 30.1 from the book.)*
+Three varieties of brain connectivity. Structural connectivity (left) describes physical wiring, here from diffusion MRI tractography. Functional connectivity (center) describes undirected statistical associations among regions, here as a graphical model. Effective connectivity (right) describes directed influences among a small set of regions, here from a dynamic causal model. *(Figure 30.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Designing a connectivity analysis means navigating a series of interlocking choices:
@@ -52,13 +53,14 @@ Designing a connectivity analysis means navigating a series of interlocking choi
 - **Pairwise measures or network summaries?** Graph-theoretic statistics (path length, centrality, and others) summarize higher-order structure.
 - **Rest or task?** A common connectivity "backbone" is conserved across states, but networks also reconfigure during tasks, and naturalistic paradigms may be more predictive of behavior.
 
-The simplest functional connectivity analyses are built on bivariate correlations. In **seed-based connectivity**, one extracts the time series from an a-priori seed region and correlates it with every other voxel in the brain, producing a connectivity map per person that can enter group-level tests — for example, comparing task states or patient groups. Homologous regions such as left and right motor cortex can correlate remarkably strongly at rest (r ≈ 0.9 in Human Connectome Project data), which is the empirical bedrock of the whole enterprise.
+The simplest functional connectivity analyses are built on bivariate correlations. In **seed-based connectivity**, one extracts the time series from an a-priori seed region and correlates it with every other voxel in the brain, producing a connectivity map per person that can enter group-level tests — for example, comparing task states or patient groups. Homologous regions such as left and right motor cortex can correlate remarkably strongly at rest (r ≈ 0.9 in [Human Connectome Project](https://www.humanconnectome.org) (HCP) data), which is the empirical bedrock of the whole enterprise.
 
 :::{figure} images/ch30_fig2_seed_connectivity.png
 :alt: Left and right motor cortex resting-state time series correlate highly; seed correlation maps from several subjects are combined into a group statistic map
 :width: 90%
+:class: book-figure
 
-Two types of functional connectivity. (A) Resting-state time series from left and right motor cortex in one Human Connectome Project participant correlate very highly. (B) Seed connectivity: each voxel's time series is correlated with a seed region (left motor cortex) in each subject, and the resulting maps are submitted to a group statistical test. *(Figure 30.2 from the book.)*
+Two types of functional connectivity. (A) Resting-state time series from left and right motor cortex in one Human Connectome Project participant correlate very highly. (B) Seed connectivity: each voxel's time series is correlated with a seed region (left motor cortex) in each subject, and the resulting maps are submitted to a group statistical test. *(Figure 30.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Generalizing from one seed to all pairs of nodes yields the **functional connectome** — a node-by-node connectivity matrix per person. Ordering the nodes by network membership reveals the block structure of resting-state networks (RSNs), such as the seventeen cortical networks identified by Yeo and colleagues from ~1,000 individuals. Connectomes support further analyses, from graph theory to *connectome fingerprinting*: identifying individuals by matching their connectome from one scan to another. Identification rates around 94% in HCP data demonstrate that correlation-based connectivity is stable and reliable enough to act as an individual signature.
@@ -66,15 +68,27 @@ Generalizing from one seed to all pairs of nodes yields the **functional connect
 :::{figure} images/ch30_fig3_functional_connectome.png
 :alt: A region-by-region functional connectome matrix with network block structure, and cortical surface maps of functional networks
 :width: 60%
+:class: book-figure
 
-Functional connectomes. (A) Region-by-region correlation matrix spanning the cortex, with nodes grouped by functional network (colored bars). (B) Coherent functional networks identified from resting-state fMRI in approximately 1,000 individuals. *(Figure 30.3 from the book.)*
+Functional connectomes. (A) Region-by-region correlation matrix spanning the cortex, with nodes grouped by functional network (colored bars). (B) Coherent functional networks identified from resting-state fMRI in approximately 1,000 individuals. *(Figure 30.3 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Bivariate correlation has a well-known Achilles heel: a third variable related to both time series can create an association where no direct relationship exists. The third variable may be another brain region — A and C may correlate only because both are connected to B — or a **shared nuisance signal**: head motion, respiration and cardiac cycles, and scanner drift all inject common variance into time series brain-wide, inflating functional connectivity estimates. Two complementary defenses are standard. First, *nuisance regression*: before computing correlations, remove motion estimates, ventricle and white-matter signals, and drift from every time series (with temporal filtering handled consistently with the regression), which is exactly what connectivity preprocessing pipelines do. Second, *partial correlation*, which measures the association between two variables controlling for others:
 
+::::{div}
+:class: eq-tip
 $$
 r_{AB \cdot C} = \frac{r_{AB} - r_{AC}\, r_{BC}}{\sqrt{(1 - r_{AC}^2)(1 - r_{BC}^2)}}
 $$
+:::{div}
+:class: eq-tip-text
+r_AB·C — partial correlation of regions A and B controlling for C · r_AB, r_AC, r_BC — pairwise Pearson correlations among the three time series
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $r_{AB \cdot C}$ *is the partial correlation between regions A and B controlling for the third variable C (another region or a nuisance signal), and* $r_{AB}$, $r_{AC}$, *and* $r_{BC}$ *are the pairwise Pearson correlations among the three time series.*
+:::
 
 Partial correlations become unstable as the number of controlled variables grows, and regularized inverse-covariance estimators are often used instead, generally outperforming full correlations. Vascular differences across regions pose yet another threat: time series can fail to line up even when neural activity does. Trial-level ("beta series") connectivity — correlating single-trial GLM amplitude estimates rather than raw time series — mitigates inter-region differences in neurovascular coupling, at the cost of requiring a task design.
 
@@ -96,14 +110,17 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 
 ```matlab
 % Simulate 12 ROIs in 3 networks (4 ROIs each), 240 volumes
-rng(30);
-n_t = 240; n_net = 3; roi_per = 4; n_roi = n_net * roi_per;
+rng(30);            % fix the random seed for reproducibility
+n_t = 240;          % n_t = time points (volumes); ~8 min at TR = 2 s
+n_net = 3;          % n_net = number of networks (communities)
+roi_per = 4;        % roi_per = ROIs per network
+n_roi = n_net * roi_per;   % total ROIs (12)
 
 latent = randn(n_t, n_net);                      % one latent signal per network
 for k = 1:6, latent = conv2(latent, ones(5,1)/5, 'same'); end   % make it slow
 latent = zscore(latent);
 
-Y = 0.8 * kron(latent, ones(1, roi_per)) + randn(n_t, n_roi);
+Y = 0.8 * kron(latent, ones(1, roi_per)) + randn(n_t, n_roi);   % 0.8 = network-signal strength vs. unit noise
 
 R = corr(Y);                                     % full correlation matrix
 figure; imagesc(R, [-1 1]); axis square; colorbar
@@ -119,15 +136,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage import uniform_filter1d
 
-rng = np.random.default_rng(30)
-n_t, n_net, roi_per = 240, 3, 4
-n_roi = n_net * roi_per
+rng = np.random.default_rng(30)                  # fix the random seed for reproducibility
+n_t, n_net, roi_per = 240, 3, 4                  # n_t = volumes (~8 min at TR = 2 s); n_net = networks; roi_per = ROIs per network
+n_roi = n_net * roi_per                          # total ROIs (12)
 
 latent = rng.standard_normal((n_t, n_net))       # one latent signal per network
 latent = uniform_filter1d(latent, 15, axis=0)    # make it slow
 latent = (latent - latent.mean(0)) / latent.std(0)
 
-Y = 0.8 * np.repeat(latent, roi_per, axis=1) + rng.standard_normal((n_t, n_roi))
+Y = 0.8 * np.repeat(latent, roi_per, axis=1) + rng.standard_normal((n_t, n_roi))   # 0.8 = network-signal strength vs. unit noise
 
 R = np.corrcoef(Y.T)                             # full correlation matrix
 plt.imshow(R, vmin=-1, vmax=1, cmap="RdBu_r")
@@ -136,6 +153,15 @@ plt.xlabel("ROI"); plt.ylabel("ROI")
 ```
 :::
 ::::
+
+**Example output:**
+
+:::{figure} images/ch30_step1_output.png
+:alt: Twelve-by-twelve correlation matrix with three bright within-network blocks along the diagonal and near-zero between-network entries
+:width: 55%
+
+The 12 × 12 parcellated FC matrix: three bright within-network blocks along the diagonal, near-zero correlations elsewhere.
+:::
 
 You should see three bright blocks on the diagonal — the network community structure — against near-zero between-network correlations.
 
@@ -147,8 +173,8 @@ You should see three bright blocks on the diagonal — the network community str
 
 ```matlab
 % Shared nuisance signal (e.g., respiration/slow motion) hits every ROI
-g = zscore(conv(randn(n_t,1), ones(20,1)/20, 'same'));
-Y_bad = Y + 1.2 * g * ones(1, n_roi);
+g = zscore(conv(randn(n_t,1), ones(20,1)/20, 'same'));   % smooth over 20 volumes -> slow nuisance signal
+Y_bad = Y + 1.2 * g * ones(1, n_roi);                    % 1.2 = artifact amplitude vs. unit noise
 
 % Nuisance regression: residualize each ROI on [g, intercept]
 % (on real data, see canlab_connectivity_preproc for the full pipeline)
@@ -165,9 +191,9 @@ fprintf('Mean off-diagonal r: true %.3f | contaminated %.3f | cleaned %.3f\n', .
 
 ```python
 # Shared nuisance signal (e.g., respiration/slow motion) hits every ROI
-g = uniform_filter1d(rng.standard_normal(n_t), 20)
-g = (g - g.mean()) / g.std()
-Y_bad = Y + 1.2 * np.outer(g, np.ones(n_roi))
+g = uniform_filter1d(rng.standard_normal(n_t), 20)   # smooth over 20 volumes -> slow nuisance signal
+g = (g - g.mean()) / g.std()                         # z-score the nuisance signal
+Y_bad = Y + 1.2 * np.outer(g, np.ones(n_roi))        # 1.2 = artifact amplitude vs. unit noise
 
 # Nuisance regression: residualize each ROI on [g, intercept]
 Xn = np.column_stack([g, np.ones(n_t)])
@@ -181,6 +207,12 @@ print(f"Mean off-diagonal r: true {np.corrcoef(Y.T)[off].mean():.3f} | "
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+Mean off-diagonal r: true 0.123 | contaminated 0.533 | cleaned 0.130
+```
 
 The contaminated matrix shows spuriously elevated correlations *everywhere* — including between networks that are truly unconnected — and nuisance regression restores estimates close to the truth. The full labs extend the arc: a seed correlation map over a simulated voxel grid, full vs. partial correlation in a chain network (why A and C can correlate without being directly connected), and a split-half reliability analysis showing how FC estimates stabilize with scan duration.
 

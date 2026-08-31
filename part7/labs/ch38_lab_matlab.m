@@ -1,4 +1,5 @@
 %% Chapter 38 Lab — Machine Learning Principles and Algorithms (MATLAB)
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part7/ch38-machine-learning-principles-and-algorithms
 %[text] This lab makes the core principles of machine learning concrete with small
 %[text] simulations: the U-shaped test error curve and the bias–variance tradeoff,
 %[text] ridge vs. lasso regularization paths, cross-validation done wrong vs. right
@@ -14,17 +15,17 @@
 %[text] small training set, and evaluate on an independent test set. Training error
 %[text] only falls as complexity grows; test error falls, bottoms out, then rises.
 
-rng(2026);
-f_true = @(x) sin(2*x);
+rng(2026);                                    % seed for reproducibility
+f_true = @(x) sin(2*x);                       % true function generating the data
 sigma = 0.4;                                  % noise SD
 
-n_train = 30; n_test = 400;
+n_train = 30; n_test = 400;                   % small training set, large test set
 x_train = 4 * rand(n_train, 1);
 y_train = f_true(x_train) + sigma * randn(n_train, 1);
 x_test  = 4 * rand(n_test, 1);
 y_test  = f_true(x_test) + sigma * randn(n_test, 1);
 
-degrees = 1:12;
+degrees = 1:12;                               % complexity levels to sweep
 [train_mse, test_mse] = deal(zeros(size(degrees)));
 fits = cell(1, numel(degrees));
 
@@ -67,9 +68,9 @@ fprintf('Best test-set degree: %d\n', best);
 %[text] a simple model is consistently wrong (high bias, low variance); a complex
 %[text] model is wildly different every time (low bias, high variance).
 
-n_sims = 50;
-xx = linspace(0.1, 3.9, 200)';
-show_degrees = [1 3 12];
+n_sims = 50;                                  % number of re-drawn training sets
+xx = linspace(0.1, 3.9, 200)';                % grid for evaluating fitted curves
+show_degrees = [1 3 12];                      % underfit, about right, overfit
 
 figure('Color', 'w');
 for i = 1:numel(show_degrees)
@@ -99,14 +100,14 @@ end
 %[text] smoothly but never to exactly zero; lasso (L1 penalty, sum of absolute
 %[text] weights) drives unimportant coefficients exactly to zero (sparsity).
 
-n = 80; p = 40; p_true = 5;
+n = 80; p = 40; p_true = 5;                    % n = observations, p = features, p_true = truly predictive
 latent = randn(n, 1);                          % shared factor -> correlated features
 X = 0.6 * latent + randn(n, p);
 X = zscore(X);
 w_true = zeros(p, 1); w_true(1:p_true) = [3 -2.5 2 -1.5 1]';
 y = X * w_true + randn(n, 1);
 
-lambdas = logspace(-2, 3, 60);
+lambdas = logspace(-2, 3, 60);                 % regularization strengths, log-spaced
 
 % Ridge path (ridge() returns standardized-scale coefficients when flag = 0 is
 % omitted; use flag = 1 for coefficients on the standardized X we built)
@@ -149,7 +150,8 @@ disp(unique(sum(abs(lasso_coefs) > 1e-8))');
 %[text] features on ALL the data before CV leaks test information and produces
 %[text] far-above-chance 'accuracy'; re-selecting inside each fold is honest.
 
-n = 50; p = 2000; k_feats = 20; n_datasets = 20;
+n = 50; p = 2000; k_feats = 20; n_datasets = 20;   % n = participants, p = noise features,
+                                                   % k_feats = features kept, n_datasets = repeats
 [acc_wrong, acc_right] = deal(zeros(n_datasets, 1));
 
 for s = 1:n_datasets
@@ -209,8 +211,8 @@ title('Feature-selection leakage on pure-noise data');
 %[text] (github.com/canlab/ComputationalFoundations). Requires CanlabCore for
 %[text] create_figure and roc_plot; or use perfcurve from the Statistics Toolbox.
 
-n_per = 200;
-labels = [zeros(n_per, 1); ones(n_per, 1)];
+n_per = 200;                                  % observations per class
+labels = [zeros(n_per, 1); ones(n_per, 1)];   % 0 = class A, 1 = class B
 
 scores_good = [randn(n_per, 1); 1.5 + randn(n_per, 1)];   % informative, d' = 1.5
 scores_null = [randn(n_per, 1); 0.0 + randn(n_per, 1)];   % uninformative, d' = 0

@@ -10,7 +10,7 @@ subject: "Part 4: Signal Processing and Analysis"
 - What an fMRI analysis pipeline is: the structural and functional processing sequences, their interdependencies, and why the order of operations matters
 - How analytic flexibility — the "garden of forking paths" — creates thousands of defensible pipelines, and what studies like Carp (2012) and NARPS revealed about the resulting variability
 - Why researcher degrees of freedom inflate false positive rates when pipelines are explored but only the "best" one is reported
-- How standardized pipelines (fMRIPrep), data standards (BIDS), workflow tools (nipype), and compute containers improve reproducibility
+- How standardized pipelines ([fMRIPrep](https://fmriprep.org)), data standards (BIDS), workflow tools (nipype), and compute containers improve reproducibility
 - Best practices for protecting your own results: preregistration, multiverse-style reporting, and complete pipeline description (COBIDAS)
 :::
 
@@ -33,25 +33,60 @@ Researchers rarely analyze fMRI data with a single tool. Instead, they chain man
 :::{figure} images/ch24_fig1_preprocessing_pipeline.png
 :alt: Flowchart of an fMRI preprocessing pipeline with parallel structural and functional processing streams and dependencies between them
 :width: 80%
+:class: book-figure
 
-An fMRI preprocessing pipeline, including structural (T1) and functional processing sequences. Dashed lines show dependencies across streams — for example, normalization parameters estimated from the T1 are applied to the functional images. *(Figure 24.1 from the book.)*
+An fMRI preprocessing pipeline, including structural (T1) and functional processing sequences. Dashed lines show dependencies across streams — for example, normalization parameters estimated from the T1 are applied to the functional images. *(Figure 24.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Pipelines vary in which steps are included, the software used for each step, the parameters chosen, and — crucially — the **order of operations**. Most operations are not commutative, so order changes results: high-pass filtering after motion correction can reintroduce motion artifacts, while motion correction after filtering can reintroduce low-frequency signals, unless care is taken to prevent both. And in many cases there is no single best order — groups still disagree about whether slice-timing correction should precede or follow realignment (or be done at all), because the two steps are interdependent and either ordering creates its own problems. Resting-state and task pipelines also diverge in temporal preprocessing: bandpass filtering, CompCor, and sometimes global signal regression are common for resting-state data, while task studies more often apply spatial smoothing (especially when random field theory will be used later). In practice, steps are often chosen for availability and ease of use, on the implicit assumption that results are robust to these choices. That assumption is worth questioning — particularly when studying populations other than young healthy adults.
 
 How much do these choices matter? Carp took a single response-inhibition dataset and analyzed it under combinations of common preprocessing and modeling options — despiking, slice timing, three normalization schemes, three smoothing kernels, filtering, autocorrelation correction, run concatenation, three basis sets, several motion-regression schemes, and five thresholding approaches. The combinations yielded **34,560 unique pipelines** and as many thresholded activation maps. Results showed both consistency and variability: many pipelines activated the same general regions, but peak locations scattered widely within them, some regions were far more pipeline-sensitive than others, and extra activation appeared across much of the brain. Because published papers often under-describe their pipelines, no one knows how many distinct pipelines exist in the literature — but it is far more than Carp explored.
 
-The **NARPS study** (Botvinik-Nezer and colleagues) tested this "in the wild": 70 independent research teams analyzed the same decision-making dataset and tested the same a priori hypotheses. For the well-established hypothesis of a positive parametric effect of monetary gain in vmPFC, only **37.1% of teams** reported a significant result. Encouragingly, the underlying unthresholded statistical patterns were far more stable across teams than the thresholded conclusions — pointing to stringently thresholded maps as a central culprit. Larger samples help but are not always feasible; multivariate pattern-based approaches (Chapters 37–40) offer another path, using the whole spatial pattern for estimation and prediction rather than thresholded tests of individual voxels. Related work by Marek and colleagues found that multivariate methods captured about four times more individual-difference variance in psychological outcomes than univariate methods. Even holding the pipeline fixed does not eliminate variability: Bowring and colleagues re-analyzed the same studies in AFNI, FSL, and SPM and found that strongly activated areas agreed, but the non-extreme values — and hence the thresholded maps — differed clearly, and even the operating system can nudge results.
+The **NARPS study** (Botvinik-Nezer and colleagues) tested this "in the wild": 70 independent research teams analyzed the same decision-making dataset and tested the same a priori hypotheses. For the well-established hypothesis of a positive parametric effect of monetary gain in vmPFC, only **37.1% of teams** reported a significant result. Encouragingly, the underlying unthresholded statistical patterns were far more stable across teams than the thresholded conclusions — pointing to stringently thresholded maps as a central culprit. Larger samples help but are not always feasible; multivariate pattern-based approaches (Chapters 37–40) offer another path, using the whole spatial pattern for estimation and prediction rather than thresholded tests of individual voxels. Related work by Marek and colleagues found that multivariate methods captured about four times more individual-difference variance in psychological outcomes than univariate methods. Even holding the pipeline fixed does not eliminate variability: Bowring and colleagues re-analyzed the same studies in AFNI, FSL, and [SPM](https://www.fil.ion.ucl.ac.uk/spm/) and found that strongly activated areas agreed, but the non-extreme values — and hence the thresholded maps — differed clearly, and even the operating system can nudge results.
 
 This analytic flexibility is an instance of **researcher degrees of freedom** — the garden of forking paths that runs through every scientific discipline. When researchers can explore many pipelines and report only the one that "worked," each fork adds unacknowledged multiplicity: false positive rates inflate well beyond the nominal level, and results become dependent on undisclosed methodological decisions. The danger is not fraud but ordinary selective reporting — trying variants until the story is clean, then describing only the final analysis.
 
-These challenges have driven the field toward **standardization**. Tools like nibabel (image format conversion) and nipype (chaining tools across packages and languages) let pipelines "speak the same language," and modern shared pipelines like **fMRIPrep** combine well-tested algorithms from FSL, ANTs, FreeSurfer, and AFNI into a robust, portable workflow. Large consortia — UK Biobank, ABCD, HCP, ENIGMA — publish reusable pipelines of their own. The **Brain Imaging Data Structure (BIDS)** standardizes file names, folder hierarchies, and metadata so that "BIDS apps" run on almost any dataset, and compute containers (Docker, Singularity) package software with its operating system so a pipeline runs identically anywhere. Beyond efficiency, these tools bring battle-testing by large user communities, high-quality visual QC reports, and standardized derivatives that can be shared in open repositories such as OpenNeuro. Best practice ties it together: verify that a standardized pipeline suits *your* images and population; fix the pipeline before seeing the results (preregistration), clearly labeling any exploratory deviations; validate findings on independent data when possible; share data, code, and unthresholded statistical maps; and describe the pipeline completely, following reporting guidelines such as the OHBM COBIDAS report.
+These challenges have driven the field toward **standardization**. Tools like nibabel (image format conversion) and nipype (chaining tools across packages and languages) let pipelines "speak the same language," and modern shared pipelines like **fMRIPrep** combine well-tested algorithms from FSL, ANTs, FreeSurfer, and AFNI into a robust, portable workflow. Large consortia — [UK Biobank](https://www.ukbiobank.ac.uk), [ABCD](https://abcdstudy.org), [HCP](https://www.humanconnectome.org), ENIGMA — publish reusable pipelines of their own. The **Brain Imaging Data Structure (BIDS)** standardizes file names, folder hierarchies, and metadata so that "BIDS apps" run on almost any dataset, and compute containers (Docker, Singularity) package software with its operating system so a pipeline runs identically anywhere. Beyond efficiency, these tools bring battle-testing by large user communities, high-quality visual QC reports, and standardized derivatives that can be shared in open repositories such as [OpenNeuro](https://openneuro.org). Best practice ties it together: verify that a standardized pipeline suits *your* images and population; fix the pipeline before seeing the results (preregistration), clearly labeling any exploratory deviations; validate findings on independent data when possible; share data, code, and unthresholded statistical maps; and describe the pipeline completely, following reporting guidelines such as the OHBM COBIDAS report.
 
 ## Hands-on tutorial
 
 In this tutorial you will run a **mini-multiverse analysis**: one simulated study — 24 subjects with a *real* task effect, plus drift, autocorrelated noise, and motion-like spikes — analyzed through a factorial grid of defensible pipeline choices (high-pass cutoff × smoothing × outlier handling × autocorrelation correction, 3 × 3 × 2 × 2 = 36 variants). The full labs build every pipeline component from scratch; here are the two key steps.
 
 **Step 1 — Run the same data through every pipeline variant.** Each variant fits a first-level GLM per subject and carries the task beta at an a priori voxel to a group one-sample t-test. (The helper that applies one pipeline variant to one subject — filtering, smoothing, spike regressors, AR(1) prewhitening — is built step by step in the full labs.)
+
+Each first-level fit is the GLM of Chapter 18, with noise the pipeline may or may not model:
+
+::::{div}
+:class: eq-tip
+$$
+y = X\beta + \varepsilon, \qquad \varepsilon_t = \phi\,\varepsilon_{t-1} + u_t
+$$
+:::{div}
+:class: eq-tip-text
+y — voxel time series · X — design matrix (task, intercept, optional drift + spike regressors) · β — regression coefficients · ε — noise · φ — lag-1 autocorrelation · uₜ — white innovation at time t
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $y$ *is one voxel's time series,* $X$ *the first-level design matrix (task regressor, intercept, and — depending on the variant — drift and spike regressors),* $\beta$ *the coefficient vector, and* $\varepsilon$ *AR(1) noise with lag-1 autocorrelation* $\phi$ *(here* $\phi = 0.45$*), driven by white innovations* $u_t$*.*
+:::
+
+The estimated task beta at the a priori voxel then goes into a group one-sample t-test:
+
+::::{div}
+:class: eq-tip
+$$
+t = \frac{\bar{\hat{\beta}}_{\text{task}}}{s_{\hat{\beta}} / \sqrt{n}}
+$$
+:::{div}
+:class: eq-tip-text
+t — group t-statistic · β̂_task — subjects' task betas at the a priori voxel · s_β̂ — standard deviation of the betas across subjects · n — number of subjects (24)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\bar{\hat{\beta}}_{\text{task}}$ *is the mean of the subjects' estimated task betas,* $s_{\hat{\beta}}$ *their standard deviation across subjects, and* $n = 24$ *the number of subjects. Every pipeline variant changes* $X$ *and the fitting procedure — and therefore the betas — while the data stay identical.*
+:::
 
 :::{note}
 The tabs below are **static previews** (with copy buttons) showing the key step in each language. To run and modify this code, use the [interactive in-browser lab](./labs/ch24-lab-python.ipynb) or the Colab / MATLAB Online links above.
@@ -64,17 +99,17 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % Requires CanlabCore + SPM12 (onsets2fmridesign for the task regressor)
 % Adapted from CANlab tutorials (github.com/canlab)
-hp_opts      = [Inf 128 64];    % high-pass cutoff (s); Inf = none
+hp_opts      = [Inf 128 64];    % high-pass cutoffs (s); Inf = no filtering
 fwhm_opts    = [0 4 8];         % smoothing FWHM (mm)
 despike_opts = [false true];    % spike regressors?
 ar1_opts     = [false true];    % AR(1) prewhitening?
 
-results = table();
+results = table();              % one row per pipeline variant
 for hp = hp_opts
   for fwhm = fwhm_opts
     for despike = despike_opts
       for ar1 = ar1_opts
-        betas = zeros(n_sub, 1);
+        betas = zeros(n_sub, 1);   % task beta at the a priori voxel, per subject
         for s = 1:n_sub    % one subject through one pipeline variant
             betas(s) = first_level_beta(squeeze(data(s,:,:)), task, ...
                 TR, hp, fwhm, vox_mm, despike, ar1, peak_vox);
@@ -98,12 +133,12 @@ import itertools
 import numpy as np, pandas as pd
 from scipy import stats
 
-hp_opts      = [None, 128, 64]        # high-pass cutoff (s)
-fwhm_opts    = [0, 4, 8]              # smoothing FWHM (mm)
+hp_opts      = [None, 128, 64]        # high-pass cutoffs (s); None = no filtering
+fwhm_opts    = [0, 4, 8]              # smoothing FWHM (mm); 0 = none
 despike_opts = [False, True]          # spike regressors?
 ar1_opts     = [False, True]          # AR(1) prewhitening?
 
-rows = []
+rows = []                             # one result dict per pipeline variant
 for hp, fwhm, despike, ar1 in itertools.product(
         hp_opts, fwhm_opts, despike_opts, ar1_opts):
     betas = np.array([          # one subject through one pipeline variant
@@ -122,6 +157,13 @@ print(f"{len(results)} variants; "
 :::
 ::::
 
+**Example output:**
+
+```text
+36 pipeline variants; 9 significant at p < .05 (25%)
+group t range: 0.79 to 3.00
+```
+
 In the labs, this same real effect comes out significant in only **9 of 36 variants** (25%), with group t-statistics ranging from **0.79 to 3.00** — a one-dataset echo of NARPS.
 
 **Step 2 — Draw a specification curve.** Order all 36 estimates from smallest to largest with confidence intervals (top panel), and mark below each one which option every factor took (bottom panel). Choices whose marks cluster at one end *matter*; choices spread evenly barely move the result.
@@ -131,7 +173,7 @@ In the labs, this same real effect comes out significant in only **9 of 36 varia
 :sync: matlab
 
 ```matlab
-[~, order] = sort(results.mean_beta);
+[~, order] = sort(results.mean_beta);   % order variants by estimated effect
 res = results(order, :);  xx = 1:height(res);  sig = res.significant;
 
 create_figure('specification curve', 2, 1);
@@ -143,7 +185,7 @@ scatter(xx(~sig), res.mean_beta(~sig), 30, [.5 .5 .5], 'filled');
 plot(xlim, [0 0], 'k-');
 ylabel('group mean beta (95% CI)');
 
-spec_masks = [res.hp==Inf, res.hp==128, res.hp==64, res.fwhm==0, ...
+spec_masks = [res.hp==Inf, res.hp==128, res.hp==64, res.fwhm==0, ...   % one column per factor option
     res.fwhm==4, res.fwhm==8, ~res.despike, res.despike, ~res.ar1, res.ar1];
 subplot(2,1,2); hold on;
 for i = 1:size(spec_masks, 2)
@@ -161,7 +203,7 @@ import matplotlib.pyplot as plt
 
 res = results.sort_values("mean_beta").reset_index(drop=True)
 x = np.arange(len(res))
-sig_col = np.where(res["significant"], "crimson", "gray")
+sig_col = np.where(res["significant"], "crimson", "gray")   # red = significant
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 6), sharex=True,
                                height_ratios=[2, 1.4])
@@ -183,6 +225,17 @@ ax2.set_xlabel("pipeline variants, ordered by estimated effect")
 ```
 :::
 ::::
+
+**Example output:**
+
+:::{figure} images/ch24_step2_output.png
+:width: 85%
+:alt: Specification curve with 36 ordered group estimates and confidence intervals on top, and a grid marking each variant's pipeline options below
+
+Specification curve across all 36 pipeline variants. Red points are significant at $p < .05$, where $p$ is the two-sided group t-test p-value; the dotted green line marks the true simulated population effect.
+:::
+
+Read the bottom panel row by row: spike-regressor and 64-s high-pass marks cluster among the significant variants at the *middle* of the curve (tighter estimates, larger t), the no-filtering marks pile up at both extremes, and the AR(1)/OLS rows are spread almost evenly — that choice barely matters here.
 
 The full labs complete the arc: simulating the study from scratch, building each pipeline component (DCT drift regressors, Gaussian smoothing, robust spike detection, AR(1) prewhitening), plotting the "vibration of effects" histogram, and quantifying which analytic choices actually drive the spread — plus exercises that let you experience how easy it is to "find" an effect by shopping across pipelines.
 

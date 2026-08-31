@@ -35,8 +35,9 @@ Population-level predictive models (Chapters 38–40) offer a path forward. A mo
 :::{figure} images/ch41_fig1_brain_signatures.png
 :alt: Training a brain signature from a training sample and applying its fixed weights to new data to obtain pattern responses
 :width: 85%
+:class: book-figure
 
-Brain signatures. (Top) A signature — the pattern of weights that best predicts the outcome of interest — is developed on training data. (Bottom) The fixed signature is then applied to new datasets: the weighted sum over each new image yields a pattern response, a single predicted value per person or condition. *(Figure 41.1 from the book.)*
+Brain signatures. (Top) A signature — the pattern of weights that best predicts the outcome of interest — is developed on training data. (Bottom) The fixed signature is then applied to new datasets: the weighted sum over each new image yields a pattern response, a single predicted value per person or condition. *(Figure 41.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Can this work in practice? The Neurologic Pain Signature (NPS) illustrates what rigorous prospective testing looks like. Trained to predict evoked pain intensity in one cohort, the NPS has since been applied — without re-fitting any parameters — to dozens of independent cohorts worldwide. In one test across 20 studies (N = 603), 95% of individuals showed a positive pain-related response, with an average effect size around $d = 2.32$. Tested for *specificity* on 18 further studies spanning pain, non-somatic negative emotion, and cognitive control, it discriminated pain from other states with sensitivity and specificity in the high 80s to low 90s — comparable to accepted biomarkers in other areas of medicine. Its boundary conditions are also becoming clear: it generalizes across body sites and stimulus types for brief evoked pain but does not capture tonic, ongoing pain. Mapping such boundary conditions — across variants of the construct, across contexts and scanners, and across populations — is itself an essential part of biomarker science.
@@ -44,8 +45,9 @@ Can this work in practice? The Neurologic Pain Signature (NPS) illustrates what 
 :::{figure} images/ch41_fig2_nps_validation.png
 :alt: NPS pattern, responses across 36 independent studies of pain, appetitive affect, aversive affect and cognitive control, and ROC curves for pain versus other domains
 :width: 95%
+:class: book-figure
 
-Validation of a neuroimaging signature across studies. (a) The Neurologic Pain Signature, a population-level model for evoked pain. (b) NPS responses in 36 studies not used in training (n = 540), spanning pain, appetitive affect, non-somatic aversive affect, and cognitive control. (c) ROC curves for classifying pain versus other domains; at a balanced threshold, sensitivity and specificity were each 87%. *(Figure 41.2 from the book.)*
+Validation of a neuroimaging signature across studies. (a) The Neurologic Pain Signature, a population-level model for evoked pain. (b) NPS responses in 36 studies not used in training (n = 540), spanning pain, appetitive affect, non-somatic aversive affect, and cognitive control. (c) ROC curves for classifying pain versus other domains; at a balanced threshold, sensitivity and specificity were each 87%. *(Figure 41.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 The U.S. FDA distinguishes several biomarker types with distinct uses. A **diagnostic** biomarker indicates the presence of a condition; a **predictive** biomarker forecasts response to a specific treatment; together they can stratify patients into biologically defined subtypes ("biotypes"). A **prognostic** biomarker tracks future recurrence or progression in people who are already ill, while a **susceptibility/risk** marker identifies healthy individuals at elevated risk. Finally, a **surrogate endpoint** is a measure so strongly and consistently linked to disease (like blood pressure for cardiovascular outcomes) that it can substitute for a clinical outcome in trials — a status that requires a long progression of validation. Surveys of the translational neuroimaging literature show that most published models target diagnosis (patient vs. control classification), with accuracy high for neurological disorders such as Alzheimer's and Parkinson's (~90%) and more variable for mental health conditions. But only a small minority of models have ever been tested prospectively on independent data — and where they have, accuracy is often markedly lower than the cross-validated estimates from the development sample, a telltale sign of optimistic bias from flexible analysis choices, dataset-wide preprocessing, and model selection.
@@ -54,27 +56,71 @@ That bias has a precise statistical anatomy: the **winner's curse**. When many t
 
 Finally, clinical claims must be stated in clinically meaningful units, and a small set of conversions — exact under a normal, equal-variance model — connects the statistical and clinical worlds. If two groups are separated by standardized distance $d$, classifying a *single* individual (single-interval classification) succeeds with probability
 
+::::{div}
+:class: eq-tip
 $$
 \text{Acc}_{\text{single}} = \Phi\!\left(\tfrac{d}{2}\right),
 $$
+:::{div}
+:class: eq-tip-text
+Acc_single — probability of correctly classifying one individual against a fixed cutoff · Φ — standard normal cumulative distribution function · d — standardized separation between group means (Cohen's d)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\text{Acc}_{\text{single}}$ *is the probability of correctly classifying a single individual against a fixed cutoff,* $\Phi$ *the standard normal cumulative distribution function, and* $d$ *the standardized separation between the group means (Cohen's* $d$*).*
+:::
 
 while a *forced choice* between one member of each group — which is also the area under the ROC curve — succeeds with probability
 
+::::{div}
+:class: eq-tip
 $$
 \text{AUC} = \text{Acc}_{\text{forced}} = \Phi\!\left(\tfrac{d}{\sqrt{2}}\right).
 $$
+:::{div}
+:class: eq-tip-text
+AUC — area under the ROC curve · Acc_forced — forced-choice accuracy: given one member of each group, pick which is the patient · Φ — standard normal CDF · d — standardized group separation
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\text{AUC}$ *is the area under the ROC curve,* $\text{Acc}_{\text{forced}}$ *the probability of correctly picking the patient when shown one member of each group, and* $\Phi$ *and* $d$ *are as above.*
+:::
 
 A "large" effect of $d = 0.8$ thus yields only ~66% single-interval accuracy; 90% accuracy requires $d \approx 2.56$ — brain–outcome associations of the size common in the mapping literature are far too weak for individual-level decisions. For treatment effects, the **number needed to treat** — how many patients must receive an intervention for one additional success relative to control — follows from $d$ and the control-group event rate (CER):
 
+::::{div}
+:class: eq-tip
 $$
 \text{NNT} = \frac{1}{\text{EER} - \text{CER}} = \frac{1}{\Phi\!\left(d + \Phi^{-1}(\text{CER})\right) - \text{CER}},
 $$
+:::{div}
+:class: eq-tip-text
+NNT — number needed to treat · EER — experimental (treated) group event rate · CER — control group event rate · Φ — standard normal CDF · Φ⁻¹ — its inverse (quantile function) · d — treatment effect size
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\text{NNT}$ *is the number of patients who must be treated for one additional success,* $\text{EER}$ *and* $\text{CER}$ *the event (response) rates in the treated and control groups,* $\Phi$ *the standard normal CDF,* $\Phi^{-1}$ *its inverse, and* $d$ *the standardized treatment effect.*
+:::
 
 and a threshold-free variant (Kraemer & Kupfer) uses $\text{NNT} = 1/(2\,\text{AUC} - 1)$. And when a diagnostic test is deployed in a population, its usefulness depends on the base rate: the **positive predictive value**
 
+::::{div}
+:class: eq-tip
 $$
 \text{PPV} = \frac{\text{sens} \times \text{prev}}{\text{sens} \times \text{prev} + (1 - \text{spec})(1 - \text{prev})}
 $$
+:::{div}
+:class: eq-tip-text
+PPV — probability that a positive test is a true positive · sens — sensitivity: P(test + | condition present) · spec — specificity: P(test − | condition absent) · prev — prevalence (base rate) of the condition in the tested population
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\text{PPV}$ *is the probability that a positive test is a true positive,* $\text{sens}$ *the sensitivity (probability of a positive test given the condition),* $\text{spec}$ *the specificity (probability of a negative test given no condition), and* $\text{prev}$ *the prevalence of the condition in the tested population.*
+:::
 
 can be startlingly low for rare conditions — a test with 98% sensitivity and 98% specificity has a PPV of only 33% at 1% prevalence. Specificity and prevalence, more than sensitivity, determine whether a positive result means what patients and clinicians think it means. The tutorial and labs below turn each of these conversions into working code.
 
@@ -100,7 +146,7 @@ d2acc_forc = @(d) normcdf(d / sqrt(2));         % forced-choice acc = AUC
 d2acc_sing = @(d) normcdf(d / 2);               % single-interval accuracy
 d2nnt      = @(d, cer) 1 ./ (normcdf(d + norminv(cer)) - cer);  % Furukawa
 
-d = 0:0.05:3;
+d = 0:0.05:3;                                   % effect sizes to plot, 0 to 3
 figure; hold on
 plot(d, d2acc_forc(d), 'LineWidth', 3)
 plot(d, d2acc_sing(d), 'LineWidth', 3)
@@ -128,7 +174,7 @@ d2acc_forc = lambda d: norm.cdf(d / np.sqrt(2))       # forced-choice acc = AUC
 d2acc_sing = lambda d: norm.cdf(d / 2)                # single-interval accuracy
 d2nnt      = lambda d, cer: 1 / (norm.cdf(d + norm.ppf(cer)) - cer)  # Furukawa
 
-d = np.arange(0, 3.01, 0.05)
+d = np.arange(0, 3.01, 0.05)                          # effect sizes to plot, 0 to 3
 plt.plot(d, d2acc_forc(d), lw=3, label="Forced choice (= AUC)")
 plt.plot(d, d2acc_sing(d), lw=3, label="Single interval")
 plt.axhline(0.5, ls=":", color="k", label="Chance")
@@ -143,6 +189,21 @@ print(f"NNT at d = 0.5, CER = 0.5: {d2nnt(0.5, 0.5):.1f}")
 :::
 ::::
 
+**Example output:**
+
+```text
+d = 0.8: single-interval acc = 65.5%, AUC = 0.71
+d for 90% single-interval acc: 2.56
+NNT at d = 0.5, CER = 0.5: 5.2
+```
+
+:::{figure} images/ch41_step1_output.png
+:alt: Forced-choice and single-interval classification accuracy as a function of effect size d, with forced choice always higher and both starting at chance
+:width: 70%
+
+Accuracy as a function of effect size $d$: forced choice (= AUC) always exceeds single-interval accuracy for the same $d$, and both start at chance (0.5) when $d = 0$.
+:::
+
 **Step 2 — Base rates and positive predictive value.** A biomarker's sensitivity and specificity are fixed properties of the test, but PPV — the probability that a positive result is a true positive — depends on prevalence. We sweep prevalence for several specificity levels at 90% sensitivity.
 
 ::::{tab-set}
@@ -155,7 +216,7 @@ calc_ppv = @(sens, spec, prev) sens .* prev ./ ...
     (sens .* prev + (1 - spec) .* (1 - prev));
 
 prev = 0.001:0.001:0.5;                  % prevalence (base rate)
-spec_vals = [.80 .90 .95 .98 .999];
+spec_vals = [.80 .90 .95 .98 .999];      % specificity levels to compare
 
 figure; hold on
 for i = 1:length(spec_vals)
@@ -177,8 +238,8 @@ fprintf('90/90 test at 20%% prevalence: PPV = %.2f\n', calc_ppv(.90, .90, .20))
 def calc_ppv(sens, spec, prev):
     return sens * prev / (sens * prev + (1 - spec) * (1 - prev))
 
-prev = np.arange(0.001, 0.5, 0.001)      # prevalence (base rate)
-for spec in [0.80, 0.90, 0.95, 0.98, 0.999]:
+prev = np.arange(0.001, 0.5, 0.001)      # prevalence (base rate) to sweep
+for spec in [0.80, 0.90, 0.95, 0.98, 0.999]:   # specificity levels to compare
     plt.plot(prev, calc_ppv(0.90, spec, prev), lw=3, label=f"Spec = {spec:.3f}")
 plt.xlabel("Prevalence"); plt.ylabel("Positive predictive value (PPV)")
 plt.legend(loc="lower right"); plt.title("Sensitivity fixed at 90%")
@@ -189,6 +250,20 @@ print(f"90/90 test at 20% prevalence: PPV = {calc_ppv(.90, .90, .20):.2f}")
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+98/98 test at  1% prevalence: PPV = 0.33
+90/90 test at 20% prevalence: PPV = 0.69
+```
+
+:::{figure} images/ch41_step2_output.png
+:alt: PPV as a function of prevalence for five specificity levels at 90 percent sensitivity, showing PPV collapsing at low prevalence unless specificity is near perfect
+:width: 70%
+
+PPV as a function of prevalence at 90% sensitivity. At low prevalence, PPV collapses unless specificity approaches 99.9% — specificity and base rate, not sensitivity, determine what a positive test means.
+:::
 
 The full labs extend both steps: they verify the accuracy and NNT formulas with direct simulation, map NNT as a function of $d$ and response threshold, simulate the winner's curse — showing how significance-selected effect sizes from a small discovery sample shrink on replication — and work through a realistic chronic-pain biomarker scenario with PPV.
 

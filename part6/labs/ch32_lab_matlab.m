@@ -1,5 +1,6 @@
 %% Chapter 32 Lab - Graph Theory and Network Analysis (MATLAB)
 % Elements of fMRI Analysis - Interactive Tutorials
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part6/ch32-network-analysis
 %
 % In this lab we build brain-style networks from a simulated modular
 % functional connectome and characterize them with graph theory:
@@ -19,16 +20,17 @@
 % independent noise. Node 1 is rewired into a CONNECTOR HUB: it carries
 % all three module signals, so it correlates with every community.
 
-rng(7);
-n = 30; T = 200;
+rng(7);                                % fix the random seed for reproducibility
+n = 30; T = 200;                       % n = nodes (regions), T = time points
 module  = repelem(1:3, 10)';           % ground-truth community labels
 g       = randn(1, T);                 % shared global signal
 signals = randn(3, T);                 % one latent signal per module
 
+% 0.8 = global-signal weight, 1.2 = independent-noise SD
 ts = 0.8 * repmat(g, n, 1) + signals(module, :) + 1.2 * randn(n, T);
 
 % Plant a connector hub at node 1: equal parts of all three module signals
-ts(1, :) = 0.8 * g + sum(signals, 1) / sqrt(3) + 0.6 * randn(1, T);
+ts(1, :) = 0.8 * g + sum(signals, 1) / sqrt(3) + 0.6 * randn(1, T);  % 0.6 = hub noise SD
 
 R = corr(ts');                         % 30 x 30 functional connectome
 
@@ -41,7 +43,7 @@ xlabel('Node'); ylabel('Node');
 % Keep edges with r > 0.3 and binarize into an adjacency matrix.
 % Connection density = surviving edges / possible edges.
 
-thr0 = 0.3;
+thr0 = 0.3;                            % correlation threshold for binarizing
 A = double(R > thr0);
 A(1:n+1:end) = 0;                      % zero the diagonal (no self-loops)
 G = graph(A);
@@ -108,8 +110,8 @@ fprintf('\nClustering C = %.2f | Path length L = %.2f | Efficiency = %.2f\n', ..
 % We build 20 Erdos-Renyi random graphs with the same number of nodes
 % and edges and average their C and L.
 
-n_rand = 20;
-m = numedges(G);
+n_rand = 20;                           % number of random null graphs; more = stabler C_rand, L_rand
+m = numedges(G);                       % match the observed edge count (density)
 [C_rand, L_rand] = deal(zeros(n_rand, 1));
 for r = 1:n_rand
     % Random adjacency with exactly m edges among n nodes
@@ -191,8 +193,9 @@ title('Every graph metric depends on the threshold');
 % Matching density (keeping the same fraction of strongest edges in
 % both subjects) makes the comparison fair.
 
+% Same 0.8 global weight and module signals; noise SD raised 1.2 -> 2.0
 tsB = 0.8 * repmat(g, n, 1) + signals(module, :) + 2.0 * randn(n, T);
-tsB(1, :) = 0.8 * g + sum(signals, 1) / sqrt(3) + 1.2 * randn(1, T);
+tsB(1, :) = 0.8 * g + sum(signals, 1) / sqrt(3) + 1.2 * randn(1, T);  % hub noise SD 0.6 -> 1.2
 RB = corr(tsB');
 
 % (a) Fixed threshold r > 0.3
@@ -205,7 +208,7 @@ fprintf('  Subject B: density %.2f, C = %.2f  <- sparser AND less clustered\n', 
     sum(AB(:))/(n*(n-1)), local_C(AB));
 
 % (b) Density-matched: keep the strongest 20% of edges in each subject
-target_density = 0.20;
+target_density = 0.20;                 % keep the strongest 20% of possible edges per subject
 AAm = top_edges(R,  target_density);
 ABm = top_edges(RB, target_density);
 fprintf('Density matched at %.2f:\n', target_density);

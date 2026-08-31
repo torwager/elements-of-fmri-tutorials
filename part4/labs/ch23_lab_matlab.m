@@ -6,6 +6,8 @@
 % surfaces. A final section demonstrates why "circular" (post hoc) ROI
 % selection biases effect estimates.
 %
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch23-localizing-and-interpreting-results
+%
 % Requirements: CanlabCore <https://github.com/canlab/CanlabCore> and
 % SPM12 on your MATLAB path. All data are bundled with CanlabCore
 % (no large downloads).
@@ -38,7 +40,7 @@ help load_atlas
 
 %% Load and visualize the CANlab combined 2018 atlas
 
-atlas_obj = load_atlas('canlab2018_2mm');
+atlas_obj = load_atlas('canlab2018_2mm');   % 'canlab2018_2mm' = combined 2018 atlas at 2 mm resolution
 
 % How many parcels?
 disp(atlas_obj)
@@ -68,7 +70,7 @@ whole_thal = select_atlas_subset(atlas_obj, {'Thal'}, 'flatten');
 
 % Or select parcels near a coordinate (here vmPFC, within 20 mm):
 vmpfc_set = select_regions_near_crosshairs(atlas_obj, ...
-    'coords', [0 38 -11], 'thresh', 20);
+    'coords', [0 38 -11], 'thresh', 20);   % coords = vmPFC in MNI mm; thresh = 20 mm search radius
 disp(vmpfc_set.labels')
 
 %% Load a sample dataset
@@ -109,7 +111,7 @@ drawnow, snapnow
 % blobs, and table() labels each blob using atlas parcels, with references.
 
 t = ttest(image_obj);                    % voxelwise one-sample t-test
-t = threshold(t, .05, 'fdr', 'k', 10);   % FDR q < .05, extent >= 10 voxels
+t = threshold(t, .05, 'fdr', 'k', 10);   % q = .05 FDR threshold; k = 10-voxel minimum cluster extent
 
 orthviews(t);
 drawnow, snapnow
@@ -138,8 +140,8 @@ drawnow, snapnow
 % up most") is circular: selection by the maximum guarantees inflated
 % effect sizes, even in pure noise. Demonstration on null data:
 
-rng(23);
-n_sub = 20; n_parcels = 60; n_sims = 2000;
+rng(23);                                       % seed for reproducibility
+n_sub = 20; n_parcels = 60; n_sims = 2000;     % n_sub = subjects; n_parcels = candidate ROIs; n_sims = null studies
 apriori_est  = zeros(n_sims, 1);
 circular_est = zeros(n_sims, 1);
 

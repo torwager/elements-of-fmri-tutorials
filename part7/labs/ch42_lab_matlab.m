@@ -13,6 +13,8 @@
 %[text]
 %[text] Adapted from the CANlab Computational Foundations course (github.com/canlab).
 %[text] Runs in base MATLAB (CanlabCore is not needed for this lab).
+%
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part7/ch42-ai-and-neuroscience
 
 %% Part 1.1 — Rescorla–Wagner: acquisition and extinction
 %[text] The agent keeps a value estimate V for a cue and updates it from the
@@ -20,12 +22,14 @@
 %[text]
 %[text] $$V_{t+1} = V_t + \alpha\,\delta_t, \qquad \delta_t = R_t - V_t$$
 %[text]
-%[text] A cue is rewarded on 80% of trials for 80 trials (acquisition), then
+%[text] where $V_t$ is the value (expected reward) on trial $t$, $R_t$ the reward
+%[text] received (1 or 0), $\delta_t$ the prediction error, and $\alpha$ the
+%[text] learning rate (0–1). A cue is rewarded on 80% of trials for 80 trials (acquisition), then
 %[text] reward stops (extinction).
 
-rng(42);
-alpha = 0.15;
-n_trials = 120;
+rng(42);                               % seed for reproducibility
+alpha = 0.15;                          % alpha = learning rate (0-1)
+n_trials = 120;                        % 80 acquisition + 40 extinction trials
 
 r = double(rand(n_trials, 1) < 0.8);   % cue -> reward on 80% of trials
 r(81:end) = 0;                         % extinction after trial 80
@@ -80,6 +84,10 @@ xlabel('Trial'); ylabel('V'); legend('show', 'Location', 'best');
 %[text]
 %[text] $$\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$$
 %[text]
+%[text] where $r_t$ is the reward at time step $t$, $V(s_t)$ the value of the
+%[text] state occupied at step $t$, and $\gamma$ the temporal discount factor
+%[text] (0–1) that down-weights value one step in the future.
+%[text]
 %[text] We simulate a trial as a chain of time steps: a brief inter-trial interval
 %[text] (ITI), a cue at step 4, and a reward at step 14. Because cue onset is
 %[text] unpredictable, ITI states keep value 0 (they are not updated); the jump
@@ -87,7 +95,8 @@ xlabel('Trial'); ylabel('V'); legend('show', 'Location', 'best');
 %[text] cue response.
 
 T = 18; cue = 4; rew = 14;             % states within a trial (1-based indices)
-gamma = 0.98; alpha_td = 0.10; n_train = 600;
+gamma = 0.98;                          % gamma = discount factor (0-1)
+alpha_td = 0.10; n_train = 600;        % TD learning rate; number of training trials
 
 r_trial = zeros(T, 1); r_trial(rew) = 1;
 
@@ -148,7 +157,8 @@ end
 %[text] simulated regions measured with noise: an early sensory region mixing the
 %[text] raw features, and a category-selective region coding category identity.
 
-n_cat = 4; n_ex = 8; n_stim = n_cat * n_ex; n_feat = 20;
+n_cat = 4; n_ex = 8;                   % categories; exemplars per category
+n_stim = n_cat * n_ex; n_feat = 20;    % 32 stimuli total, 20 features each
 categ = repelem((1:n_cat)', n_ex);              % category labels
 
 protos = randn(n_cat, n_feat);                  % category prototypes
@@ -179,7 +189,8 @@ title('Category-selective region RDM'); xlabel('Stimulus'); colorbar;
 %[text] not need) — the same algorithm that trains networks with billions of
 %[text] parameters.
 
-n_hidden = 12; n_epochs = 2000; lr = 0.5; wd = 3e-3;
+n_hidden = 12; n_epochs = 2000;        % hidden units; training epochs
+lr = 0.5; wd = 3e-3;                   % lr = learning rate; wd = weight decay
 Y = eye(n_cat); Y = Y(categ, :);                % one-hot targets
 
 W1 = 0.5 * randn(n_feat, n_hidden); b1 = zeros(1, n_hidden);

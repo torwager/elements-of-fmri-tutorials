@@ -35,31 +35,54 @@ There are two primary analytic paths, both starting from multivariate time serie
 :::{figure} images/ch33_fig1_dfc_two_approaches.png
 :alt: Two paths from multivariate fMRI time series to brain states, via time-resolved connectivity plus clustering, or via a hidden Markov model
 :width: 95%
+:class: book-figure
 
-Two common approaches for assessing dynamic functional connectivity. Both begin with multivariate fMRI time series. Top path: time-resolved connectivity matrices (e.g., from sliding windows) are estimated and then clustered into a fixed set of brain states. Bottom path: a state-estimation algorithm such as a hidden Markov model infers the states directly. Properties of the resulting states — dwell time, transition frequency — are then extracted for further analysis. *(Figure 33.1 from the book.)*
+Two common approaches for assessing dynamic functional connectivity. Both begin with multivariate fMRI time series. Top path: time-resolved connectivity matrices (e.g., from sliding windows) are estimated and then clustered into a fixed set of brain states. Bottom path: a state-estimation algorithm such as a hidden Markov model infers the states directly. Properties of the resulting states — dwell time, transition frequency — are then extracted for further analysis. *(Figure 33.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 The workhorse estimator of time-resolved connectivity is the **sliding window**: compute the connectivity metric over a fixed-length window of the time series (say, 30 TRs), then slide the window one step at a time,
 
+::::{div}
+:class: eq-tip
 $$
 \hat{\rho}_{ij}(t) \;=\; \operatorname{corr}\!\big(\, x_i(t{-}w{+}1{:}t),\; x_j(t{-}w{+}1{:}t) \,\big),
 $$
+:::{div}
+:class: eq-tip-text
+ρ̂ᵢⱼ(t) — windowed correlation between regions i and j, evaluated at time t · xᵢ, xⱼ — the two regions' time series · t−w+1:t — the w most recent samples · w — window length (in TRs)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\hat{\rho}_{ij}(t)$ *is the estimated correlation between regions* $i$ *and* $j$ *at time* $t$*,* $x_i$ *and* $x_j$ *are the two regions' time series,* $t{-}w{+}1{:}t$ *denotes the most recent* $w$ *samples, and* $w$ *is the window length in TRs.*
+:::
 
-where $w$ is the window length. The approach is flexible — besides Pearson correlations, common metrics include partial correlations, coherence, mutual information, and multiplication of temporal derivatives — but it has well-known problems. The window length is fixed arbitrarily; all data outside the window are ignored; and windowing smooths over abrupt changes in connectivity. There is a fundamental tradeoff: **longer windows give more stable estimates but blur dynamic changes; shorter windows track change but produce noisy, imprecise estimates.** A useful rule of thumb is to set the window length to the reciprocal of the lowest frequency (largest wavelength) present in the preprocessed signal.
+The approach is flexible — besides Pearson correlations, common metrics include partial correlations, coherence, mutual information, and multiplication of temporal derivatives — but it has well-known problems. The window length is fixed arbitrarily; all data outside the window are ignored; and windowing smooths over abrupt changes in connectivity. There is a fundamental tradeoff: **longer windows give more stable estimates but blur dynamic changes; shorter windows track change but produce noisy, imprecise estimates.** A useful rule of thumb is to set the window length to the reciprocal of the lowest frequency (largest wavelength) present in the preprocessed signal.
 
 The tradeoff has an elegant frequency-domain interpretation: applying a moving window is equivalent to convolving the time-resolved connectivity with a fixed window, which acts approximately as a low-pass filter. The Fourier transform of a rectangular window is a sinc function whose main lobe has width $1/w$ — so a sliding-window analysis inherently restricts attention to connectivity fluctuations slower than $1/w$, and the sinc side-lobes introduce Gibbs ringing ("spectral leakage") that distorts frequency content and lowers signal-to-noise ratio. **Tapered** windows reduce spectral leakage, but in simulations built from real resting-state data they were *less* sensitive to sharp state transitions than rectangular windows — so if abrupt state changes are expected, rectangular windows remain worth considering.
 
 A different strategy is to model the time-varying correlation directly. **Dynamic Conditional Correlation (DCC)** is an extension of multivariate GARCH models from econometrics, and proceeds in two steps: first, a GARCH model estimates the time-varying *variance* of each series and produces standardized residuals; second, a dynamic correlation model describes the time-varying correlation matrix of those residuals as a function of past correlations and past errors. A useful intuition for the second step is the exponentially weighted recursion
 
+::::{div}
+:class: eq-tip
 $$
 q_{ij}(t) = (1-\lambda)\, z_i(t)\, z_j(t) + \lambda\, q_{ij}(t-1),
 \qquad
 \hat{\rho}_{ij}(t) = \frac{q_{ij}(t)}{\sqrt{q_{ii}(t)\, q_{jj}(t)}},
 $$
+:::{div}
+:class: eq-tip-text
+qᵢⱼ(t) — running (unnormalized) covariance between residual series i and j · zᵢ(t) — standardized GARCH residual of series i at time t · λ — forgetting factor, 0 < λ < 1 · ρ̂ᵢⱼ(t) — time-varying correlation estimate
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $q_{ij}(t)$ *is a running (unnormalized) covariance between residual series* $i$ *and* $j$*,* $z_i(t)$ *and* $z_j(t)$ *are the standardized GARCH residuals at time* $t$*,* $\lambda \in (0,1)$ *is the forgetting factor, and* $\hat{\rho}_{ij}(t)$ *is the resulting time-varying correlation estimate.*
+:::
 
-where recent samples receive weight $(1-\lambda)$ and older evidence decays geometrically — a "forgetting factor" that plays the same role as the gain in a Kalman filter. Crucially, DCC estimates all of its parameters from the data by maximum likelihood, so no window length (or $\lambda$) needs to be chosen a priori, and the GARCH step removes time-varying noise variance that would otherwise contaminate the correlations. DCC has been shown to be less susceptible than sliding windows to noise-induced temporal variability, at the price of higher computational cost. Other alternatives include wavelet transform coherence (estimating coherence and phase lag as a function of both time and frequency), coactivation patterns (CAPs; clustering individual fMRI volumes directly), and instantaneous phase synchronization (IPS) based on the Hilbert transform — though IPS requires narrow-band filtering first, which itself acts as an implicit windowing operation.
+Recent samples receive weight $(1-\lambda)$ and older evidence decays geometrically — $\lambda$ acts as a "forgetting factor" that plays the same role as the gain in a Kalman filter. Crucially, DCC estimates all of its parameters from the data by maximum likelihood, so no window length (or $\lambda$) needs to be chosen a priori, and the GARCH step removes time-varying noise variance that would otherwise contaminate the correlations. DCC has been shown to be less susceptible than sliding windows to noise-induced temporal variability, at the price of higher computational cost. Other alternatives include wavelet transform coherence (estimating coherence and phase lag as a function of both time and frequency), coactivation patterns (CAPs; clustering individual fMRI volumes directly), and instantaneous phase synchronization (IPS) based on the Hilbert transform — though IPS requires narrow-band filtering first, which itself acts as an implicit windowing operation.
 
-Once time-resolved connectivity is in hand, the data have *expanded* enormously — a $T \times p$ time series becomes a $p \times p \times T$ array — and the challenge becomes summarizing it. Simple summaries include the mean (essentially the static correlation) and the variance of each connection across time. The more ambitious summary is a set of brain states, most commonly estimated by **k-means clustering** of the time-resolved matrices. But clustering involves consequential choices. K-means assumes spherical clusters of similar size, is sensitive to outliers, and ignores temporal order entirely — permuting the time points changes nothing. Best practice includes reducing dimensionality (e.g., with PCA) before clustering sparse, high-dimensional data; running multiple centroid initializations; and choosing the number of clusters with an information criterion (AIC/BIC), a permutation or bootstrap null, or Bayesian methods. Methods that respect temporal order — **change-point analysis**, which partitions the multivariate series at moments of significant covariance change, and **HMMs**, which model the data with a fixed number of latent states (each a multivariate Gaussian defined by its mean and covariance) plus a transition-probability matrix — will almost certainly do better than order-blind clustering, and both can capture rapid state switches.
+Once time-resolved connectivity is in hand, the data have *expanded* enormously — a $T \times p$ time series ($T$ time points by $p$ regions) becomes a $p \times p \times T$ array of time-resolved connections — and the challenge becomes summarizing it. Simple summaries include the mean (essentially the static correlation) and the variance of each connection across time. The more ambitious summary is a set of brain states, most commonly estimated by **k-means clustering** of the time-resolved matrices. But clustering involves consequential choices. K-means assumes spherical clusters of similar size, is sensitive to outliers, and ignores temporal order entirely — permuting the time points changes nothing. Best practice includes reducing dimensionality (e.g., with PCA) before clustering sparse, high-dimensional data; running multiple centroid initializations; and choosing the number of clusters with an information criterion (AIC/BIC), a permutation or bootstrap null, or Bayesian methods. Methods that respect temporal order — **change-point analysis**, which partitions the multivariate series at moments of significant covariance change, and **HMMs**, which model the data with a fixed number of latent states (each a multivariate Gaussian defined by its mean and covariance) plus a transition-probability matrix — will almost certainly do better than order-blind clustering, and both can capture rapid state switches.
 
 Finally, the pitfalls. Time-varying connectivity estimates rest on very few effective degrees of freedom: windows are short, fMRI noise is autocorrelated, and nuisance regression (motion, drift, physiology) removes further degrees of freedom — all of which inflate temporal noise that is easily misread as genuine connectivity change (partial correlations are hit hardest). Fluctuations in arousal and vigilance, and time-varying shifts in the BOLD mean caused by respiration, cardiac activity, transient head motion, or scanner drift, can all produce apparent dynamics. The very existence of resting-state DFC has been controversial: Laumann and colleagues argued that much of the observed "connectivity dynamics" at rest reflects sampling variability, head motion, and drowsiness, so a single static matrix may suffice; and Lindquist showed that sliding-window analysis can *reintroduce* signals that were previously regressed out — motion-induced signals yielded essentially the same brain states and transitions as the preprocessed data. The lesson is not that dynamics are illusory, but that rigorous statistics — explicit stationary null models, careful denoising, and confound checks — must be part of any dynamic connectivity analysis. The hands-on tutorial below makes exactly this point.
 
@@ -81,8 +104,10 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 % Adapted from Lindquist's Dynamic Correlation Toolbox
 % (github.com/canlab/Lindquist_Dynamic_Correlation); see sliding_window.m
 rng(33);
-T = 600; r_true = 0.4; w = 30;              % time points, true corr, window
-Sigma = [1 r_true; r_true 1];
+T = 600;                                    % number of time points (TRs)
+r_true = 0.4;                               % true, constant correlation
+w = 30;                                     % sliding-window length (TRs)
+Sigma = [1 r_true; r_true 1];              % 2x2 correlation matrix of the generating process
 dat = mvnrnd([0 0], Sigma, T);              % correlation NEVER changes
 
 rho = NaN(T, 1);                            % sliding-window correlation
@@ -105,8 +130,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 rng = np.random.default_rng(33)
-T, r_true, w = 600, 0.4, 30                 # time points, true corr, window
-L = np.linalg.cholesky(np.array([[1, r_true], [r_true, 1]]))
+T, r_true, w = 600, 0.4, 30    # T = time points (TRs), r_true = true correlation, w = window length
+L = np.linalg.cholesky(np.array([[1, r_true], [r_true, 1]]))  # 2x2 correlation -> Cholesky factor
 dat = rng.standard_normal((T, 2)) @ L.T     # correlation NEVER changes
 
 rho = np.full(T, np.nan)                    # sliding-window correlation
@@ -121,7 +146,20 @@ print(f"Range: [{np.nanmin(rho):.2f}, {np.nanmax(rho):.2f}] "
 :::
 ::::
 
-The windowed correlation typically sweeps from near 0 to about 0.7 — with *no* true dynamics whatsoever. Cluster matrices like these and you will get "brain states" out of pure noise.
+**Example output:**
+
+:::{figure} images/ch33_step1_output.png
+:alt: Sliding-window correlation fluctuating widely between about 0 and 0.8 around a constant true correlation of 0.4
+:width: 85%
+
+The windowed correlation ($w = 30$) swings between about 0 and 0.8 even though the true correlation (dashed line) never moves from 0.4.
+:::
+
+```text
+Range: [0.03, 0.78] despite constant true r = 0.4
+```
+
+The windowed correlation sweeps from near 0 to almost 0.8 — with *no* true dynamics whatsoever. Cluster matrices like these and you will get "brain states" out of pure noise.
 
 **Step 2 — Test against a stationary null.** Phase-randomized surrogates keep each series' power spectrum and their cross-spectrum (hence the static correlation and autocorrelation) but are stationary by construction. We ask: is the observed variability of the windowed correlation larger than a static process would produce?
 
@@ -131,10 +169,11 @@ The windowed correlation typically sweeps from near 0 to about 0.7 — with *no*
 
 ```matlab
 % Stationary surrogates: same spectra and static correlation, no dynamics
-obs = std(rho, 'omitnan');
-nsur = 200; nullsd = zeros(nsur, 1);
-F = fft(dat);
-half = 2:ceil(T/2);
+obs = std(rho, 'omitnan');                  % observed test statistic: SD of windowed r
+nsur = 200;                                 % number of surrogates; use ~1,000 for publication-grade p-values
+nullsd = zeros(nsur, 1);                    % null distribution of the test statistic
+F = fft(dat);                               % Fourier coefficients of both series
+half = 2:ceil(T/2);                        % positive-frequency bins (excluding DC)
 for s = 1:nsur
     ph = zeros(T, 1);
     ph(half) = 2*pi*rand(numel(half), 1);   % same rotation for both series
@@ -158,7 +197,7 @@ def phase_randomize(dat, rng):
     """Stationary surrogate with the same power- and cross-spectra."""
     F = np.fft.rfft(dat, axis=0)
     phi = rng.uniform(0, 2*np.pi, size=(F.shape[0], 1))  # same rotation
-    phi[0] = 0.0
+    phi[0] = 0.0                                     # keep the mean (DC) component real
     if dat.shape[0] % 2 == 0:
         phi[-1] = 0.0                                    # keep Nyquist real
     return np.fft.irfft(F * np.exp(1j*phi), n=dat.shape[0], axis=0)
@@ -167,13 +206,20 @@ def windowed_sd(d):
     rs = [np.corrcoef(d[t - w:t].T)[0, 1] for t in range(w, T + 1)]
     return np.std(rs)
 
-obs = windowed_sd(dat)
-null = np.array([windowed_sd(phase_randomize(dat, rng)) for _ in range(200)])
-p = (1 + np.sum(null >= obs)) / (200 + 1)
+obs = windowed_sd(dat)         # observed test statistic: SD of windowed r
+nsur = 200                     # number of surrogates; use ~1,000 for publication-grade p-values
+null = np.array([windowed_sd(phase_randomize(dat, rng)) for _ in range(nsur)])
+p = (1 + np.sum(null >= obs)) / (nsur + 1)   # add-one p-value (Phipson & Smyth correction)
 print(f"SD of windowed r = {obs:.3f}, stationary-null p = {p:.3f}")
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+SD of windowed r = 0.151, stationary-null p = 0.537
+```
 
 For this static-null dataset, the test should (correctly) find nothing unusual: the observed variability is entirely typical of a stationary process. The full labs continue the arc: the window-length bias–variance tradeoff, an exponentially weighted (DCC-flavored) estimator racing sliding windows on a *true* regime-switching signal, and the stationary-null test applied to data with real dynamics — where it correctly rejects.
 
@@ -185,7 +231,7 @@ Open the full Python lab notebook [→](./labs/ch33-lab-python.ipynb) or downloa
 
 ## Thought questions
 
-1. A colleague analyzes HCP resting-state data (TR = 0.72 s) with a 20-TR sliding window. Using the filter interpretation of windowing, what range of connectivity-fluctuation frequencies can their analysis actually resolve, and how does the rule of thumb — window length equal to the reciprocal of the lowest frequency in the signal — interact with the fact that the data were high-pass filtered at 0.01 Hz during preprocessing?
+1. A colleague analyzes [HCP](https://www.humanconnectome.org) resting-state data (TR = 0.72 s) with a 20-TR sliding window. Using the filter interpretation of windowing, what range of connectivity-fluctuation frequencies can their analysis actually resolve, and how does the rule of thumb — window length equal to the reciprocal of the lowest frequency in the signal — interact with the fact that the data were high-pass filtered at 0.01 Hz during preprocessing?
 2. Laumann and colleagues argued that resting-state "dynamics" largely reflect sampling variability, head motion, and drowsiness. Design an analysis plan that could convince a skeptic that state transitions in your data are neuronal: which null models, physiological measurements, and external validations would you include, and what result pattern would change your own mind in the other direction?
 3. You find that patients dwell longer in a "weakly connected" state than controls do, and the group difference is statistically significant. List at least three non-neuronal explanations for this finding, and describe how you would test or rule out each one.
 4. K-means clustering ignores temporal order — permuting the time points leaves the clusters unchanged — while HMMs and change-point models explicitly use it. Describe a ground-truth scenario where the two approaches would identify very different states, and explain what each method's assumptions contribute to the disagreement.

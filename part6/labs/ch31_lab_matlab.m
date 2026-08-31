@@ -12,8 +12,8 @@
 % (onsets2fmridesign, create_figure), plus the Statistics Toolbox (corr).
 % Adapted from CANlab tutorials (github.com/canlab).
 %
-% Companion page: Chapter 31 of "Elements of fMRI Analysis - Interactive
-% Tutorials." The Python lab notebook mirrors this script.
+% Companion to: https://torwager.github.io/elements-of-fmri-tutorials/book/part6/ch31-multivariate-decomposition-pca-and-ica
+% The Python lab notebook mirrors this script.
 
 %% 1. Build ground-truth sources and mix them
 % The decomposition model is X = A * S + E, where X is time x voxels, the
@@ -22,8 +22,8 @@
 % not orthogonal -- but, being sparse on/off blocks, they remain close to
 % statistically independent. Overlap costs orthogonality, not independence.
 
-rng(7);
-T = 200; V = 360; TR = 2;
+rng(7);                                        % seed for reproducibility
+T = 200; V = 360; TR = 2;                      % T = time points, V = voxels, TR = repetition time (s)
 
 % --- Spatial maps: two overlapping blocks of voxels ---
 s1 = zeros(1, V); s1(1:150)  = 1;              % network 1: voxels 1-150
@@ -38,7 +38,7 @@ X2 = onsets2fmridesign({ons2}, TR, T * TR);
 A_true = [X1(:, 1) X2(:, 1)];                  % T x k
 
 % --- Mix and add noise ---
-X = A_true * S_true + 0.3 * randn(T, V);
+X = A_true * S_true + 0.3 * randn(T, V);       % mix + Gaussian noise (SD = 0.3)
 
 create_figure('sources', 2, 2);
 subplot(2, 2, 1); plot(S_true', 'LineWidth', 2);
@@ -73,7 +73,7 @@ Xc = X - mean(X);                              % mean-center each voxel
 sv = diag(S_sv);
 varexp = 100 * sv .^ 2 / sum(sv .^ 2);
 
-nperm = 20; null10 = zeros(nperm, 10);
+nperm = 20; null10 = zeros(nperm, 10);         % nperm = number of permutations (quick null; use more for publication)
 for p = 1:nperm
     Xp = zeros(size(Xc));
     for j = 1:V, Xp(:, j) = Xc(randperm(T), j); end
@@ -143,7 +143,7 @@ title('Truncated SVD: error vs. rank');
 % In practice you would use GIFT (icatb_fastICA), FSL MELODIC, or CanlabCore's
 % ica() method on an fmri_data object -- same model, industrial-strength code.
 
-k = 2;
+k = 2;                                         % k = number of components to estimate
 [ic_maps, W_unmix] = fastica_symm(Xc, k);      % k x V independent spatial maps
 ic_time = Xc * pinv(ic_maps);                  % T x k time courses (least squares)
 
@@ -186,7 +186,7 @@ disp(abs(corr(A_true, ic_time_m)));
 % amplitude, and network 2's borders shift slightly across subjects.
 
 rng(11);                                       % fresh seed for the group study
-n_subj = 6;
+n_subj = 6;                                    % number of simulated subjects
 amp2_true = linspace(0.5, 2, n_subj);          % network-2 amplitude per subject
 
 subj_data = cell(1, n_subj); subj_maps_true = cell(1, n_subj);
@@ -292,12 +292,12 @@ Xr = Xdat - mean(Xdat, 2);                     % remove spatial mean per image
 Z = sqrt(nvox) * Vr(:, 1:k)';                  % k x V whitened spatial signals
 
 W = orth(randn(k));                            % random orthogonal start
-for iter = 1:200
+for iter = 1:200                               % 200 = max fixed-point iterations
     G = tanh(W * Z);
     Wnew = G * Z' / nvox - diag(mean(1 - G .^ 2, 2)) * W;
     [Evec, Eval] = eig(Wnew * Wnew');          % symmetric decorrelation:
     Wnew = Evec * diag(1 ./ sqrt(diag(Eval))) * Evec' * Wnew;  % (WW')^-1/2 W
-    if max(abs(abs(diag(Wnew * W')) - 1)) < 1e-9
+    if max(abs(abs(diag(Wnew * W')) - 1)) < 1e-9   % convergence tolerance
         W = Wnew; break
     end
     W = Wnew;

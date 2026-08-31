@@ -37,13 +37,14 @@ Correlating time series among voxels or regions — **functional connectivity** 
 :::{figure} images/ch28_fig1_resting_state_networks.png
 :alt: Eight panels of brain maps, each showing a distributed resting-state network identified with independent components analysis
 :width: 85%
+:class: book-figure
 
-An example of resting-state networks. Each panel shows a distributed system whose time series tend to intercorrelate at rest, identified using independent components analysis. *(Figure 28.1 from the book.)*
+An example of resting-state networks. Each panel shows a distributed system whose time series tend to intercorrelate at rest, identified using independent components analysis. *(Figure 28.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 A note of caution about naming: networks are often given psychological labels — the "salience network," the "dorsal attention network" — but these labels invite problematic reverse inference (Chapter 7). A network contains billions of neurons with diverse functional properties and participates in many processes incompatible with any one-word label. Observing that a "salience" network is active does not license the conclusion that a participant is processing salience. For this reason, neuroanatomical labels (e.g., "cingulo-opercular network") are increasingly preferred.
 
-Rest has enormous practical appeal. Scans of 6–12 minutes suffice to identify group-level networks (reliability improves up to ~9–13 minutes of data), require no stimulus-delivery or response equipment, and can be run in clinical settings — which is why open repositories now contain resting-state data from tens of thousands of participants (HCP, ABCD, UK Biobank, ENIGMA, ABIDE, and others). The hopes are that resting connectivity will yield markers of aging, psychopathology, and clinical symptoms; guide brain stimulation targets; and support **precision functional mapping** — identifying functional areas within individuals, which requires much more data per person (40–90+ minutes). But rest has real pitfalls. Cognition is completely unconstrained: different people (and the same person at different moments) engage in different thoughts, and different connectivity patterns track different types of spontaneous thought. Wakefulness drifts — one study found that about half of resting participants are asleep after 10 minutes, and the transition to sleep changes activity patterns drastically. And some coherent "connectivity" reflects head motion, respiration, and cardiac pulsation rather than neural activity. Whether a given resting-state finding reflects intrinsic architecture, mental state, or physiological artifact is often genuinely hard to determine.
+Rest has enormous practical appeal. Scans of 6–12 minutes suffice to identify group-level networks (reliability improves up to ~9–13 minutes of data), require no stimulus-delivery or response equipment, and can be run in clinical settings — which is why open repositories now contain resting-state data from tens of thousands of participants ([HCP](https://www.humanconnectome.org), [ABCD](https://abcdstudy.org), [UK Biobank](https://www.ukbiobank.ac.uk), ENIGMA, ABIDE, and others). The hopes are that resting connectivity will yield markers of aging, psychopathology, and clinical symptoms; guide brain stimulation targets; and support **precision functional mapping** — identifying functional areas within individuals, which requires much more data per person (40–90+ minutes). But rest has real pitfalls. Cognition is completely unconstrained: different people (and the same person at different moments) engage in different thoughts, and different connectivity patterns track different types of spontaneous thought. Wakefulness drifts — one study found that about half of resting participants are asleep after 10 minutes, and the transition to sleep changes activity patterns drastically. And some coherent "connectivity" reflects head motion, respiration, and cardiac pulsation rather than neural activity. Whether a given resting-state finding reflects intrinsic architecture, mental state, or physiological artifact is often genuinely hard to determine.
 
 :::{table} A sample of large open resting-state datasets and how much resting data each acquires per person. Sample sizes are approximate. *(Adapted from Table 28.1 in the book.)*
 :label: tbl-ch28-datasets
@@ -77,8 +78,8 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % Simulate 2 networks x 4 ROIs at rest (10 min, TR = 2)
 % Adapted from CANlab tutorials (github.com/canlab)
-rng(28);
-TR = 2; n_t = 300; n_roi = 8;
+rng(28);                                % seed for reproducibility
+TR = 2; n_t = 300; n_roi = 8;           % TR (s), volumes (10 min), regions (4 per network)
 network = [1 1 1 1 2 2 2 2];            % network membership
 
 kern    = exp(-0.5 * ((-4:4)' ./ 2) .^ 2); kern = kern ./ sum(kern);
@@ -106,8 +107,8 @@ title('Resting-state functional connectivity');
 import numpy as np, matplotlib.pyplot as plt
 
 # Simulate 2 networks x 4 ROIs at rest (10 min, TR = 2)
-rng = np.random.default_rng(28)
-n_t, n_roi = 300, 8
+rng = np.random.default_rng(28)   # seed for reproducibility
+n_t, n_roi = 300, 8   # n_t = volumes (10 min at TR = 2 s), n_roi = regions (4 per network)
 network = np.array([0, 0, 0, 0, 1, 1, 1, 1])   # network membership
 
 kern = np.hanning(9); kern /= kern.sum()        # slow fluctuations
@@ -128,7 +129,33 @@ plt.title("Resting-state functional connectivity")
 :::
 ::::
 
-**Step 2 — Inter-subject correlation: movie vs. rest.** Now we simulate ten "subjects" viewing the same movie: everyone's ROI receives the *same* slow stimulus-driven time course plus idiosyncratic noise. Leave-one-out ISC — correlating each subject with the average of the others — is high during the movie and near zero at rest, where there is nothing shared to align to.
+**Example output:**
+
+:::{figure} images/ch28_step1_output.png
+:alt: Eight-by-eight correlation matrix with two strong red blocks on the diagonal, one per simulated network
+:width: 55%
+
+The correlation matrix recovers the built-in two-network block structure: strong within-network correlations (ROIs 1–4 and 5–8) and weak between-network ones.
+:::
+
+**Step 2 — Inter-subject correlation: movie vs. rest.** Now we simulate ten "subjects" viewing the same movie: everyone's ROI receives the *same* slow stimulus-driven time course plus idiosyncratic noise. For each subject $s$, leave-one-out ISC correlates that subject's regional time series $y_s$ with the average of the other $N-1$ subjects' time series, where $N$ is the number of subjects:
+
+::::{div}
+:class: eq-tip
+$$
+\mathrm{ISC}_s = \operatorname{corr}\!\left( y_s,\ \frac{1}{N-1} \sum_{j \neq s} y_j \right)
+$$
+:::{div}
+:class: eq-tip-text
+ISCₛ — leave-one-out inter-subject correlation for subject s · yₛ — subject s's time series in a given region · N — number of subjects
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\mathrm{ISC}_s$ *is the leave-one-out inter-subject correlation for subject* $s$, $y_s$ *the time series of a given region in subject* $s$, *and* $N$ *the number of subjects; the average omits subject* $s$.
+:::
+
+ISC is high during the movie — the shared stimulus aligns everyone's time series — and near zero at rest, where there is nothing shared to align to.
 
 ::::{tab-set}
 :::{tab-item} MATLAB
@@ -136,10 +163,10 @@ plt.title("Resting-state functional connectivity")
 
 ```matlab
 % Shared "movie" drive + idiosyncratic noise, 10 subjects
-n_sub = 10;
+n_sub = 10;                              % number of subjects
 movie_sig = smoothz(randn(n_t, 1));      % shared stimulus time course
 
-Y_movie = 0.6 * repmat(movie_sig, 1, n_sub) + ...
+Y_movie = 0.6 * repmat(movie_sig, 1, n_sub) + ...   % 60% shared, 40% idiosyncratic
           0.4 * cell2mat(arrayfun(@(s) smoothz(randn(n_t, 1)), ...
                 1:n_sub, 'UniformOutput', false));
 Y_rest  = cell2mat(arrayfun(@(s) smoothz(randn(n_t, 1)), ...
@@ -157,12 +184,12 @@ fprintf('Mean ISC: movie = %3.2f, rest = %3.2f\n', ...
 
 ```python
 # Shared "movie" drive + idiosyncratic noise, 10 subjects
-n_sub = 10
+n_sub = 10                                       # number of subjects
 movie_sig = smooth(rng.standard_normal(n_t))     # shared stimulus drive
 
 noise = lambda: np.column_stack([smooth(rng.standard_normal(n_t))
                                  for _ in range(n_sub)])
-Y_movie = 0.6 * movie_sig[:, None] + 0.4 * noise()
+Y_movie = 0.6 * movie_sig[:, None] + 0.4 * noise()   # 60% shared, 40% idiosyncratic
 Y_rest  = noise()                                # nothing shared
 
 def isc(Y):                                      # leave-one-out ISC
@@ -175,6 +202,12 @@ print(f"Mean ISC: movie = {isc(Y_movie).mean():.2f}, "
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+Mean ISC: movie = 0.81, rest = -0.03
+```
 
 The movie condition should show a mean ISC near 0.8, and rest near zero — the shared stimulus is what synchronizes brains. The full labs go further: they add **motion spikes** and a **vigilance/arousal drift** to the simulations and show how both inflate functional connectivity — including a spurious "group difference" between drowsy and alert subjects — and how scrubbing and nuisance regression help.
 

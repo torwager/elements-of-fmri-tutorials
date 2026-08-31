@@ -12,6 +12,9 @@
 % Code adapted from CANlab tutorials (github.com/canlab and
 % CANlab_help_examples).
 %
+% Companion to:
+% https://torwager.github.io/elements-of-fmri-tutorials/book/part4/ch24-analysis-pipelines-variations-and-variability
+%
 % Runtime: under a minute. All data are simulated.
 
 %% 1. Simulate one study
@@ -23,8 +26,12 @@
 % Nuisance processes: slow drift, AR(1) noise, and -- for 8 "high-motion"
 % subjects -- large global intensity spikes.
 
-TR = 2; n_t = 160; n_v = 40; vox_mm = 3; n_sub = 24;
-run_len = n_t * TR;
+TR = 2;              % repetition time (s)
+n_t = 160;           % number of volumes (~5.3 min run)
+n_v = 40;            % number of voxels in the strip
+vox_mm = 3;          % voxel size (mm)
+n_sub = 24;          % number of subjects
+run_len = n_t * TR;  % run length (s)
 
 ons = {};
 ons{1} = (12:24:run_len - 24)';            % event onsets (s)
@@ -34,12 +41,12 @@ task = X0(:, 1) ./ max(X0(:, 1));          % unit-amplitude task regressor
 peak_vox = 21;                                       % true peak voxel
 profile = exp(-((1:n_v) - peak_vox).^2 / (2 * 4^2)); % spatial effect profile
 
-rng(24);
-sub_amp = 0.25 + 0.15 .* randn(n_sub, 1);  % true subject effect amplitudes
+rng(24);                                   % seed, for reproducibility
+sub_amp = 0.25 + 0.15 .* randn(n_sub, 1);  % true subject amplitudes (mean 0.25, sd 0.15)
 high_motion = false(n_sub, 1);
-high_motion(randperm(n_sub, 8)) = true;
+high_motion(randperm(n_sub, 8)) = true;    % 8 of 24 subjects are high-motion
 
-phi_true = 0.45;                           % AR(1) autocorrelation
+phi_true = 0.45;                           % AR(1) lag-1 autocorrelation of the noise
 tt = (0:n_t - 1)' ./ (n_t - 1);
 
 data = zeros(n_sub, n_t, n_v);
@@ -91,10 +98,10 @@ xlabel('time (s)');
 % analysis: first-level GLM per subject, the task beta at the a-priori
 % peak voxel carried to a group one-sample t-test.
 
-hp_opts = [Inf 128 64];       % Inf = no high-pass filtering
-fwhm_opts = [0 4 8];
-despike_opts = [false true];
-ar1_opts = [false true];
+hp_opts = [Inf 128 64];       % high-pass cutoffs (s); Inf = no filtering
+fwhm_opts = [0 4 8];          % smoothing FWHM (mm); 0 = none
+despike_opts = [false true];  % add spike regressors?
+ar1_opts = [false true];      % AR(1) prewhitening?
 
 results = table('Size', [0 9], ...
     'VariableTypes', {'double','double','logical','logical','double', ...
@@ -131,7 +138,7 @@ disp(head(results, 8))
 % The distribution of the group t-statistic across all 36 pipelines --
 % same data, same hypothesis, different defensible analysis choices.
 
-t_crit = tinv(0.975, n_sub - 1);
+t_crit = tinv(0.975, n_sub - 1);   % two-sided p = .05 critical t, df = n_sub - 1
 
 create_figure('vibration of effects');
 histogram(results.t, 14, 'FaceColor', [0.27 0.51 0.71]);
@@ -218,8 +225,8 @@ function b = first_level_beta(Y, task, TR, hp, fwhm, vox_mm, despike, ar1, test_
 n_t = size(Y, 1);
 
 if fwhm > 0   % spatial smoothing across the voxel dimension
-    sigma_vox = fwhm / 2.355 / vox_mm;
-    w = max(3, round(5 * sigma_vox) + 1);
+    sigma_vox = fwhm / 2.355 / vox_mm;     % FWHM -> Gaussian sigma, in voxels
+    w = max(3, round(5 * sigma_vox) + 1);  % smoothing window width (voxels)
     Y = smoothdata(Y, 2, 'gaussian', w);
 end
 
@@ -251,5 +258,5 @@ function frames = find_spike_frames(Y)
 g = mean(Y, 2);
 dg = abs([0; diff(g)]);
 mad_dg = median(abs(dg - median(dg))) * 1.4826 + 1e-12;
-frames = find((dg - median(dg)) ./ mad_dg > 5);
+frames = find((dg - median(dg)) ./ mad_dg > 5);   % robust z > 5 -> spike frame
 end

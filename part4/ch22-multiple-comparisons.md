@@ -32,37 +32,78 @@ A standard fMRI analysis produces a statistical map: a t (or z, or F) value at e
 
 :::{figure} images/fig22-1-thresholding-levels.png
 :name: fig22-1
+:class: book-figure
 :width: 90%
-Thresholding at different levels. (A) A t statistic image from a group analysis, with a separate hypothesis test at each voxel. (B) The same image thresholded at five increasingly stringent values; voxels deemed significant are color-coded on an anatomical underlay. The choice of threshold has a large impact on which voxels are deemed active. *(Figure 22.1 from the book.)*
+Thresholding at different levels. (A) A t statistic image from a group analysis, with a separate hypothesis test at each voxel. (B) The same image thresholded at five increasingly stringent values; voxels deemed significant are color-coded on an anatomical underlay. The choice of threshold has a large impact on which voxels are deemed active. *(Figure 22.1 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
 Two families of corrections dominate neuroimaging. Procedures that control the **family-wise error rate (FWER)** limit the probability of obtaining *any* false positives anywhere in the map. Procedures that control the **false discovery rate (FDR)** instead limit the expected *proportion* of false positives among the voxels declared significant. A second, orthogonal choice is the level of inference: **voxelwise** inference treats each voxel as the unit of analysis, whereas **clusterwise** inference asks whether groups of contiguous suprathreshold voxels are larger than expected by chance.
 
-The simplest FWER procedure is **Bonferroni correction**: to control FWER at level $\alpha$ across $m$ tests, threshold each test at
+The simplest FWER procedure is **Bonferroni correction**: to control FWER at level $\alpha$ across $m$ tests — where $\alpha$ is the Type I error rate you are willing to tolerate for the whole family (e.g., 0.05) and $m$ is the number of tests — threshold each test at
 
+::::{div}
+:class: eq-tip
 $$
-\alpha_{\text{per test}} = \frac{\alpha}{m}.
+\alpha_{\text{per test}} = \frac{\alpha}{m}
 $$
+:::{div}
+:class: eq-tip-text
+α_per test — significance threshold applied to each individual test · α — family-wise Type I error rate to be controlled (e.g., 0.05) · m — number of simultaneous tests (voxels)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $\alpha_{\text{per test}}$ *is the threshold applied to each individual test,* $\alpha$ *the family-wise Type I error rate to be controlled, and* $m$ *the number of simultaneous tests.*
+:::
 
 With $m = 1{,}000$ tests and $\alpha = 0.05$, each voxel must reach $p < 0.00005$. Because fMRI data are spatially smooth — neighboring voxels are highly correlated, and smoothing during preprocessing adds more correlation — the effective number of independent tests is far smaller than the number of voxels, and Bonferroni is unnecessarily conservative. **Random Field Theory (RFT)** addresses this by treating the statistical map as a discrete sample of a smooth random field. Using the image's estimated smoothness (expressed in resolution elements, or *resels*) and a topological property called the Euler characteristic, RFT computes the probability that any voxel (or any cluster of a given size) exceeds a threshold under the null — a closed-form FWER threshold that adapts to the smoothness of the data. RFT tends to be conservative for voxelwise inference in small samples, however, and — critically — too *liberal* for clusterwise inference when the cluster-defining threshold is lenient.
 
-Clusterwise inference itself is a two-step procedure: threshold the map at a primary ("cluster-defining") threshold, then test whether each resulting cluster's extent (number of contiguous voxels) exceeds what chance would produce. It is on average more sensitive than voxelwise inference and became the dominant approach in the literature, but it comes with serious caveats. The significance statement applies to the cluster *as a whole*: rejecting the null of "no signal anywhere in the cluster" licenses only the conclusion that there is signal *somewhere* in the cluster — not that any particular voxel, or even any particular region, is active. With liberal primary thresholds (e.g., $p < 0.01$), clusters often sprawl across many anatomical regions, degrading spatial interpretability, and parametric cluster corrections become invalid, inflating false positives well above their nominal rate. Threshold-free cluster enhancement (TFCE) sidesteps the arbitrary primary threshold by integrating cluster extent over all possible thresholds, $\mathrm{TFCE}(v) = \int_{h_0}^{h_v} e(h)^{E}\, h^{H}\, dh$ (typically with $E = 0.5$, $H = 2$), retaining cluster-level sensitivity without committing to a single cluster-defining height.
+Clusterwise inference itself is a two-step procedure: threshold the map at a primary ("cluster-defining") threshold, then test whether each resulting cluster's extent (number of contiguous voxels) exceeds what chance would produce. It is on average more sensitive than voxelwise inference and became the dominant approach in the literature, but it comes with serious caveats. The significance statement applies to the cluster *as a whole*: rejecting the null of "no signal anywhere in the cluster" licenses only the conclusion that there is signal *somewhere* in the cluster — not that any particular voxel, or even any particular region, is active. With liberal primary thresholds (e.g., $p < 0.01$), clusters often sprawl across many anatomical regions, degrading spatial interpretability, and parametric cluster corrections become invalid, inflating false positives well above their nominal rate. Threshold-free cluster enhancement (TFCE) sidesteps the arbitrary primary threshold by integrating cluster extent over all possible thresholds:
+
+::::{div}
+:class: eq-tip
+$$
+\mathrm{TFCE}(v) = \int_{h_0}^{h_v} e(h)^{E}\, h^{H}\, dh
+$$
+:::{div}
+:class: eq-tip-text
+TFCE(v) — enhanced statistic at voxel v · h — cluster-forming threshold (variable of integration) · h₀ — lowest threshold considered · h_v — statistic value at voxel v · e(h) — extent of the cluster containing v at threshold h · E, H — extent and height weights (typically E = 0.5, H = 2)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $h$ *sweeps over cluster-forming thresholds from* $h_0$ *up to the voxel's own statistic value* $h_v$, $e(h)$ *is the extent of the cluster containing voxel* $v$ *at threshold* $h$*, and the exponents* $E$ *and* $H$ *(typically 0.5 and 2) weight extent against height.*
+:::
+
+The result retains cluster-level sensitivity without committing to a single cluster-defining height.
 
 :::{figure} images/fig22-2-cluster-extent-thresholding.png
 :name: fig22-2
-:width: 95%
-Cluster extent-based thresholding and its limitations. In an analysis of pain-related activity, a liberal primary threshold ($p < 0.01$ uncorrected) yields widespread activation that forms two clusters significant by FWER-corrected cluster extent ($p < 0.05$, outlined). The valid inference is only that each cluster contains at least one truly active voxel *somewhere* within it — the true activation could lie in many different structures, and a substantial fraction of the colored voxels are expected to be false discoveries. *(Figure 22.2 from the book.)*
+:class: book-figure
+:width: 80%
+Cluster extent-based thresholding and its limitations. In an analysis of pain-related activity, a liberal primary threshold ($p < 0.01$ uncorrected) yields widespread activation that forms two clusters significant by FWER-corrected cluster extent ($p < 0.05$, outlined). The valid inference is only that each cluster contains at least one truly active voxel *somewhere* within it — the true activation could lie in many different structures, and a substantial fraction of the colored voxels are expected to be false discoveries. *(Panel A of Figure 22.2 from the book. © the authors and MIT Press; reproduced with permission — not covered by this site's CC-BY license.)*
 :::
 
-The **Benjamini–Hochberg (BH) procedure** is the FDR-controlling method used almost universally in fMRI. Choose an FDR level $q$ (e.g., 0.05), rank the $m$ p-values from smallest to largest, $p_{(1)} \le p_{(2)} \le \dots \le p_{(m)}$, and find the largest rank $r$ such that
+The **Benjamini–Hochberg (BH) procedure** is the FDR-controlling method used almost universally in fMRI. Choose an FDR level $q$ (e.g., 0.05) — the expected proportion of false discoveries you are willing to tolerate, written $q$ rather than $\alpha$ to signal that a different error rate is being controlled — rank the $m$ p-values from smallest to largest, $p_{(1)} \le p_{(2)} \le \dots \le p_{(m)}$, and find the largest rank $r$ such that
 
+::::{div}
+:class: eq-tip
 $$
-p_{(r)} \le \frac{r}{m}\, q .
+p_{(r)} \le \frac{r}{m}\, q
 $$
+:::{div}
+:class: eq-tip-text
+p(r) — the r-th smallest p-value · r — rank in the sorted list · m — number of tests · q — chosen FDR level (e.g., 0.05)
+:::
+::::
+:::{div}
+:class: eq-where
+*where* $p_{(r)}$ *is the* $r$*-th smallest p-value,* $m$ *the number of tests, and* $q$ *the chosen FDR level.*
+:::
 
 All tests with $p \le p_{(r)}$ are declared significant. The procedure is *adaptive*: the more signal in the map, the more small p-values there are, and the lower (more generous) the resulting threshold. Because it operates on p-values alone, BH can be wrapped around any valid statistical test.
 
-How do the two philosophies compare? Any FWER-controlling procedure also controls FDR, so FDR control is necessarily less stringent — and more powerful. Suppose tests on 100,000 voxels at uncorrected $p < 0.001$ yield 300 "significant" voxels, of which roughly 100 are expected to be false positives — a third of the discoveries, with no way to tell which. FDR control at $q = 0.05$ instead sets the threshold so that only about 5% of reported voxels are expected to be false discoveries, letting us argue that most reported results are real. FWER control at 5% is stronger still — only 5 in 100 repeated experiments would yield *any* false positive voxel — but the price is a stringent threshold that can miss most of the truly active voxels, trading Type I errors for a large increase in Type II errors.
+How do the two philosophies compare? Under a pure null — no true signal anywhere — the two criteria coincide: every rejection is a false discovery, so FDR control is equivalent to FWER control, and a properly corrected map should produce a false positive in only about 1 of 20 experiments at the 5% level. When true signal is present, any FWER-controlling procedure also controls FDR, so FDR control is necessarily less stringent — and more powerful. Suppose tests on 100,000 voxels at uncorrected $p < 0.001$ yield 300 "significant" voxels, of which roughly 100 are expected to be false positives — a third of the discoveries, with no way to tell which. FDR control at $q = 0.05$ instead sets the threshold so that only about 5% of reported voxels are expected to be false discoveries, letting us argue that most reported results are real. FWER control at 5% is stronger still — only 5 in 100 repeated experiments would yield *any* false positive voxel — but the price is a stringent threshold that can miss most of the truly active voxels, trading Type I errors for a large increase in Type II errors.
 
 **Nonparametric permutation methods** use the data itself to build the null distribution, requiring only exchangeability under the null (for group analyses, subjects are typically exchangeable; individual time points are not, because of temporal autocorrelation). To control FWER, one recomputes the statistic map under many relabelings (e.g., sign flips of subject contrast images for a one-sample test), records the *maximum* statistic across the brain in each relabeling, and thresholds the observed map at the 95th percentile of this max distribution. Because whole images are resampled together, spatial dependence is handled automatically — no smoothness model required. Permutation approaches are computationally intensive but are widely regarded as the gold standard, providing accurate false positive control where parametric cluster methods fail; tools such as FSL's `randomise` and PALM extend them to general designs with nuisance covariates.
 
@@ -86,9 +127,9 @@ The tabs below are **static previews** (with copy buttons) showing the key step 
 ```matlab
 % 10,000 tests, all null: n = 30 subjects, no true effect anywhere
 % (Adapted from FMRI_simulations/statistical_principles by Tor Wager)
-rng(42);
-n = 30;          % subjects
-k = 10000;       % tests (voxels)
+rng(42);         % seed the random-number generator for reproducibility
+n = 30;          % n = subjects
+k = 10000;       % k = number of tests (voxels)
 
 dat = randn(n, k);            % pure noise
 [~, p] = ttest(dat);          % one-sample t-test at each voxel
@@ -110,8 +151,8 @@ import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
 
-rng = np.random.default_rng(42)
-n, k = 30, 10000                      # subjects, tests (voxels)
+rng = np.random.default_rng(42)       # seed for reproducibility
+n, k = 30, 10000                      # n = subjects, k = number of tests (voxels)
 
 dat = rng.standard_normal((n, k))     # pure noise
 t, p = stats.ttest_1samp(dat, 0)      # one-sample t-test at each voxel
@@ -128,7 +169,19 @@ plt.show()
 :::
 ::::
 
-You should see roughly 500 "significant" voxels — every one of them a false positive. This is exactly what an uncorrected $p < .05$ map of a null contrast looks like.
+**Example output:**
+
+```text
+529 of 10000 null tests are "significant" at p < .05 (expected ~500)
+```
+
+:::{figure} images/ch22_step1_output.png
+:width: 55%
+:alt: A 100 by 100 grid with scattered black pixels marking false-positive tests
+False positives at $p < .05$ across 10,000 pure-noise tests, arranged as a 100 × 100 "slice."
+:::
+
+You should see roughly 500 "significant" voxels — every one of them a false positive, scattered salt-and-pepper across the image. This is exactly what an uncorrected $p < .05$ map of a null contrast looks like. Apply a valid FWER correction to this same null map, and any false positive at all should appear in only ~1 of 20 repeated runs — and because under a pure null every rejection is a false discovery, FDR control here is equivalent to FWER control: almost nothing survives either correction.
 
 ### 2. Bonferroni and FDR with real signal present
 
@@ -140,16 +193,16 @@ Now plant true effects in 10% of tests (Cohen's $d = 0.5$, $n = 50$) and compare
 ```matlab
 % Signal in 10% of tests: d = 0.5, n = 50
 % (Adapted from fdr_sims_playground.m, FMRI_simulations repo, Tor Wager)
-rng(7);
-n = 50;  k = 10000;  d = 0.5;
-numtrue = k / 10;                       % 1,000 truly active tests
+rng(7);                                 % seed for reproducibility
+n = 50;  k = 10000;  d = 0.5;           % n = subjects, k = tests, d = true effect size (Cohen's d)
+numtrue = k / 10;                       % 1,000 truly active tests (10%)
 mu = [d * ones(1, numtrue), zeros(1, k - numtrue)];
 
 dat = mu + randn(n, k);
 [~, p] = ttest(dat);
 
 % Benjamini-Hochberg step-up: largest r with p(r) <= (r/k)*q
-q = 0.05;
+q = 0.05;                                % FDR level: tolerated proportion of false discoveries
 psort = sort(p);
 r = find(psort <= (1:k) / k * q, 1, 'last');
 p_fdr = psort(r);                        % BH threshold
@@ -175,15 +228,15 @@ import numpy as np
 from scipy import stats
 from statsmodels.stats.multitest import multipletests
 
-rng = np.random.default_rng(7)
-n, k, d = 50, 10000, 0.5
-numtrue = k // 10                       # 1,000 truly active tests
+rng = np.random.default_rng(7)          # seed for reproducibility
+n, k, d = 50, 10000, 0.5                # n = subjects, k = tests, d = true effect size (Cohen's d)
+numtrue = k // 10                       # 1,000 truly active tests (10%)
 mu = np.r_[d * np.ones(numtrue), np.zeros(k - numtrue)]
 
 dat = mu + rng.standard_normal((n, k))
 t, p = stats.ttest_1samp(dat, 0)
 
-# Benjamini-Hochberg step-up: largest r with p(r) <= (r/k)*q
+# Benjamini-Hochberg step-up: largest r with p(r) <= (r/k)*q; alpha here is q, the FDR level
 rej_fdr = multipletests(p, alpha=0.05, method='fdr_bh')[0]
 p_fdr = p[rej_fdr].max() if rej_fdr.any() else 0.0   # BH threshold
 
@@ -198,6 +251,14 @@ for name, sig in [('Uncorrected', p < .05),
 ```
 :::
 ::::
+
+**Example output:**
+
+```text
+Uncorrected : 1362 sig, TPR 0.93, observed FDR 0.316
+Bonferroni  :   87 sig, TPR 0.09, observed FDR 0.000
+FDR (BH)    :  694 sig, TPR 0.67, observed FDR 0.037
+```
 
 Compare the three rows: uncorrected finds the most true effects but ~30–50% of its discoveries are false; Bonferroni makes almost no false discoveries but misses most of the real signal; BH-FDR sits in between, keeping the false fraction near 5% while retaining much of the sensitivity. The full labs visualize the BH ranked-p threshold line, repeat the simulation to see the *variability* of the observed FDR, and build a permutation max-t FWER threshold from scratch.
 
