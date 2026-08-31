@@ -31,6 +31,10 @@ jobs:
           cp -r landing/. dist/
           mkdir -p dist/book
           cp -r _build/html/. dist/book/
+          # Empty local wheel index for JupyterLite/piplite (%pip install):
+          # without it, piplite 404s on pypi/all.json and package installs fail.
+          mkdir -p dist/book/pypi
+          echo '{}' > dist/book/pypi/all.json
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
